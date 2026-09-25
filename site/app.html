@@ -1,0 +1,1069 @@
+<title>Naledi Art Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap">
+
+<style>
+  /* ============================================================
+     Mobile first. Base styles are the phone; min-width queries
+     add the larger layouts on top. Nothing here is written for
+     desktop and patched down.
+     ============================================================ */
+  :root {
+    color-scheme: light;
+    --paper:      #FBF8F4;
+    --surface:    #FFFFFF;
+    --surface-2:  #F4EFE8;
+    --ink:        #241C2C;
+    --ink-soft:   #6A5F74;
+    --ink-faint:  #9A8FA3;
+    --line:       #E6DCD2;
+    --line-firm:  #D2C5B8;
+    --gold:       #A87614;
+    --gold-lit:   #D29E38;
+    --blossom:    #C0687F;
+    --shadow:     0 1px 2px rgba(36,28,44,.05), 0 8px 28px -14px rgba(36,28,44,.22);
+    --tap:        46px;          /* minimum comfortable thumb target */
+    --gut:        18px;          /* page gutter on a phone */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #16111D; --surface: #1E1828; --surface-2: #261F33;
+      --ink: #F3EDE5; --ink-soft: #AFA3B9; --ink-faint: #7C7088;
+      --line: #322A40; --line-firm: #453A56;
+      --gold: #E2B155; --gold-lit: #F0C673; --blossom: #E7A3B4;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 32px -16px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #16111D; --surface: #1E1828; --surface-2: #261F33;
+    --ink: #F3EDE5; --ink-soft: #AFA3B9; --ink-faint: #7C7088;
+    --line: #322A40; --line-firm: #453A56;
+    --gold: #E2B155; --gold-lit: #F0C673; --blossom: #E7A3B4;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 32px -16px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 400 16px/1.6 Jost, "Century Gothic", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; display: block; }
+  .wrap { width: 100%; max-width: 1140px; margin-inline: auto; padding-inline: var(--gut); }
+
+  h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.015em; text-wrap: balance; }
+  h2 { font-size: 27px; line-height: 1.14; }
+  h3 { font-size: 19px; letter-spacing: 0; }
+  p  { margin: 0; }
+  a  { color: inherit; }
+  @media (min-width: 720px) { h2 { font-size: 36px; } }
+  @media (min-width: 1000px) { :root { --gut: 28px; } h2 { font-size: 42px; } }
+
+  .eyebrow { font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+             color: var(--gold); font-weight: 500; }
+  .lede { font-family: Newsreader, Georgia, serif; font-size: 17px; line-height: 1.55;
+          color: var(--ink-soft); max-width: 62ch; }
+  @media (min-width: 720px) { .lede { font-size: 20px; } }
+  .rule { height: 1px; background: var(--line); border: 0; margin: 0; }
+  .note { font-size: 13px; color: var(--ink-faint); }
+
+  /* ---------- buttons: every one clears the thumb target ---------- */
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
+    min-height: var(--tap); padding: 12px 20px; border-radius: 999px;
+    border: 1px solid transparent; background: var(--ink); color: var(--paper);
+    text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    transition: opacity .12s, transform .12s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line-firm); }
+  .btn.gold  { background: var(--gold); color: #FFF8E9; }
+  :root[data-theme="dark"] .btn.gold { color: #241A05; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.gold { color: #241A05; } }
+  .btn.sm { min-height: 38px; padding: 8px 15px; font-size: 13px; }
+  /* a finger needs more than a cursor does, so grow the small controls on touch */
+  @media (pointer: coarse) {
+    .btn.sm { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+    .cbtn   { min-height: 40px; padding: 9px 14px; }
+  }
+  .btn[disabled] { opacity: .4; cursor: not-allowed; }
+  .btn.block { width: 100%; }
+
+  /* ---------- header ---------- */
+  header.bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60;
+    background: color-mix(in srgb, var(--paper) 90%, transparent);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+  }
+  .bar-in { display: flex; align-items: center; gap: 12px; height: 58px; }
+  .bar-in img { height: 26px; width: auto; }
+  .bar-in img.rev { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .bar-in img.ink { display: none; }
+    :root:not([data-theme="light"]) .bar-in img.rev { display: block; }
+  }
+  :root[data-theme="dark"] .bar-in img.ink { display: none; }
+  :root[data-theme="dark"] .bar-in img.rev { display: block; }
+  nav.links { margin-left: auto; display: flex; gap: 20px; align-items: center; }
+  nav.links a.txt { display: none; text-decoration: none; font-size: 14px; color: var(--ink-soft); }
+  @media (min-width: 760px) { nav.links a.txt { display: inline; } }
+
+  /* ---------- hero ---------- */
+  .hero { padding-block: 30px 26px; }
+  .hero h1 { font-size: 38px; line-height: 1.02; letter-spacing: -.03em; }
+  .hero h1 em { font-family: Newsreader, Georgia, serif; font-style: italic; font-weight: 300; color: var(--gold); }
+  .hero .lede { margin-top: 16px; }
+  .hero-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+  .hero-shot { margin-top: 26px; border-radius: 16px; overflow: hidden; background: var(--surface-2); }
+  .hero-shot img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+  .hero-meta { display: grid; gap: 14px; margin-top: 24px; font-size: 13px; color: var(--ink-faint); }
+  .hero-meta b { display: block; color: var(--ink); font-weight: 500; font-size: 14.5px; }
+  @media (min-width: 560px) {
+    .hero-cta { flex-direction: row; flex-wrap: wrap; }
+    .hero-meta { grid-template-columns: repeat(3, auto); justify-content: start; gap: 26px; }
+  }
+  @media (min-width: 900px) {
+    .hero { padding-block: 60px 44px; }
+    .hero h1 { font-size: 68px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .hero-shot { margin-top: 0; }
+    .hero-shot img { aspect-ratio: 4/5; }
+  }
+
+  section { padding-block: 40px; }
+  @media (min-width: 900px) { section { padding-block: 68px; } }
+  .sec-head { margin-bottom: 24px; }
+  .sec-head .eyebrow { display: block; margin-bottom: 8px; }
+
+  /* ---------- the wall: her images, minimal, Pinterest-style ---------- */
+  .wall-sec { padding-block: 28px 40px; }
+  .wall { columns: 2; column-gap: 10px; }
+  @media (min-width: 620px)  { .wall { columns: 3; column-gap: 12px; } }
+  @media (min-width: 1000px) { .wall { columns: 4; column-gap: 14px; } }
+  .tile {
+    break-inside: avoid; margin: 0 0 10px; padding: 0; border: 0; width: 100%;
+    background: var(--surface-2); border-radius: 12px; overflow: hidden;
+    position: relative; cursor: zoom-in; display: block; font: inherit; color: inherit;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  @media (min-width: 620px) { .tile { margin-bottom: 12px; } }
+  .tile img { width: 100%; height: auto; transition: transform .5s cubic-bezier(.2,.7,.3,1); }
+  .tile .cap {
+    position: absolute; inset: auto 0 0 0; padding: 26px 12px 10px; text-align: left;
+    background: linear-gradient(transparent, rgba(16,10,22,.82));
+    color: #fff; opacity: 0; transition: opacity .22s;
+  }
+  .tile .cap b { display: block; font-weight: 500; font-size: 13.5px; }
+  .tile .cap span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .8; }
+  @media (hover: hover) {
+    .tile:hover img { transform: scale(1.04); }
+    .tile:hover .cap { opacity: 1; }
+  }
+  .tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  /* On touch there is no hover, so the caption is simply always legible. */
+  @media (hover: none) { .tile .cap { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .tile img { transition: none; } }
+
+  /* lightbox */
+  .lb {
+    position: fixed; inset: 0; z-index: 90; background: rgba(12,8,16,.94);
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px calc(env(safe-area-inset-bottom, 0px) + 12px);
+  }
+  .lb img { max-width: 100%; max-height: 74vh; width: auto; border-radius: 8px; }
+  .lb .meta { color: #fff; text-align: center; margin-top: 14px; }
+  .lb .meta b { display: block; font-weight: 500; font-size: 17px; }
+  .lb .meta span { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+  .lb .x { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 8px); right: 10px;
+           width: var(--tap); height: var(--tap); border-radius: 50%; border: 0;
+           background: rgba(255,255,255,.14); color: #fff; font-size: 22px; cursor: pointer; }
+  .lb .arw { position: absolute; top: 50%; transform: translateY(-50%);
+             width: var(--tap); height: var(--tap); border-radius: 50%; border: 0;
+             background: rgba(255,255,255,.14); color: #fff; font-size: 22px; cursor: pointer; }
+  .lb .arw.l { left: 8px; } .lb .arw.r { right: 8px; }
+
+  /* ---------- the two headline services ---------- */
+  .features { display: grid; gap: 16px; }
+  @media (min-width: 860px) { .features { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  .feature {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow);
+  }
+  .feature > img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+  .feature .in { padding: 20px; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+  @media (min-width: 860px) { .feature .in { padding: 28px; } }
+  .feature .k { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  .feature h3 { font-size: 22px; letter-spacing: -.015em; }
+  @media (min-width: 860px) { .feature h3 { font-size: 26px; } }
+  .feature .price { font-size: 27px; letter-spacing: -.02em; }
+  .feature .price span { font-size: 13px; color: var(--ink-faint); letter-spacing: 0; }
+  .feature .body { font-size: 15px; color: var(--ink-soft); }
+  .ticks { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .ticks li { font-size: 14px; color: var(--ink-soft); padding-left: 20px; position: relative; }
+  .ticks li::before { content: ""; position: absolute; left: 2px; top: .58em; width: 7px; height: 7px;
+                      border-radius: 50%; border: 1.5px solid var(--gold); }
+  .feature .btn { margin-top: auto; }
+  @media (min-width: 560px) { .feature .btn { align-self: flex-start; } }
+
+  /* ---------- plain cards ---------- */
+  .cards { display: grid; gap: 14px; }
+  @media (min-width: 620px) { .cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+          overflow: hidden; display: flex; flex-direction: column; }
+  .card > img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+  .card .in { padding: 18px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .card .price { font-size: 24px; letter-spacing: -.02em; }
+  .card .price span { font-size: 13px; color: var(--ink-faint); letter-spacing: 0; }
+  .card p { font-size: 14px; color: var(--ink-soft); }
+  .card .btn { margin-top: auto; }
+  @media (min-width: 560px) { .card .btn { align-self: flex-start; } }
+
+  /* ---------- booking ---------- */
+  #book { scroll-margin-top: 72px; }
+  .booker { background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+            box-shadow: var(--shadow); overflow: hidden; }
+  .booker-head { padding: 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
+  .steps { margin-left: auto; display: flex; gap: 5px; }
+  .steps i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-firm); display: block; }
+  .steps i.on { background: var(--gold); }
+  .booker-body { display: grid; }
+  @media (min-width: 880px) { .booker-body { grid-template-columns: 1fr 1fr; } }
+  .pane { padding: 18px; }
+  @media (min-width: 880px) { .pane { padding: 24px; } .pane + .pane { border-left: 1px solid var(--line); } }
+  @media (max-width: 879px) { .pane + .pane { border-top: 1px solid var(--line); } }
+  .pane h3 { margin-bottom: 12px; font-size: 12px; letter-spacing: .14em;
+             text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }
+
+  .svc-list { display: flex; flex-direction: column; gap: 8px; }
+  .svc { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; font: inherit;
+         cursor: pointer; min-height: var(--tap); padding: 12px 14px; border-radius: 12px;
+         border: 1px solid var(--line); background: transparent; color: inherit;
+         touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .svc[aria-pressed="true"] { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
+  .svc .nm { font-weight: 500; font-size: 15px; }
+  .svc .sub { font-size: 12.5px; color: var(--ink-faint); }
+  .svc .amt { margin-left: auto; text-align: right; font-size: 15px; white-space: nowrap; }
+  .svc .amt small { display: block; font-size: 11px; color: var(--ink-faint); }
+
+  .cal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .cal-head .mo { font-size: 16px; font-weight: 500; }
+  .cal-head .nav-b { margin-left: auto; display: flex; gap: 6px; }
+  .nav-b button { font: inherit; width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
+                  border: 1px solid var(--line); background: transparent; color: var(--ink); line-height: 1;
+                  touch-action: manipulation; }
+  .nav-b button[disabled] { opacity: .3; cursor: not-allowed; }
+  .dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 5px; }
+  .dow span { text-align: center; font-size: 11px; color: var(--ink-faint); letter-spacing: .06em; }
+  .grid-d { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .day { aspect-ratio: 1; min-height: 40px; border: 1px solid transparent; background: transparent;
+         color: var(--ink); font: inherit; font-size: 15px; border-radius: 10px; cursor: pointer;
+         position: relative; display: flex; align-items: center; justify-content: center;
+         touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .day[disabled] { color: var(--ink-faint); opacity: .42; cursor: not-allowed; }
+  .day[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .day.free::after { content: ""; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+                     width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
+  .day[aria-pressed="true"].free::after { background: var(--paper); }
+  .day.blank { visibility: hidden; }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--ink-faint); flex-wrap: wrap; }
+  .legend i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+              display: inline-block; vertical-align: middle; margin-right: 5px; }
+
+  .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (min-width: 420px) { .slots { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 880px) { .slots { grid-template-columns: repeat(3, 1fr); } }
+  .slot { font: inherit; font-size: 14px; min-height: var(--tap); padding: 10px 4px; border-radius: 10px;
+          cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--ink);
+          font-variant-numeric: tabular-nums; touch-action: manipulation; }
+  .slot[disabled] { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+  .slot[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .field label { font-size: 13px; color: var(--ink-soft); }
+  /* 16px keeps iOS Safari from zooming the page when a field takes focus */
+  .field input, .field textarea {
+    font: inherit; font-size: 16px; min-height: var(--tap); padding: 11px 13px; border-radius: 11px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink); width: 100%;
+  }
+  .field input:focus, .field textarea:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: transparent; }
+  .field textarea { resize: vertical; min-height: 74px; }
+
+  .summary { background: var(--surface-2); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+  .summary dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; font-size: 14px; }
+  .summary dt { color: var(--ink-faint); }
+  .summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .err { font-size: 13.5px; color: var(--blossom); margin-top: 10px; }
+
+  .done { text-align: center; padding: 30px 18px; }
+  .done .tick { width: 46px; height: 46px; border-radius: 50%; background: var(--gold);
+                display: grid; place-items: center; margin: 0 auto 14px; color: #FFF8E9; font-size: 22px; }
+  :root[data-theme="dark"] .done .tick { color: #241A05; }
+  .done .ref { font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+               letter-spacing: .1em; color: var(--ink-faint); margin-top: 6px; }
+  .done-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  @media (min-width: 560px) { .done-cta { flex-direction: row; justify-content: center; flex-wrap: wrap; } }
+
+  /* ---------- about / visit ---------- */
+  .about { display: grid; gap: 22px; }
+  @media (min-width: 760px) { .about { grid-template-columns: 240px 1fr; gap: 42px; align-items: start; } }
+  .about img { width: 160px; border-radius: 14px; aspect-ratio: 1; object-fit: cover; }
+  @media (min-width: 760px) { .about img { width: 100%; } }
+  blockquote { margin: 0; font-family: Newsreader, Georgia, serif; font-size: 20px; line-height: 1.45;
+               font-style: italic; font-weight: 300; }
+  @media (min-width: 760px) { blockquote { font-size: 25px; } }
+  .sig { margin-top: 14px; font-size: 14px; color: var(--ink-soft); }
+  .sig b { display: block; font-weight: 500; color: var(--ink); }
+
+  .visit { display: grid; gap: 26px; }
+  @media (min-width: 620px) { .visit { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+  .visit h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+              color: var(--ink-faint); font-weight: 500; margin-bottom: 10px; }
+  .hrs { font-size: 15px; }
+  .hrs div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .hrs div:last-child { border-bottom: 0; }
+  .hrs .shut { color: var(--ink-faint); }
+  .copyline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .copyline span { font-size: 16px; user-select: all; }
+  .cbtn { font: inherit; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+          min-height: 34px; padding: 6px 11px; border-radius: 7px; border: 1px solid var(--line);
+          background: transparent; color: var(--ink-faint); cursor: pointer; touch-action: manipulation; }
+
+  /* ---------- studio panel ---------- */
+  .panel { border: 1px dashed var(--line-firm); border-radius: 14px; padding: 18px; background: var(--surface); }
+  .bk-row { display: flex; gap: 10px; align-items: baseline; padding: 9px 0;
+            border-bottom: 1px solid var(--line); font-size: 14px; flex-wrap: wrap; }
+  .bk-row:last-child { border-bottom: 0; }
+  .bk-row .w { color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bk-row .who { font-weight: 500; }
+
+  /* ---------- sticky mobile booking bar ---------- */
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px var(--gut) calc(10px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+  }
+  .dock .t { font-size: 13px; line-height: 1.3; }
+  .dock .t b { display: block; font-weight: 500; font-size: 14.5px; }
+  .dock .btn { margin-left: auto; }
+  @media (min-width: 880px) { .dock { display: none; } }
+  body { padding-bottom: 84px; }
+  @media (min-width: 880px) { body { padding-bottom: 0; } }
+
+  footer { border-top: 1px solid var(--line); padding-block: 26px 34px; margin-top: 24px; }
+  .foot { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-faint); }
+  .foot a { text-decoration: none; }
+</style>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <img class="ink" src="assets/logo.png" alt="Naledi Art Studio" width="120" height="26">
+    <img class="rev" src="assets/logo-reversed.png" alt="Naledi Art Studio" width="120" height="26">
+    <nav class="links">
+      <a href="#gallery" class="txt">Gallery</a>
+      <a href="#services" class="txt">Studio</a>
+      <a href="#visit" class="txt">Visit</a>
+      <a href="#book" class="btn gold sm">Book</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Durban &middot; Est. 2019</p>
+        <h1>A studio to shoot in. Sets <em>built by hand</em>.</h1>
+        <p class="lede">Award-winning art business in Greyville. A designed photography and video
+          studio you can book by the session, and custom set design built for the shoot you are
+          actually making.</p>
+        <div class="hero-cta">
+          <a href="#book" class="btn gold">Check availability</a>
+          <a href="#gallery" class="btn ghost">See the space</a>
+        </div>
+        <div class="hero-meta">
+          <div><b>39 Station Drive</b>Greyville, Durban</div>
+          <div><b>Tue–Thu, Sat, Sun</b>Closed Mon &amp; Fri</div>
+          <div><b>065 838 1532</b>naledi@nalediart.com</div>
+        </div>
+      </div>
+      <div class="hero-shot">
+        <img src="assets/img/set-arch-1100.webp"
+             srcset="assets/img/set-arch-600.webp 600w, assets/img/set-arch-1100.webp 1024w"
+             sizes="(min-width: 900px) 44vw, 100vw"
+             width="1024" height="684" fetchpriority="high"
+             alt="The studio's arched plaster set wall with built niches">
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="wall-sec wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The wall</p>
+      <h2>Everything made here.</h2>
+    </div>
+    <div class="wall" id="wall"></div>
+    <p class="note" style="margin-top:14px">Tap any image to open it.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section id="services" class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">What the studio is for</p>
+      <h2>Two things we do better than anyone in Durban.</h2>
+    </div>
+    <div class="features">
+      <article class="feature">
+        <img src="assets/img/studio-space-600.webp"
+             srcset="assets/img/studio-space-600.webp 600w, assets/img/studio-space-1100.webp 640w"
+             sizes="(min-width: 860px) 46vw, 100vw"
+             width="640" height="800" loading="lazy" decoding="async"
+             alt="The raw studio floor with tall factory windows">
+        <div class="in">
+          <p class="k">01 — Book by the session</p>
+          <h3>Photography &amp; video studio hire</h3>
+          <p class="price">R800 <span>/ 2-hour session</span></p>
+          <p class="body">A space designed to be photographed, not a white box. Birthday shoots,
+            campaign video, graduation portraits, podcast sets — backdrops, props and the studio's
+            own built pieces come with the room.</p>
+          <ul class="ticks">
+            <li>Natural light and built set corners</li>
+            <li>Props and backdrops included</li>
+            <li>Extend by the session, subject to the day</li>
+          </ul>
+          <button class="btn gold" data-jump="studio">Check studio availability</button>
+        </div>
+      </article>
+      <article class="feature">
+        <img src="assets/img/set-arch-wide-600.webp"
+             srcset="assets/img/set-arch-wide-600.webp 600w, assets/img/set-arch-wide-1100.webp 800w"
+             sizes="(min-width: 860px) 46vw, 100vw"
+             width="800" height="534" loading="lazy" decoding="async"
+             alt="Custom-built niche wall set in warm plaster">
+        <div class="in">
+          <p class="k">02 — Built for your shoot</p>
+          <h3>Set design &amp; custom props</h3>
+          <p class="price">Quoted <span>/ per build</span></p>
+          <p class="body">Naledi designs and builds the set: a single hero piece, a full campaign
+            environment, or a stage that has to survive a weekend of guests. Concept, build,
+            install and strike.</p>
+          <ul class="ticks">
+            <li>Concept boards before anything is cut</li>
+            <li>Custom-built props, made in studio</li>
+            <li>Install and strike handled</li>
+          </ul>
+          <button class="btn gold" data-jump="set">Book a design consult</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="book" class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Booking</p>
+      <h2>Pick a slot. It closes the moment you take it.</h2>
+    </div>
+
+    <div class="booker">
+      <div class="booker-head">
+        <div>
+          <div style="font-size:15px;font-weight:500" id="hd-title">Choose a service and a date</div>
+          <div style="font-size:13px;color:var(--ink-faint)" id="hd-sub">All times are Durban time (SAST)</div>
+        </div>
+        <div class="steps" aria-hidden="true"><i class="on" id="s1"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
+      </div>
+
+      <div class="booker-body" id="stage">
+        <div class="pane">
+          <h3>1 · Service</h3>
+          <div class="svc-list" id="svcList"></div>
+
+          <h3 style="margin-top:24px">2 · Date</h3>
+          <div class="cal-head">
+            <span class="mo" id="moLabel">—</span>
+            <span class="nav-b"><button id="prevMo" aria-label="Previous month">‹</button><button id="nextMo" aria-label="Next month">›</button></span>
+          </div>
+          <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid-d" id="grid"></div>
+          <div class="legend"><span><i></i>Open</span><span>Faded — closed or fully booked</span></div>
+        </div>
+
+        <div class="pane">
+          <h3>3 · Time</h3>
+          <div class="slots" id="slots"></div>
+          <p class="note" id="slotNote" style="margin-top:10px"></p>
+
+          <h3 style="margin-top:24px">4 · Your details</h3>
+          <div class="summary" id="sumBox" hidden>
+            <dl><dt>Service</dt><dd id="sumSvc">—</dd><dt>When</dt><dd id="sumWhen">—</dd><dt>Amount</dt><dd id="sumAmt">—</dd></dl>
+          </div>
+          <div class="field"><label for="fName">Name</label><input id="fName" autocomplete="name" enterkeyhint="next" placeholder="Who is the booking for?"></div>
+          <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
+          <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="you@example.com"></div>
+          <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
+          <button class="btn gold block" id="confirm" disabled>Confirm booking</button>
+          <p class="err" id="err" hidden></p>
+          <p class="note" style="margin-top:10px">Studio hire is confirmed on the day against the R800 session fee. Venue bookings are held for 48 hours pending deposit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="studioPanel" hidden style="margin-top:18px">
+      <div style="margin-bottom:12px">
+        <h3 style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500">Studio panel</h3>
+        <span class="note">Only you see this. Close a date to keep it off the calendar.</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+        <input type="date" id="blockDate" style="font:inherit;font-size:16px;min-height:46px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink)">
+        <button class="btn ghost sm" id="blockAdd">Close this date</button>
+      </div>
+      <div id="blockList" style="font-size:14px;margin-bottom:16px"></div>
+      <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">Upcoming bookings</div>
+      <div id="bkList"></div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="more" class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Also at the studio</p>
+      <h2>The rest of what we do.</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <img src="assets/img/venue-event-600.webp" width="533" height="800" loading="lazy" decoding="async"
+             alt="A styled event in the venue with florals and a chandelier">
+        <div class="in">
+          <h3>Venue hire</h3>
+          <p class="price">R8 500 <span>/ full day</span></p>
+          <p>The whole space for launches, celebrations and shoots that need room to move. One booking takes the day.</p>
+          <button class="btn ghost sm" data-jump="venue">Book the venue</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="assets/img/art-print-2-600.webp" width="566" height="800" loading="lazy" decoding="async"
+             alt="A painting of a woman holding a bouquet against pink">
+        <div class="in">
+          <h3>Custom art</h3>
+          <p class="price">Commission <span>/ prints from R1 500</span></p>
+          <p>Original work and limited prints. Commissions start with a conversation about scale, palette and where it will hang.</p>
+          <button class="btn ghost sm" data-jump="art">Book a consult</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="assets/img/venue-class-600.webp" width="800" height="534" loading="lazy" decoding="async"
+             alt="A paint-and-sip class at easels in the studio">
+        <div class="in">
+          <h3>Art experiences</h3>
+          <p class="price">Quoted <span>/ per group</span></p>
+          <p>Paint-and-sip sessions and group workshops in the space — art experiences for everyday people, on everyday budgets.</p>
+          <button class="btn ghost sm" data-jump="set">Talk it through</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section class="wrap">
+    <div class="about">
+      <img src="assets/img/naledi-600.webp" width="288" height="288" loading="lazy" decoding="async"
+           alt="Naledi Zondi, founder of Naledi Art Studio">
+      <div>
+        <p class="eyebrow" style="margin-bottom:16px">About</p>
+        <blockquote>“I aim to inspire creativity and offer art experiences for everyday people
+          with everyday budgets. Whether it's a birthday shoot, campaign video, graduation party
+          or podcast set — we do it all.”</blockquote>
+        <p class="sig"><b>Naledi Zondi</b>Visual artist, creative director &amp; director</p>
+        <p class="lede" style="margin-top:20px;font-size:16px">An award-winning art entrepreneur who
+          has intertwined visual art, marketing and set design into one studio. The room you book is
+          the room she built.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="visit" class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Visit</p>
+      <h2>39 Station Drive, Greyville.</h2>
+    </div>
+    <div class="visit">
+      <div>
+        <h3>Opening hours</h3>
+        <div class="hrs">
+          <div><span>Monday</span><span class="shut">Closed</span></div>
+          <div><span>Tue – Thu</span><span>9am – 6pm</span></div>
+          <div><span>Friday</span><span class="shut">Closed</span></div>
+          <div><span>Saturday</span><span>10am – 6pm</span></div>
+          <div><span>Sunday</span><span>9am – 3pm</span></div>
+        </div>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <div class="copyline"><span>065 838 1532</span><button class="cbtn" data-copy="0658381532">Copy</button></div>
+        <div class="copyline"><span>naledi@nalediart.com</span><button class="cbtn" data-copy="naledi@nalediart.com">Copy</button></div>
+        <p class="note" style="margin-top:12px">Studio hire must be confirmed by phone before the session.</p>
+      </div>
+      <div>
+        <h3>Getting here</h3>
+        <p style="font-size:15px;color:var(--ink-soft)">Station Drive precinct, Greyville — Durban's makers' quarter.</p>
+        <a class="btn ghost sm" style="margin-top:12px" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&amp;query=39%20Station%20Drive%2C%20Greyville%2C%20Durban">Get directions</a>
+      </div>
+      <div>
+        <h3>The mark</h3>
+        <img src="assets/badge.png" alt="Naledi Art Studio Durban badge" width="170" height="170"
+             style="width:150px" loading="lazy">
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>&copy; <span id="yr">2026</span> Naledi Art Studio · Durban</span>
+    <a href="https://nalediart.company.site/" target="_blank" rel="noopener">Shop</a>
+    <span style="margin-left:auto">Built in Durban.</span>
+  </div>
+</footer>
+
+<div class="dock">
+  <div class="t"><b>Studio hire from R800</b>2-hour session</div>
+  <a href="#book" class="btn gold sm">Book a slot</a>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------- studio facts ---------------- */
+  // Durban is UTC+2 all year — no daylight saving, so one constant is correct.
+  var SAST = 120;
+  // Opening hours in minutes from midnight, keyed by JS day number. Mon & Fri absent = closed.
+  var HOURS = { 0: [540, 900], 2: [540, 1080], 3: [540, 1080], 4: [540, 1080], 6: [600, 1080] };
+
+  var SERVICES = [
+    { id: 'studio', name: 'Photography studio hire', sub: 'Shoots, video, podcast sets', amt: 'R800', per: 'per session', dur: 120 },
+    { id: 'set',    name: 'Set design consult',      sub: 'Custom sets and props',      amt: 'Free',  per: '30 minutes',  dur: 30 },
+    { id: 'venue',  name: 'Venue hire',              sub: 'The whole space, all day',   amt: 'R8 500', per: 'full day',   dur: 'day' },
+    { id: 'art',    name: 'Custom art consult',      sub: 'Commissions and prints',     amt: 'Free',  per: '45 minutes',  dur: 45 }
+  ];
+  var ADDRESS = '39 Station Drive, Greyville, Durban';
+
+  // The wall. Widths and heights are the real pixel sizes so nothing reflows as images land.
+  var WALL = [
+    ['art-eternal-valentine', 'Eternal Valentine', 'Original · R12 000', 608, 800],
+    ['set-arch',              'The arch set',      'Set design',         1024, 684],
+    ['art-bheka-mina-ngedwa', 'Bheka Mina Ngedwa', 'Print · R11 000',    553, 800],
+    ['venue-class',           'Paint & sip',       'Art experiences',    800, 534],
+    ['studio-space',          'The raw studio',    'Studio hire',        640, 800],
+    ['art-print-2',           'Print 2',           'Print · R1 500',     566, 800],
+    ['venue-event',           'Styled for events', 'Venue hire',         533, 800],
+    ['set-arch-wide',         'Niche wall',        'Set design',         800, 534],
+    ['art-valentine-sheet',   'Eternal Valentine', '80 × 95 cm, 2024',   800, 800]
+  ];
+
+  /* ---------------- helpers ---------------- */
+  var $ = function (id) { return document.getElementById(id); };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function hhmm(m) { return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+  function nice(m) {
+    var h = Math.floor(m / 60), x = m % 60, ap = h < 12 ? 'am' : 'pm', h12 = h % 12 || 12;
+    return h12 + (x ? ':' + pad(x) : '') + ap;
+  }
+  // "now" in Durban wall-clock, whatever zone the phone is set to.
+  function nowSAST() { var n = new Date(); return new Date(n.getTime() + (n.getTimezoneOffset() + SAST) * 60000); }
+  function dayFromStr(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12); }
+  function svcById(id) { for (var i = 0; i < SERVICES.length; i++) if (SERVICES[i].id === id) return SERVICES[i]; return SERVICES[0]; }
+  function overlaps(a1, a2, b1, b2) { return a1 < b2 && b1 < a2; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* ---------------- the wall ---------------- */
+  (function buildWall() {
+    var host = $('wall');
+    host.innerHTML = WALL.map(function (t, i) {
+      return '<button class="tile" data-i="' + i + '" aria-label="Open ' + esc(t[1]) + '">' +
+        '<img src="assets/img/' + t[0] + '-600.webp" ' +
+        'srcset="assets/img/' + t[0] + '-600.webp 600w, assets/img/' + t[0] + '-1100.webp ' + t[3] + 'w" ' +
+        'sizes="(min-width:1000px) 25vw, (min-width:620px) 33vw, 50vw" ' +
+        'width="' + t[3] + '" height="' + t[4] + '" loading="' + (i < 4 ? 'eager' : 'lazy') + '" decoding="async" ' +
+        'alt="' + esc(t[1]) + '">' +
+        '<span class="cap"><b>' + esc(t[1]) + '</b><span>' + esc(t[2]) + '</span></span></button>';
+    }).join('');
+    host.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-i]'); if (b) openLb(+b.getAttribute('data-i'));
+    });
+  })();
+
+  var lbIdx = -1, lbEl = null;
+  function openLb(i) {
+    lbIdx = i;
+    var t = WALL[i];
+    if (!lbEl) {
+      lbEl = document.createElement('div');
+      lbEl.className = 'lb';
+      document.body.appendChild(lbEl);
+      lbEl.addEventListener('click', function (e) {
+        if (e.target.dataset.act === 'x' || e.target === lbEl) return closeLb();
+        if (e.target.dataset.act === 'p') return openLb((lbIdx - 1 + WALL.length) % WALL.length);
+        if (e.target.dataset.act === 'n') return openLb((lbIdx + 1) % WALL.length);
+      });
+    }
+    lbEl.innerHTML =
+      '<button class="x" data-act="x" aria-label="Close">×</button>' +
+      '<button class="arw l" data-act="p" aria-label="Previous">‹</button>' +
+      '<button class="arw r" data-act="n" aria-label="Next">›</button>' +
+      '<img src="assets/img/' + t[0] + '-1100.webp" alt="' + esc(t[1]) + '">' +
+      '<div class="meta"><b>' + esc(t[1]) + '</b><span>' + esc(t[2]) + '</span></div>';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() { if (lbEl) { lbEl.remove(); lbEl = null; } document.body.style.overflow = ''; }
+  document.addEventListener('keydown', function (e) {
+    if (!lbEl) return;
+    if (e.key === 'Escape') closeLb();
+    else if (e.key === 'ArrowLeft') openLb((lbIdx - 1 + WALL.length) % WALL.length);
+    else if (e.key === 'ArrowRight') openLb((lbIdx + 1) % WALL.length);
+  });
+
+  /* ---------------- booking state ---------------- */
+  var today = nowSAST();
+  var state = {
+    svc: 'studio', date: null, start: null,
+    month: new Date(today.getFullYear(), today.getMonth(), 1),
+    bookings: [], blocks: [], busy: false, canWrite: true, isStudio: false
+  };
+
+  /* ---------------- storage: shared store, else this browser ---------------- */
+  var DB = null, LS_KEY = 'naledi.bookings.v1', LS_BLOCK = 'naledi.blocks.v1';
+  function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function loadLocal() { state.bookings = lsGet(LS_KEY); state.blocks = lsGet(LS_BLOCK); }
+
+  function connect() {
+    if (!window.claude || typeof window.claude.use !== 'function') { loadLocal(); render(); return; }
+    window.claude.use('db').then(function (db) {
+      if (!db) { loadLocal(); render(); return; }
+      DB = db;
+      db.collection('bookings').where('date', '>=', ymd(today)).orderBy('date').limit(500)
+        .onSnapshot(function (snap) {
+          state.bookings = snap.docs.map(function (d) { var o = d.data() || {}; o._id = d.id; return o; })
+            .filter(function (b) { return b.status !== 'test'; });
+          render();
+        }, function () {});
+      db.collection('blocks').limit(200).onSnapshot(function (snap) {
+        state.blocks = snap.docs.map(function (d) { var o = d.data() || {}; o._id = d.id; return o; });
+        render();
+      }, function () {});
+    }, function () { loadLocal(); render(); });
+
+    window.claude.use('user').then(function (u) {
+      if (!u) return;
+      Promise.resolve(u.canEdit ? u.canEdit() : false).then(function (ok) {
+        state.isStudio = !!ok; $('studioPanel').hidden = !ok; render();
+      }).catch(function () {});
+      if (u.can) Promise.resolve(u.can('data.write')).then(function (w) {
+        if (w === false) { state.canWrite = false; render(); }
+      }).catch(function () {});
+    }, function () {});
+  }
+
+  /* ---------------- availability ---------------- */
+  function isBlocked(d) { for (var i = 0; i < state.blocks.length; i++) if (state.blocks[i].date === d) return true; return false; }
+  function slotsFor(dateStr, svc) {
+    var h = HOURS[dayFromStr(dateStr).getDay()];
+    if (!h) return [];
+    if (svc.dur === 'day') return [{ start: h[0], end: h[1] }];
+    var out = [];
+    for (var s = h[0]; s + svc.dur <= h[1]; s += 60) out.push({ start: s, end: s + svc.dur });
+    return out;
+  }
+  function slotFree(dateStr, sl) {
+    if (isBlocked(dateStr)) return false;
+    if (dateStr === ymd(today) && sl.start <= today.getHours() * 60 + today.getMinutes()) return false;
+    for (var i = 0; i < state.bookings.length; i++) {
+      var b = state.bookings[i];
+      if (b.date === dateStr && overlaps(sl.start, sl.end, b.start, b.end)) return false;
+    }
+    return true;
+  }
+  function dayHasRoom(dateStr, svc) {
+    var sl = slotsFor(dateStr, svc);
+    for (var i = 0; i < sl.length; i++) if (slotFree(dateStr, sl[i])) return true;
+    return false;
+  }
+
+  /* ---------------- render ---------------- */
+  function renderServices() {
+    var host = $('svcList');
+    if (!host.children.length) {
+      host.innerHTML = SERVICES.map(function (s) {
+        return '<button class="svc" data-svc="' + s.id + '">' +
+          '<span><span class="nm">' + esc(s.name) + '</span><br><span class="sub">' + esc(s.sub) + '</span></span>' +
+          '<span class="amt">' + esc(s.amt) + '<small>' + esc(s.per) + '</small></span></button>';
+      }).join('');
+      host.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-svc]'); if (!b) return;
+        if (state.svc !== b.getAttribute('data-svc')) { state.svc = b.getAttribute('data-svc'); state.start = null; }
+        render();
+      });
+    }
+    Array.prototype.forEach.call(host.children, function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-svc') === state.svc ? 'true' : 'false');
+    });
+  }
+
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function renderCalendar() {
+    var m = state.month, svc = svcById(state.svc);
+    $('moLabel').textContent = MONTHS[m.getMonth()] + ' ' + m.getFullYear();
+    $('prevMo').disabled = m.getFullYear() === today.getFullYear() && m.getMonth() === today.getMonth();
+
+    var lead = (new Date(m.getFullYear(), m.getMonth(), 1).getDay() + 6) % 7;   // Monday-first
+    var days = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+    var todayStr = ymd(today), html = '';
+    for (var i = 0; i < lead; i++) html += '<button class="day blank" disabled tabindex="-1"></button>';
+    for (var d = 1; d <= days; d++) {
+      var ds = m.getFullYear() + '-' + pad(m.getMonth() + 1) + '-' + pad(d);
+      var open = ds >= todayStr && dayHasRoom(ds, svc);
+      html += '<button class="day' + (open ? ' free' : '') + '" data-d="' + ds + '"' +
+        (open ? '' : ' disabled') + ' aria-pressed="' + (state.date === ds ? 'true' : 'false') + '">' + d + '</button>';
+    }
+    var grid = $('grid');
+    grid.innerHTML = html;
+    if (!grid._wired) {
+      grid._wired = true;
+      grid.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-d]'); if (!b || b.disabled) return;
+        state.date = b.getAttribute('data-d'); state.start = null; render();
+      });
+    }
+  }
+
+  function renderSlots() {
+    var host = $('slots'), note = $('slotNote'), svc = svcById(state.svc);
+    if (!state.date) { host.innerHTML = ''; note.textContent = 'Pick a date to see open times.'; return; }
+    var sl = slotsFor(state.date, svc);
+    if (!sl.length) { host.innerHTML = ''; note.textContent = 'The studio is closed that day.'; return; }
+    host.innerHTML = sl.map(function (s) {
+      var free = slotFree(state.date, s);
+      return '<button class="slot" data-s="' + s.start + '"' + (free ? '' : ' disabled') +
+        ' aria-pressed="' + (state.start === s.start ? 'true' : 'false') + '">' +
+        (svc.dur === 'day' ? 'Full day' : nice(s.start)) + '</button>';
+    }).join('');
+    if (!host._wired) {
+      host._wired = true;
+      host.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-s]'); if (!b || b.disabled) return;
+        state.start = +b.getAttribute('data-s'); render();
+      });
+    }
+    var open = sl.filter(function (s) { return slotFree(state.date, s); }).length;
+    note.textContent = open ? open + ' of ' + sl.length + ' open · ' +
+      (svc.dur === 'day' ? 'takes the whole day' : svc.dur + ' minutes') : 'Fully booked that day.';
+  }
+
+  function renderSummary() {
+    var svc = svcById(state.svc), ready = state.date && state.start !== null;
+    $('sumBox').hidden = !ready;
+    if (ready) {
+      var end = svc.dur === 'day' ? slotsFor(state.date, svc)[0].end : state.start + svc.dur;
+      $('sumSvc').textContent = svc.name;
+      $('sumWhen').textContent = dayFromStr(state.date).toLocaleDateString(undefined,
+        { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + nice(state.start) + '–' + nice(end);
+      $('sumAmt').textContent = svc.amt;
+    }
+    var step = ready ? 4 : (state.date ? 3 : 2);
+    ['s1','s2','s3','s4'].forEach(function (id, i) { $(id).classList.toggle('on', i < step); });
+    $('hd-title').textContent = ready ? 'Almost there — your details' : 'Choose a service and a date';
+    $('confirm').disabled = !ready || state.busy || !state.canWrite;
+    $('confirm').textContent = state.busy ? 'Holding the slot…'
+      : (!state.canWrite ? 'Booking unavailable here' : 'Confirm booking');
+  }
+
+  function renderPanel() {
+    if (!state.isStudio) return;
+    var bl = state.blocks.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    $('blockList').innerHTML = bl.length
+      ? bl.map(function (b) { return '<div class="bk-row"><span class="w">' + esc(b.date) +
+          '</span><span>Closed</span><span style="margin-left:auto"><button class="cbtn" data-unblock="' +
+          esc(b._id || b.date) + '">Reopen</button></span></div>'; }).join('')
+      : '<div class="note">No dates closed.</div>';
+    var bk = state.bookings.slice().sort(function (a, b) {
+      return a.date === b.date ? a.start - b.start : (a.date < b.date ? -1 : 1); });
+    $('bkList').innerHTML = bk.length
+      ? bk.map(function (b) { return '<div class="bk-row"><span class="w">' + esc(b.date) + ' ' + esc(hhmm(b.start)) +
+          '</span><span class="who">' + esc(b.name) + '</span><span style="color:var(--ink-faint)">' +
+          esc(b.serviceName) + '</span><span class="w">' + esc(b.phone || '') + '</span></div>'; }).join('')
+      : '<div class="note">Nothing booked yet.</div>';
+  }
+
+  function render() { renderServices(); renderCalendar(); renderSlots(); renderSummary(); renderPanel(); }
+
+  /* ---------------- calendar handoff ---------------- */
+  function toUTC(dateStr, minutes) {
+    var p = dateStr.split('-');
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], 0, 0, 0) + minutes * 60000 - SAST * 60000);
+  }
+  function stamp(dt) { return dt.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+  function gcalLink(bk) {
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+      '&text=' + encodeURIComponent(bk.serviceName + ' — Naledi Art Studio') +
+      '&dates=' + stamp(toUTC(bk.date, bk.start)) + '/' + stamp(toUTC(bk.date, bk.end)) +
+      '&location=' + encodeURIComponent(ADDRESS) +
+      '&details=' + encodeURIComponent('Booking ' + bk.ref + '\nNaledi Art Studio, Durban\n065 838 1532');
+  }
+  function icsText(bk) {
+    return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naledi Art Studio//Booking//EN','CALSCALE:GREGORIAN',
+      'BEGIN:VEVENT','UID:' + bk.ref + '@nalediart','DTSTAMP:' + stamp(new Date()),
+      'DTSTART:' + stamp(toUTC(bk.date, bk.start)), 'DTEND:' + stamp(toUTC(bk.date, bk.end)),
+      'SUMMARY:' + bk.serviceName + ' — Naledi Art Studio', 'LOCATION:' + ADDRESS,
+      'DESCRIPTION:Booking ' + bk.ref + '. Naledi Art Studio\\, Durban. 065 838 1532.',
+      'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  }
+
+  /* ---------------- confirm ---------------- */
+  function makeRef() {
+    var s = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = 'NAS-';
+    for (var i = 0; i < 5; i++) r += s[Math.floor(Math.random() * s.length)];
+    return r;
+  }
+  function fail(msg) { var e = $('err'); e.textContent = msg; e.hidden = false; }
+
+  $('confirm').addEventListener('click', function () {
+    $('err').hidden = true;
+    var svc = svcById(state.svc);
+    var name = $('fName').value.trim(), phone = $('fPhone').value.trim(), email = $('fEmail').value.trim();
+    if (!name) return fail('Please add a name for the booking.');
+    if (!phone && !email) return fail('Please leave a mobile number or an email so the studio can reach you.');
+    var end = svc.dur === 'day' ? slotsFor(state.date, svc)[0].end : state.start + svc.dur;
+    var bk = {
+      service: svc.id, serviceName: svc.name, amount: svc.amt,
+      date: state.date, start: state.start, end: end,
+      name: name, phone: phone, email: email, notes: $('fNotes').value.trim(),
+      ref: makeRef(), createdAt: new Date().toISOString(), status: 'confirmed'
+    };
+    var slotId = bk.date + '_' + pad(Math.floor(bk.start / 60)) + pad(bk.start % 60) + (svc.dur === 'day' ? '_day' : '');
+
+    state.busy = true; renderSummary();
+
+    if (!DB) {
+      var all = lsGet(LS_KEY); bk._id = slotId; all.push(bk); lsSet(LS_KEY, all);
+      state.bookings = all; state.busy = false; return done(bk);
+    }
+    // Take a short lease on the slot so two people tapping at once cannot both win it,
+    // then write only if it is genuinely still empty.
+    var ref = DB.collection('bookings').doc(slotId);
+    ref.acquire({ holder: bk.ref, ttlMs: 8000 }).then(function (res) {
+      if (!res || !res.acquired) throw { taken: true };
+      return ref.get();
+    }).then(function (snap) {
+      var cur = snap.exists ? (snap.data() || {}) : {};
+      if (cur.name) throw { taken: true };
+      return ref.set(bk);
+    }).then(function () { state.busy = false; done(bk); })
+      .catch(function (e) {
+        state.busy = false;
+        if (e && e.taken) fail('Someone just took that slot. Pick another time — the calendar has refreshed.');
+        else if (e && e.code === 'invalid_argument') { state.canWrite = false; fail('This view cannot save bookings. Call the studio on 065 838 1532.'); }
+        else fail('That did not save. Try again, or call 065 838 1532.');
+        render();
+      });
+  });
+
+  function done(bk) {
+    $('stage').innerHTML =
+      '<div class="done" style="grid-column:1/-1">' +
+        '<div class="tick">✓</div>' +
+        '<h3 style="font-size:23px">You are booked in.</h3>' +
+        '<p style="color:var(--ink-soft);margin-top:8px">' + esc(bk.serviceName) + ' · ' +
+          esc(dayFromStr(bk.date).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })) +
+          ', ' + esc(nice(bk.start)) + '–' + esc(nice(bk.end)) + '</p>' +
+        '<p style="color:var(--ink-soft)">' + esc(ADDRESS) + '</p>' +
+        '<p class="ref">' + esc(bk.ref) + '</p>' +
+        '<div class="done-cta">' +
+          '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to Google Calendar</a>' +
+          '<button class="btn ghost" id="icsBtn">Download .ics</button>' +
+          '<button class="btn ghost" id="againBtn">Book another</button>' +
+        '</div>' +
+        '<p class="note" style="margin-top:14px">The studio will call to confirm. Naledi: 065 838 1532</p>' +
+      '</div>';
+    $('hd-title').textContent = 'Booked';
+    $('hd-sub').textContent = 'Reference ' + bk.ref;
+    ['s1','s2','s3','s4'].forEach(function (id) { $(id).classList.add('on'); });
+    $('againBtn').addEventListener('click', function () { location.reload(); });
+    $('icsBtn').addEventListener('click', function () {
+      var text = icsText(bk), fn = 'naledi-' + bk.ref + '.ics';
+      if (window.claude && window.claude.use) {
+        window.claude.use('downloads').then(function (d) {
+          if (d && d.save) d.save({ filename: fn, data: text }).catch(function () {});
+          else blobSave(text, fn);
+        }, function () { blobSave(text, fn); });
+      } else blobSave(text, fn);
+    });
+  }
+  function blobSave(text, fn) {
+    try {
+      var u = URL.createObjectURL(new Blob([text], { type: 'text/calendar' }));
+      var a = document.createElement('a'); a.href = u; a.download = fn; a.click();
+      setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+    } catch (e) {}
+  }
+
+  /* ---------------- odds and ends ---------------- */
+  $('prevMo').addEventListener('click', function () {
+    state.month = new Date(state.month.getFullYear(), state.month.getMonth() - 1, 1); render();
+  });
+  $('nextMo').addEventListener('click', function () {
+    state.month = new Date(state.month.getFullYear(), state.month.getMonth() + 1, 1); render();
+  });
+  document.addEventListener('click', function (e) {
+    var j = e.target.closest('[data-jump]');
+    if (j) {
+      state.svc = j.getAttribute('data-jump'); state.start = null; render();
+      $('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    var c = e.target.closest('[data-copy]');
+    if (c) {
+      var v = c.getAttribute('data-copy'), old = c.textContent;
+      var ok = function () { c.textContent = 'Copied'; setTimeout(function () { c.textContent = old; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(ok, function () { selectText(c); });
+      else selectText(c);
+      return;
+    }
+    var ub = e.target.closest('[data-unblock]');
+    if (ub) {
+      var id = ub.getAttribute('data-unblock');
+      if (DB) DB.collection('blocks').doc(id).delete().catch(function () {});
+      else { state.blocks = state.blocks.filter(function (b) { return (b._id || b.date) !== id; }); lsSet(LS_BLOCK, state.blocks); render(); }
+    }
+  });
+  function selectText(btn) {
+    var span = btn.previousElementSibling; if (!span) return;
+    var r = document.createRange(); r.selectNodeContents(span);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  $('blockAdd').addEventListener('click', function () {
+    var d = $('blockDate').value; if (!d) return;
+    if (DB) DB.collection('blocks').doc(d).set({ date: d, reason: 'Closed by the studio' }).catch(function () {});
+    else { state.blocks.push({ date: d, _id: d }); lsSet(LS_BLOCK, state.blocks); render(); }
+  });
+
+  $('yr').textContent = new Date().getFullYear();
+  render();
+  connect();
+})();
+</script>

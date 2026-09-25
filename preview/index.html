@@ -1,0 +1,95 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Naledi Art Studio — logo review</title>
+<style>
+  :root { --bg: #ffffff; --fg: #1a1a1a; --muted: #7a7168; --line: #e6ded3; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; color: var(--fg); background: #faf7f2; }
+  header { padding: 20px 24px 12px; border-bottom: 1px solid var(--line); background: #fff;
+           position: sticky; top: 0; z-index: 5; }
+  h1 { margin: 0 0 4px; font-size: 18px; letter-spacing: .01em; }
+  p.sub { margin: 0; color: var(--muted); }
+  .controls { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); background: #fff;
+           border-radius: 999px; cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 20px 24px 60px; }
+  figure { margin: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+  .pane { background: var(--bg); display: flex; align-items: center; justify-content: center;
+          padding: 24px; min-height: 210px; transition: background .15s; }
+  .pane img { max-width: 100%; max-height: 260px; display: block; }
+  figcaption { padding: 9px 12px; border-top: 1px solid var(--line); background: #fff;
+               display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  figcaption b { font-weight: 600; }
+  figcaption a { color: var(--muted); text-decoration: none; font-size: 12px; }
+  figcaption a:hover { color: var(--fg); text-decoration: underline; }
+  .sizes { padding: 0 24px 40px; }
+  .sizes h2, .grid + h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+  .row { display: flex; gap: 22px; align-items: flex-end; background: #fff; border: 1px solid var(--line);
+         border-radius: 10px; padding: 18px; flex-wrap: wrap; }
+  .row div { text-align: center; color: var(--muted); font-size: 11px; }
+  .row img { display: block; margin-bottom: 6px; }
+</style>
+
+<header>
+  <h1>Naledi Art Studio — logo review</h1>
+  <p class="sub">Click a background to check every mark against it.</p>
+  <div class="controls">
+    <button data-bg="#ffffff" aria-pressed="true">White</button>
+    <button data-bg="#f7f1e8">Cream</button>
+    <button data-bg="#0e7c7b">Teal</button>
+    <button data-bg="#d39c24">Gold</button>
+    <button data-bg="#1a1a1a">Black</button>
+    <button data-bg="#6b7f5e">Sage</button>
+  </div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<div class="sizes">
+  <h2>Small-size test — primary</h2>
+  <div class="row">
+    <div><img src="/brand-suite/png/01-primary-600.png" width="300"><span>300px</span></div>
+    <div><img src="/brand-suite/png/01-primary-600.png" width="190"><span>190px</span></div>
+    <div><img src="/brand-suite/png/01-primary-600.png" width="120"><span>120px</span></div>
+    <div><img src="/brand-suite/png/01-primary-600.png" width="80"><span>80px</span></div>
+  </div>
+  <h2>Small-size test — submark</h2>
+  <div class="row">
+    <div><img src="/brand-suite/png/04-submark-512.png" width="128"><span>128px</span></div>
+    <div><img src="/brand-suite/png/04-submark-512.png" width="64"><span>64px</span></div>
+    <div><img src="/brand-suite/png/04-submark-512.png" width="48"><span>48px</span></div>
+    <div><img src="/brand-suite/png/04-submark-512.png" width="32"><span>32px</span></div>
+  </div>
+</div>
+
+<script>
+  const items = [
+    ['01-primary-1200', 'Primary', '01-primary'],
+    ['01-primary-flush-1200', 'Primary — flush (both edges align)', '01-primary-flush'],
+    ['01-primary-reversed', 'Primary — reversed', '01-primary-reversed'],
+    ['01-primary-gold-rule', 'Primary — gold rule', '01-primary-gold-rule'],
+    ['02-classic-1200', 'Classic (6.5% weight)', '02-classic'],
+    ['02-classic-heavier', 'Classic (7.7% weight)', '02-classic-heavier'],
+    ['03-badge-800', 'Badge', '03-badge'],
+    ['03-badge-gold', 'Badge — gold', '03-badge-gold'],
+    ['04-submark-512', 'Submark', '04-submark'],
+    ['04-submark-gold-ring', 'Submark — gold ring', '04-submark-gold-ring'],
+    ['05-horizontal-1200', 'Horizontal', '05-horizontal'],
+    ['06-monogram', 'Monogram — N | portrait', '06-monogram'],
+    ['06-monogram-letters', 'Monogram — N | A', '06-monogram-letters'],
+    ['07-wordmark-only', 'Wordmark only (plain ring)', '07-wordmark-only'],
+  ];
+  document.getElementById('grid').innerHTML = items.map(([png, label, svg]) => `
+    <figure>
+      <div class="pane"><img src="/brand-suite/png/${png}.png" alt="${label}"></div>
+      <figcaption><b>${label}</b><a href="/brand-suite/svg/${svg}.svg" target="_blank">open SVG</a></figcaption>
+    </figure>`).join('');
+
+  document.querySelectorAll('.controls button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.controls button').forEach(b => b.setAttribute('aria-pressed', b === btn));
+      document.documentElement.style.setProperty('--bg', btn.dataset.bg);
+    });
+  });
+</script>

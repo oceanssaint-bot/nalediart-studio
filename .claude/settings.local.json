@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/IC RUSTENBURG/Downloads/**)",
+      "Bash(node -e ' *)",
+      "Bash(mkdir -p source dist/fixed)",
+      "Bash(cp \"C:/Users/IC RUSTENBURG/Downloads/IMG_3226 \\(1\\).svg\" source/kittl-trace.svg)"
+    ]
+  }
+}
