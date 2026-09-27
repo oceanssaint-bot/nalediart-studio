@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "logo-preview", "runtimeExecutable": "node", "runtimeArgs": ["preview/serve.js"], "port": 4317 }
+    { "name": "naledi", "runtimeExecutable": "node", "runtimeArgs": ["site/serve.js"], "port": 4173 }
   ]
 }

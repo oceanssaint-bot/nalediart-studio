@@ -156,8 +156,32 @@
   .menu-foot a { color: var(--ink); text-decoration: none; font-size: 16px; }
   .menu-foot p { font-size: 13px; color: var(--ink-faint); }
 
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden;
+             clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+  /* ---------- hero: one photograph, inset, two floating pills ----------
+     The reference leads with the image and puts no type over it. */
+  .stage { position: relative; border-radius: 18px; overflow: hidden; background: var(--surface-2); }
+  .stage img { width: 100%; height: 62vh; min-height: 380px; object-fit: cover; display: block;
+               transition: opacity .22s ease; }
+  @media (prefers-reduced-motion: reduce) { .stage img { transition: none; } }
+  @media (min-width: 900px) { .stage img { height: 78vh; max-height: 740px; } }
+  .stage-tag { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 2px;
+               background: var(--paper); border-radius: 999px; padding: 5px 6px; }
+  .stage-tag span { font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+                    color: var(--ink); padding: 0 8px; white-space: nowrap; }
+  .sarr { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent;
+          color: var(--ink); font-size: 15px; line-height: 1; cursor: pointer; touch-action: manipulation; }
+  .sarr:hover { background: var(--surface-2); }
+  .stage-cta { position: absolute; right: 14px; bottom: 14px; display: inline-flex; align-items: center;
+               gap: 10px; background: var(--paper); color: var(--ink); text-decoration: none;
+               border-radius: 999px; padding: 0 20px; min-height: var(--tap);
+               font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .stage-cta:hover { background: var(--gold); color: #FFF8E9; }
+
   /* ---------- hero ---------- */
-  .hero { padding-block: 30px 26px; }
+  .hero { padding: 10px var(--gut) 0; }
+  @media (min-width: 900px) { .hero { padding-top: 14px; } }
   .hero h1 { font-size: 38px; line-height: 1.02; letter-spacing: -.03em; }
   .hero h1 em { font-family: Newsreader, Georgia, serif; font-style: italic; font-weight: 300; color: var(--gold); }
   .hero .lede { margin-top: 16px; }
@@ -210,39 +234,59 @@
   @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
 
-  /* ---------- accordion ---------- */
+  /* ---------- accordion ----------
+     One row is one line of the page: the huge hairline label on the left, its
+     content in a narrow column on the right at the same height, the toggle
+     pinned to the far edge. A closed row is the label and a lot of air. */
   .acc { border-top: 1px solid var(--line); }
-  .acc-row { border-bottom: 1px solid var(--line); }
+  .acc-row { border-bottom: 1px solid var(--line); position: relative; }
+
   .acc-head {
-    width: 100%; background: none; border: 0; padding: 26px 0 0; cursor: pointer;
-    display: flex; align-items: flex-start; gap: 18px; text-align: left; color: var(--ink);
-    font: inherit; touch-action: manipulation;
+    display: block; list-style: none; background: none; border: 0; font: inherit;
+    padding: 22px 54px 22px 0; cursor: pointer; text-align: left; color: var(--ink);
+    touch-action: manipulation;
   }
-  .acc-head .t { font-size: 30px; font-weight: 200; text-transform: uppercase;
-                 letter-spacing: .012em; line-height: 1; flex: 1; margin-bottom: -.11em; }
-  @media (min-width: 720px) { .acc-head { padding-top: 34px; } .acc-head .t { font-size: 54px; } }
-  @media (min-width: 1200px) { .acc-head .t { font-size: 76px; } }
-  .acc-head .amt { flex: none; font-size: 13px; color: var(--ink-faint); white-space: nowrap;
-                   letter-spacing: .1em; text-transform: uppercase; margin-top: 8px; }
+  .acc-head::-webkit-details-marker { display: none; }
+  .acc-head .t { display: block; font-size: 34px; font-weight: 200; line-height: .92;
+                 text-transform: uppercase; letter-spacing: .012em; margin-bottom: .16em; }
+  .acc-head .amt { display: block; font-size: 11px; letter-spacing: .16em;
+                   text-transform: uppercase; color: var(--ink-faint); }
   .acc-head .tog {
-    flex: none; margin-top: 4px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-firm);
-    display: grid; place-items: center; font-size: 17px; color: var(--ink-soft); line-height: 1;
+    position: absolute; right: 0; top: 22px; width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid var(--line-firm); display: grid; place-items: center;
+    font-size: 17px; line-height: 1; color: var(--ink-soft);
   }
   .acc-row[open] .acc-head .tog { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
-  .acc-body { padding: 26px 0 34px; display: grid; gap: 22px; }
-  /* Deliberate air: on a wide screen the body occupies the right third only. */
+
+  .acc-body { padding: 0 0 30px; display: flex; flex-direction: column; gap: 15px; }
+  .acc-body .lead { font-size: 19px; font-weight: 300; line-height: 1.22; color: var(--ink); }
+  .acc-body p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); max-width: 44ch; }
+  .acc-body .ticks { font-size: 13px; }
+  .acc-more { align-self: flex-start; margin-top: 2px; font: inherit; font-size: 11px;
+              letter-spacing: .16em; text-transform: uppercase; color: var(--ink);
+              background: none; border: 0; border-bottom: 1px solid var(--ink);
+              padding: 0 0 3px; cursor: pointer; }
+  .acc-more:hover { color: var(--gold); border-color: var(--gold); }
+  /* Three perfect portrait rectangles, equal in every dimension. */
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .thumbs img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; }
+
   @media (min-width: 900px) {
-    .acc-body { grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
-                padding-left: 34%; padding-top: 30px; padding-bottom: 54px; }
+    .acc-row { display: grid; grid-template-columns: minmax(0, 48%) minmax(0, 38%);
+               column-gap: 6%; padding-right: 78px; align-items: start; }
+    .acc-row > .acc-head { grid-column: 1; grid-row: 1; padding: 34px 0 42px; }
+    .acc-row > .acc-body { grid-column: 2; grid-row: 1; padding: 42px 0 46px; }
+    .acc-head .t { font-size: 62px; }
+    .acc-head .tog { top: 36px; }
   }
-  .acc-body p { font-size: 15px; color: var(--ink-soft); line-height: 1.55; max-width: 56ch; }
-  .acc-body > img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; }
-  .thumbs { display: flex; gap: 6px; }
-  .thumbs img { width: 33.333%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; }
+  @media (min-width: 1200px) { .acc-head .t { font-size: 80px; } }
+  @media (min-width: 1500px) { .acc-head .t { font-size: 96px; } }
 
   /* ---------- statement band ---------- */
   .band { position: relative; border-radius: 16px; overflow: hidden; background: var(--ink); }
-  .band img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; opacity: .55; }
+  .band img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+  .band::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+                 background: linear-gradient(180deg, rgba(20,14,26,.44) 0%, rgba(20,14,26,.62) 52%, rgba(20,14,26,.78) 100%); }
   .band .in { position: relative; padding: 64px 24px; display: flex; flex-direction: column;
               align-items: center; gap: 22px; text-align: center; }
   @media (min-width: 900px) { .band .in { padding: 132px 64px; } }
@@ -645,31 +689,24 @@
 </div>
 
 <main>
-  <section class="hero wrap">
-    <div class="hero-grid">
-      <div>
-        <p class="eyebrow">Durban &middot; Est. 2019</p>
-        <h1>A studio to shoot in. Sets <em>built by hand</em>.</h1>
-        <p class="lede">Award-winning art business in Greyville. A designed photography and video
-          studio you can book by the session, and custom set design built for the shoot you are
-          actually making.</p>
-        <div class="hero-cta">
-          <a href="#book" class="btn gold">Check availability</a>
-          <a href="#gallery" class="btn ghost">See the space</a>
-        </div>
-        <div class="hero-meta">
-          <div><b>39 Station Drive</b>Greyville, Durban</div>
-          <div><b>Tue–Thu, Sat, Sun</b>Closed Mon &amp; Fri</div>
-          <div><b>065 838 1532</b>naledi@nalediart.com</div>
-        </div>
+  <section class="hero">
+    <!-- The reference opens on one photograph with no headline over it. The
+         page title stays for screen readers and search, but is not shown. -->
+    <h1 class="sr-only">Naledi Art Studio, photography studio and set design in Greyville, Durban</h1>
+    <div class="stage">
+      <img id="heroImg" src="assets/img/arch-proposal-1100.webp" width="1024" height="1366"
+           fetchpriority="high" alt="The arch set dressed with florals and candles for a proposal">
+      <div class="stage-tag">
+        <button class="sarr" id="heroPrev" aria-label="Previous photograph">&#8249;</button>
+        <span id="heroLabel">Dressed for a proposal</span>
+        <button class="sarr" id="heroNext" aria-label="Next photograph">&#8250;</button>
       </div>
-      <div class="hero-shot">
-        <img src="assets/img/set-arch-1100.webp"
-             srcset="assets/img/set-arch-600.webp 600w, assets/img/set-arch-1100.webp 1024w"
-             sizes="(min-width: 900px) 44vw, 100vw"
-             width="1024" height="684" fetchpriority="high"
-             alt="The studio's arched plaster set wall with built niches">
-      </div>
+      <a href="#book" class="stage-cta">Book a slot <span aria-hidden="true">&#8594;</span></a>
+    </div>
+    <div class="hero-meta wrap">
+      <div><b>39 Station Drive</b>Greyville, Durban</div>
+      <div><b>Tue to Thu, Sat, Sun</b>Closed Mon and Fri</div>
+      <div><b>R800 an hour</b>Studio hire, flat rate</div>
     </div>
   </section>
 
@@ -688,7 +725,7 @@
 
   <section class="wrap">
     <div class="band">
-      <img src="assets/img/set-arch-1100.webp" alt="" loading="lazy" decoding="async">
+      <img src="assets/img/pampas-1100.webp" alt="" loading="lazy" decoding="async">
       <div class="in">
         <h2>The room you book is the room <em>she built</em>.</h2>
         <p>Award-winning art business in Greyville, Durban.</p>
@@ -706,56 +743,66 @@
       <details class="acc-row" open>
         <summary class="acc-head"><span class="t">Studio hire</span><span class="amt">R800 &middot; per hour</span><span class="tog">&minus;</span></summary>
         <div class="acc-body">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <p>A flat R800 an hour, with everything in the room included. Birthday shoots, campaign video, graduation portraits, podcast sets, proposals.</p>
-            <ul class="ticks"><li>Lights, stands and softboxes, or work with the daylight</li><li>Paper backdrops, props and furniture props</li><li>Steamer and rail, Bluetooth speaker, refreshments</li><li>An assistant on hand</li><li>Book by the hour, extend on the day if it is free</li></ul>
-            <button class="btn gold" data-jump="studio" style="align-self:flex-start">Check availability</button>
+          <p class="lead">A room that is already dressed, by the hour.</p>
+          <p>Flat R800 an hour with everything in the room included. Lights, stands and softboxes or the daylight, paper backdrops, props and furniture, a steamer and rail, and an assistant on hand. Extend on the day if the slot after you is free.</p>
+          <div class="thumbs">
+            <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
+            <img src="assets/img/red-velvet-600.webp" alt="A deep red velvet backdrop hung in the studio" loading="lazy" decoding="async">
+            <img src="assets/img/arch-desk-600.webp" alt="The arch reworked as a desk for a podcast set" loading="lazy" decoding="async">
           </div>
-          <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
+          <button class="acc-more" data-jump="studio">Check availability</button>
         </div>
       </details>
       <details class="acc-row">
         <summary class="acc-head"><span class="t">Set design</span><span class="amt">Quoted &middot; per build</span><span class="tog">+</span></summary>
         <div class="acc-body">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <p>Naledi designs and builds the set: a single hero piece, a full campaign environment, or a stage that has to survive a weekend of guests. Concept, build, install and strike.</p>
-            <ul class="ticks"><li>Concept boards before anything is cut</li><li>Custom-built props, made in studio</li><li>Install and strike handled</li></ul>
-            <button class="btn gold" data-jump="set" style="align-self:flex-start">Check availability</button>
+          <p class="lead">Naledi designs it, then she builds it.</p>
+          <p>A single hero piece, a full campaign environment, or a stage that has to survive a weekend of guests. Concept boards before anything is cut, props made in studio, install and strike handled.</p>
+          <div class="thumbs">
+            <img src="assets/img/set-arch-600.webp" alt="The arch set standing in the studio" loading="lazy" decoding="async">
+            <img src="assets/img/arch-proposal-600.webp" alt="The arch dressed with florals and candles for a proposal" loading="lazy" decoding="async">
+            <img src="assets/img/set-arch-wide-600.webp" alt="The niche wall built for a set" loading="lazy" decoding="async">
           </div>
-          <img src="assets/img/arch-proposal-600.webp" alt="The arch set dressed with florals and candles for a proposal" loading="lazy" decoding="async">
+          <button class="acc-more" data-jump="set">Check availability</button>
         </div>
       </details>
       <details class="acc-row">
         <summary class="acc-head"><span class="t">Venue hire</span><span class="amt">R8 500 &middot; full day</span><span class="tog">+</span></summary>
         <div class="acc-body">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <p>The whole space for launches, celebrations and shoots that need room to move. One booking takes the day.</p>
-            <ul class="ticks"><li>The entire studio, yours for the day</li><li>Styling and set dressing available</li><li>Held 48 hours pending deposit</li></ul>
-            <button class="btn gold" data-jump="venue" style="align-self:flex-start">Check availability</button>
+          <p class="lead">The whole space, for the whole day.</p>
+          <p>Launches, celebrations and shoots that need room to move. One booking takes the day, styling and set dressing are available, and the date is held 48 hours pending your deposit.</p>
+          <div class="thumbs">
+            <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
+            <img src="assets/img/couple-600.webp" alt="A couple photographed in the dressed arch set" loading="lazy" decoding="async">
+            <img src="assets/img/yellow-gown-600.webp" alt="A portrait shoot in a yellow gown on hay bales" loading="lazy" decoding="async">
           </div>
-          <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
+          <button class="acc-more" data-jump="venue">Check availability</button>
         </div>
       </details>
       <details class="acc-row">
         <summary class="acc-head"><span class="t">Custom art</span><span class="amt">Commission &middot; prints from R1 500</span><span class="tog">+</span></summary>
         <div class="acc-body">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <p>Original work and limited prints. Commissions start with a conversation about scale, palette and where the work will hang.</p>
-            <ul class="ticks"><li>Originals and limited prints</li><li>Prints ship nationwide</li><li>Viewings in studio by appointment</li></ul>
-            <button class="btn gold" data-jump="art" style="align-self:flex-start">Check availability</button>
+          <p class="lead">Original work, and limited prints.</p>
+          <p>A commission starts with a conversation about scale, palette and where the work will hang. Prints ship nationwide, and originals can be viewed in the studio by appointment.</p>
+          <div class="thumbs">
+            <img src="assets/img/art-eternal-valentine-600.webp" alt="Eternal Valentine, an original painting" loading="lazy" decoding="async">
+            <img src="assets/img/art-bheka-mina-ngedwa-600.webp" alt="Bheka Mina Ngedwa, a limited print" loading="lazy" decoding="async">
+            <img src="assets/img/art-valentine-sheet-600.webp" alt="Eternal Valentine, 80 by 95 cm" loading="lazy" decoding="async">
           </div>
-          <img src="assets/img/art-valentine-sheet-600.webp" alt="Eternal Valentine, 80 by 95 cm" loading="lazy" decoding="async">
+          <button class="acc-more" data-jump="art">Check availability</button>
         </div>
       </details>
       <details class="acc-row">
         <summary class="acc-head"><span class="t">Art experiences</span><span class="amt">Quoted &middot; per group</span><span class="tog">+</span></summary>
         <div class="acc-body">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <p>Paint-and-sip sessions and group workshops in the space. Art experiences for everyday people, on everyday budgets.</p>
-            <ul class="ticks"><li>Groups of six and upwards</li><li>Materials and guidance included</li><li>Birthdays, teams and hen parties</li></ul>
-            <button class="btn gold" data-jump="set" style="align-self:flex-start">Check availability</button>
+          <p class="lead">Art for everyday people, on everyday budgets.</p>
+          <p>Paint and sip sessions and group workshops in the space, for six people and upwards. Materials and guidance are included. Birthdays, teams and hen parties.</p>
+          <div class="thumbs">
+            <img src="assets/img/venue-class-600.webp" alt="A paint and sip class at easels in the studio" loading="lazy" decoding="async">
+            <img src="assets/img/art-print-2-600.webp" alt="A limited print hanging in the studio" loading="lazy" decoding="async">
+            <img src="assets/img/naledi-600.webp" alt="Naledi, who leads the sessions" loading="lazy" decoding="async">
           </div>
-          <img src="assets/img/venue-class-600.webp" alt="A paint and sip class at easels in the studio" loading="lazy" decoding="async">
+          <button class="acc-more" data-jump="set">Check availability</button>
         </div>
       </details>
     </div>
@@ -998,6 +1045,71 @@
   function overlaps(a1, a2, b1, b2) { return a1 < b2 && b1 < a2; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* ---------------- the hero carousel ----------------
+     One photograph at a time, named in the pill at its top left. It advances
+     on its own, stops the moment anyone touches it, and holds still for a
+     reader who has asked for no motion. */
+  (function heroCarousel() {
+    var img = $('heroImg'), lab = $('heroLabel'), prev = $('heroPrev'), next = $('heroNext');
+    if (!img || !lab || !prev || !next) return;
+
+    var SLIDES = [
+      ['arch-proposal', 'Proposal set',   'The arch set dressed with florals and candles for a proposal', 1024, 1366],
+      ['yellow-gown',   'Portrait shoot', 'A portrait shoot in a yellow gown on hay bales',               1100, 1466],
+      ['arch-desk',     'Podcast set',    'The arch reworked as a desk for a podcast set',                1100, 1466],
+      ['venue-event',   'Styled event',   'A styled event in the venue with florals and a chandelier',     533,  800],
+      ['red-velvet',    'Studio hire',    'A deep red velvet backdrop hung in the studio',                1100, 1466]
+    ];
+    var src = function (n) { return 'assets/img/' + SLIDES[n][0] + '-1100.webp'; };
+
+    var i = 0, busy = false, timer = null, touched = false;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function warm(n) { var w = new Image(); w.src = src((n + SLIDES.length) % SLIDES.length); }
+
+    function show(n) {
+      n = (n + SLIDES.length) % SLIDES.length;
+      if (busy || n === i) return;
+      busy = true;
+      var s = SLIDES[n], pre = new Image();
+      var land = function () {
+        img.style.opacity = '0';
+        setTimeout(function () {
+          img.src = pre.src;
+          img.setAttribute('width', s[3]); img.setAttribute('height', s[4]);
+          img.alt = s[2]; lab.textContent = s[1];
+          img.style.opacity = '1';
+          i = n; busy = false; warm(i + 1);
+        }, still ? 0 : 200);
+      };
+      pre.onload = land;
+      pre.onerror = function () { busy = false; };   // a missing file must not jam the carousel
+      pre.src = src(n);
+      if (pre.complete) land();
+    }
+
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function go()   { stop(); if (!still && !touched) timer = setInterval(function () { show(i + 1); }, 6500); }
+
+    function by(step) { touched = true; stop(); show(i + step); }
+    prev.addEventListener('click', function () { by(-1); });
+    next.addEventListener('click', function () { by(1); });
+
+    // Swipe, because this is read on a phone first.
+    var x0 = null;
+    img.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    img.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 42) by(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') go(); else stop();
+    });
+    warm(1); go();
+  })();
 
   /* ---------------- the wall ---------------- */
   (function buildWall() {
