@@ -13,9 +13,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SLIDES = path.join(ROOT, 'presentation', 'deck', 'project', 'slides');
-const ORDER = ['cover', 'origin', 'problem', 'digitise', 'repaint', 'master',
-  'palette', 'type', 'primary', 'classic', 'suite', 'marks',
-  'clearspace', 'backgrounds', 'misuse', 'files'];
+const ORDER = ['cover','contents','foundation','voice','origin','problem','digitise','repaint','master','palette','colour-spec','colour-use','type','typescale','primary','classic','suite','marks','layout','photography','clearspace','backgrounds','misuse','web','stationery','social','files','governance'];
 
 // Uploaded asset id -> the local file that holds the same image.
 const BLOB = {
@@ -24,13 +22,19 @@ const BLOB = {
   '099b605a377a3ad4ec40412be23cd50c': 'after-art',
   '97422d52f47895216b12005addbe2928': 'zoom-before',
   'c9621c0865e6912d1534fe59c7de1897': 'zoom-after',
-  'd0823a37229e643a71dfdf3a22c21188': 'primary',
-  '4dc4e6982a7c2d473e943baae78ae661': 'primary-reversed',
-  '82e169832e46dbcd227f7a8843f02daa': 'classic',
-  '44cc9ecd78ac27521790b7c989f34696': 'badge',
-  'a875fb4432376b592ecdf257ccf9f8bf': 'submark',
-  'ffc2229fe7975113f45bb9f040b414ac': 'horizontal',
-  '0041332d7c18ede504980b26f4172056': 'suite',
+  'b9e6a29258c115ae250ed17210d9cd12': 'primary',
+  '18db4297e97a772da8fd70b1f5a6908c': 'primary-reversed',
+  '3f197aaa5ca5426dca65b81b6f6db495': 'classic',
+  'ca7faed65e085fe144ad4c9b2f699a60': 'badge',
+  '3eb4aa89f1aa82dc87af18d2c3742b68': 'submark',
+  '6e5e73a47f5cf49b6129832904cb5e07': 'horizontal',
+  '38487e3340c24be731544ade8a0d51d5': 'suite',
+  '88be54e276bbcb85113bb3aef866a9e9': 'app-card',
+  '8cc485722b8d8eda82f9594942925e92': 'app-social',
+  'ad60b1d7e74a32866ba495e06e7b4257': 'app-signature',
+  'ed0d738d44694bdb663eb9401627137f': 'photo-set',
+  'e01f94ec8a2dc886936e5922fd57e025': 'photo-studio',
+  'bc0bb3114220c2a45da131fc60cd0d19': 'photo-class',
 };
 
 let unresolved = [];
