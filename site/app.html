@@ -643,6 +643,21 @@
 </div>
 
 <script>
+  // ---------------------------------------------------------------------
+  // Fill these in to turn on real, shared slot blocking, then run
+  // supabase/schema.sql once in the Supabase SQL editor. Leave them empty
+  // and the page falls back to collecting a request and handing it to
+  // WhatsApp, which holds nothing.
+  //
+  // The anon key is a PUBLISHABLE key. It is designed to ship in the page;
+  // Row Level Security in schema.sql is what actually protects the data —
+  // customers may create a booking and read only the occupied time ranges,
+  // never anyone's name, phone or email.
+  // ---------------------------------------------------------------------
+  window.NALEDI_SUPABASE = { url: "", anonKey: "" };
+</script>
+
+<script>
 (function () {
   "use strict";
 
@@ -756,10 +771,71 @@
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function loadLocal() { state.bookings = lsGet(LS_KEY); state.blocks = lsGet(LS_BLOCK); }
 
+  /* ---------------- Supabase (the public site's shared store) -------------
+     Plain PostgREST over fetch — no SDK, so nothing extra to load and no
+     CDN to depend on. The `availability` view returns occupied ranges only;
+     the bookings table itself is unreadable with the anon key. */
+  var SB = null;
+
+  function sbInit() {
+    var c = window.NALEDI_SUPABASE;
+    if (!c || !c.url || !c.anonKey) return null;
+    var base = c.url.replace(/\/+$/, '') + '/rest/v1';
+    var h = { apikey: c.anonKey, Authorization: 'Bearer ' + c.anonKey, 'Content-Type': 'application/json' };
+    var ok = function (r) { return r.ok ? r.json() : Promise.reject(r); };
+    return {
+      load: function () {
+        var from = new Date(Date.now() - 864e5).toISOString();
+        return Promise.all([
+          fetch(base + '/availability?select=starts_at,ends_at&starts_at=gte.' +
+                encodeURIComponent(from) + '&order=starts_at', { headers: h }).then(ok),
+          fetch(base + '/blocks?select=day', { headers: h }).then(ok)
+        ]);
+      },
+      insert: function (row) {
+        return fetch(base + '/bookings', {
+          method: 'POST',
+          headers: { apikey: h.apikey, Authorization: h.Authorization,
+                     'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify(row)
+        });
+      }
+    };
+  }
+
+  // A UTC instant from the database, expressed in Durban wall-clock.
+  function fromSAST(iso) {
+    var d = new Date(new Date(iso).getTime() + SAST * 60000);
+    return { date: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes() };
+  }
+
+  function sbRefresh() {
+    if (!SB) return Promise.resolve();
+    return SB.load().then(function (res) {
+      state.bookings = res[0].map(function (r) {
+        var a = fromSAST(r.starts_at), b = fromSAST(r.ends_at);
+        return { date: a.date, start: a.min, end: b.date === a.date ? b.min : 1440 };
+      });
+      state.blocks = res[1].map(function (r) { return { date: r.day, _id: r.day }; });
+      state.shared = true;      // only once a real read has succeeded
+      render();
+    }).catch(function () {
+      // Configured but unreachable: keep the honest request flow rather than
+      // promising a hold the page cannot make.
+      state.shared = false; render();
+    });
+  }
+
+  function startFallback() {
+    SB = sbInit();
+    if (!SB) { loadLocal(); render(); return; }
+    sbRefresh();
+  }
+
   function connect() {
-    if (!window.claude || typeof window.claude.use !== 'function') { loadLocal(); render(); return; }
+    if (!window.claude || typeof window.claude.use !== 'function') { startFallback(); return; }
     window.claude.use('db').then(function (db) {
-      if (!db) { loadLocal(); render(); return; }
+      if (!db) { startFallback(); return; }
       DB = db; state.shared = true;
       db.collection('bookings').where('date', '>=', ymd(today)).orderBy('date').limit(500)
         .onSnapshot(function (snap) {
@@ -771,7 +847,7 @@
         state.blocks = snap.docs.map(function (d) { var o = d.data() || {}; o._id = d.id; return o; });
         render();
       }, function () {});
-    }, function () { loadLocal(); render(); });
+    }, function () { startFallback(); });
 
     window.claude.use('user').then(function (u) {
       if (!u) return;
@@ -853,6 +929,7 @@
       grid.addEventListener('click', function (e) {
         var b = e.target.closest('[data-d]'); if (!b || b.disabled) return;
         state.date = b.getAttribute('data-d'); state.start = null; render();
+        sbRefresh();   // re-check the moment someone commits to a day
       });
     }
   }
@@ -969,6 +1046,36 @@
 
     state.busy = true; renderSummary();
 
+    if (!DB && SB) {
+      // The overlap is rejected by the database, not by this check, so two
+      // people tapping the same slot at the same instant cannot both win.
+      return SB.insert({
+        service: bk.service, service_name: bk.serviceName, amount: bk.amount,
+        starts_at: toUTC(bk.date, bk.start).toISOString(),
+        ends_at: toUTC(bk.date, bk.end).toISOString(),
+        name: bk.name, phone: bk.phone || null, email: bk.email || null,
+        notes: bk.notes || null, ref: bk.ref, status: 'confirmed'
+      }).then(function (r) {
+        state.busy = false;
+        if (r.ok) { sbRefresh(); return done(bk); }
+        return r.text().then(function (t) {
+          // 23P01 is the exclusion-constraint violation: the slot is genuinely
+          // gone, so keep them on the form to pick another time.
+          if (r.status === 409 || t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0) {
+            fail('Someone just took that slot. Pick another time — the calendar has refreshed.');
+            sbRefresh();
+            return;
+          }
+          // Anything else is our problem, not theirs. Drop to the request
+          // flow so they still have a way to reach the studio.
+          state.shared = false; done(bk);
+        });
+      }).catch(function () {
+        state.busy = false;
+        state.shared = false; done(bk);   // offline or unreachable: same fallback
+      });
+    }
+
     if (!DB) {
       var all = lsGet(LS_KEY); bk._id = slotId; all.push(bk); lsSet(LS_KEY, all);
       state.bookings = all; state.busy = false; return done(bk);
@@ -1028,7 +1135,9 @@
           (held
             ? '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to Google Calendar</a>'
             : '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(waLink(bk)) + '">Send on WhatsApp</a>') +
-          (held ? '' : '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to calendar</a>') +
+          (held
+            ? '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(waLink(bk)) + '">Tell Naledi on WhatsApp</a>'
+            : '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to calendar</a>') +
           '<button class="btn ghost" id="icsBtn">Download .ics</button>' +
           '<button class="btn ghost" id="againBtn">' + (held ? 'Book another' : 'Start again') + '</button>' +
         '</div>' +
