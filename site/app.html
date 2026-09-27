@@ -56,12 +56,16 @@
   .wrap { width: 100%; margin-inline: auto; padding-inline: var(--gut); }
 
   h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.015em; text-wrap: balance; }
-  h2 { font-size: 27px; line-height: 1.14; }
+  /* Section titles are one or two words, set hairline, uppercase and wide.
+     The sentence that used to be the heading now sits beside it as a lede. */
+  h2 { font-size: 40px; font-weight: 300; line-height: 1; text-transform: uppercase;
+       letter-spacing: .01em; max-width: none; }
   h3 { font-size: 19px; letter-spacing: 0; }
   p  { margin: 0; }
   a  { color: inherit; }
-  @media (min-width: 720px) { h2 { font-size: 36px; } }
-  @media (min-width: 1000px) { :root { --gut: 28px; } h2 { font-size: 42px; } }
+  @media (min-width: 720px) { h2 { font-size: 68px; } }
+  @media (min-width: 1000px) { :root { --gut: 28px; } h2 { font-size: 92px; } }
+  @media (min-width: 1500px) { h2 { font-size: 112px; } }
   /* Full width, so the gutter has to grow with the screen or the content
      runs into the glass on a big monitor. */
   @media (min-width: 1400px) { :root { --gut: 48px; } }
@@ -144,10 +148,74 @@
     .hero-shot img { aspect-ratio: 4/5; }
   }
 
-  section { padding-block: 40px; }
-  @media (min-width: 900px) { section { padding-block: 68px; } }
-  .sec-head { margin-bottom: 24px; }
-  .sec-head .eyebrow { display: block; margin-bottom: 8px; }
+  section { padding-block: 56px; }
+  @media (min-width: 900px) { section { padding-block: 104px; } }
+  .sec-head { margin-bottom: 34px; }
+  .sec-head .eyebrow { display: block; margin-bottom: 10px; }
+  /* Title on the left, the sentence it used to be on the right. */
+  .sec-head.split { display: grid; gap: 16px; align-items: end; }
+  @media (min-width: 900px) {
+    .sec-head.split { grid-template-columns: 1fr 34ch; gap: 56px; margin-bottom: 48px; }
+    .sec-head.split .lede { font-size: 17px; }
+  }
+
+  /* ---------- marquee ----------
+     A black band of repeating text. Same trick as the story river: the run is
+     written twice and the track slides exactly half its width. */
+  .marquee { background: var(--ink); overflow: hidden; padding-block: 13px; }
+  .marquee-track { display: flex; width: max-content; animation: slide 38s linear infinite; }
+  .marquee span { flex: none; color: var(--paper); font-size: 12px; letter-spacing: .22em;
+                  text-transform: uppercase; padding-right: 26px; white-space: nowrap; }
+  .marquee span i { color: var(--gold-lit); font-style: normal; padding-left: 26px; }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+  /* ---------- accordion ---------- */
+  .acc { border-top: 1px solid var(--line); }
+  .acc-row { border-bottom: 1px solid var(--line); }
+  .acc-head {
+    width: 100%; background: none; border: 0; padding: 22px 0; cursor: pointer;
+    display: flex; align-items: center; gap: 18px; text-align: left; color: var(--ink);
+    font: inherit; touch-action: manipulation;
+  }
+  .acc-head .t { font-size: 28px; font-weight: 300; text-transform: uppercase; letter-spacing: .01em; line-height: 1; }
+  @media (min-width: 720px) { .acc-head { padding: 30px 0; } .acc-head .t { font-size: 46px; } }
+  @media (min-width: 1200px) { .acc-head .t { font-size: 60px; } }
+  .acc-head .amt { margin-left: auto; font-size: 14px; color: var(--ink-faint); white-space: nowrap; }
+  .acc-head .tog {
+    flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-firm);
+    display: grid; place-items: center; font-size: 17px; color: var(--ink-soft); line-height: 1;
+  }
+  .acc-row[open] .acc-head .tog { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
+  .acc-body { padding: 0 0 28px; display: grid; gap: 22px; }
+  @media (min-width: 860px) { .acc-body { grid-template-columns: 1.1fr 1fr; gap: 44px; align-items: start; } }
+  .acc-body p { font-size: 15px; color: var(--ink-soft); line-height: 1.55; max-width: 56ch; }
+  .acc-body img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 12px; }
+
+  /* ---------- statement band ---------- */
+  .band { position: relative; border-radius: 16px; overflow: hidden; background: var(--ink); }
+  .band img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; opacity: .55; }
+  .band .in { position: relative; padding: 64px 24px; display: flex; flex-direction: column;
+              align-items: center; gap: 22px; text-align: center; }
+  @media (min-width: 900px) { .band .in { padding: 132px 64px; } }
+  .band h2 { color: #F3EDE5; text-transform: none; font-weight: 300; letter-spacing: -.01em;
+             font-size: 30px; line-height: 1.12; max-width: 22ch; }
+  @media (min-width: 900px) { .band h2 { font-size: 60px; } }
+  .band h2 em { font-family: Newsreader, Georgia, serif; font-style: italic; }
+  .band p { color: #CFC4D6; font-size: 15px; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .chips span { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #F3EDE5;
+                border: 1px solid rgba(243,237,229,.35); border-radius: 999px; padding: 9px 16px; }
+
+  /* ---------- notched card ----------
+     The corner is cut away and the round arrow sits in the gap. */
+  .notch { position: relative; }
+  .notch .go {
+    position: absolute; right: 0; bottom: 0; width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--line-firm); background: var(--paper); color: var(--ink);
+    display: grid; place-items: center; font-size: 17px; cursor: pointer;
+  }
+  .notch .go:hover { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
 
   /* ---------- the wall: her images, minimal, Pinterest-style ---------- */
   .wall-sec { padding-block: 28px 40px; }
@@ -501,80 +569,106 @@
     </div>
   </section>
 
+
+  <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Studio hire<i>&#10022;</i></span><span>Set design<i>&#10022;</i></span><span>Venue hire<i>&#10022;</i></span><span>Custom art<i>&#10022;</i></span><span>Art experiences<i>&#10022;</i></span><span>Greyville, Durban<i>&#10022;</i></span><span>Studio hire<i>&#10022;</i></span><span>Set design<i>&#10022;</i></span><span>Venue hire<i>&#10022;</i></span><span>Custom art<i>&#10022;</i></span><span>Art experiences<i>&#10022;</i></span><span>Greyville, Durban<i>&#10022;</i></span></div></div>
+
   <section id="gallery" class="wall-sec wrap">
-    <div class="sec-head">
-      <p class="eyebrow">The wall</p>
-      <h2>Everything made here.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">The wall</p><h2>Work</h2></div>
+      <p class="lede">Everything made here: the rooms, the sets built for them, and the paintings.</p>
     </div>
     <div class="wall" id="wall"></div>
     <p class="note" style="margin-top:14px">Tap any image to open it.</p>
   </section>
 
-  <hr class="rule">
+
+  <section class="wrap">
+    <div class="band">
+      <img src="assets/img/set-arch-1100.webp" alt="" loading="lazy" decoding="async">
+      <div class="in">
+        <h2>The room you book is the room <em>she built</em>.</h2>
+        <p>Award-winning art business in Greyville, Durban.</p>
+        <div class="chips"><span>Est. 2019</span><span>Five services</span><span>Station Drive precinct</span></div>
+      </div>
+    </div>
+  </section>
 
   <section id="services" class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">What the studio is for</p>
-      <h2>Two things we do better than anyone in Durban.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">What the studio is for</p><h2>Services</h2></div>
+      <p class="lede">Five ways to work with the studio. Open any one of them for the detail.</p>
     </div>
-    <div class="features">
-      <article class="feature">
-        <img src="assets/img/studio-space-600.webp"
-             srcset="assets/img/studio-space-600.webp 600w, assets/img/studio-space-1100.webp 640w"
-             sizes="(min-width: 860px) 46vw, 100vw"
-             width="640" height="800" loading="lazy" decoding="async"
-             alt="The raw studio floor with tall factory windows">
-        <div class="in">
-          <p class="k">01, Book by the session</p>
-          <h3>Photography &amp; video studio hire</h3>
-          <p class="price">R800 <span>/ 2-hour session</span></p>
-          <p class="body">A space designed to be photographed, not a white box. Birthday shoots,
-            campaign video, graduation portraits, podcast sets, backdrops, props and the studio's
-            own built pieces come with the room.</p>
-          <ul class="ticks">
-            <li>Natural light and built set corners</li>
-            <li>Props and backdrops included</li>
-            <li>Extend by the session, subject to the day</li>
-          </ul>
-          <button class="btn gold" data-jump="studio">Check studio availability</button>
+    <div class="acc">
+      <details class="acc-row" open>
+        <summary class="acc-head"><span class="tog">−</span><span class="t">Studio hire</span><span class="amt">R800 &middot; 2-hour session</span></summary>
+        <div class="acc-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p>A space designed to be photographed, not a white box. Birthday shoots, campaign video, graduation portraits, podcast sets. Backdrops, props and the built set corners come with the room.</p>
+            <ul class="ticks"><li>Natural light and built set corners</li><li>Props and backdrops included</li><li>Extend by the session, subject to the day</li></ul>
+            <button class="btn gold" data-jump="studio" style="align-self:flex-start">Check availability</button>
+          </div>
+          <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
         </div>
-      </article>
-      <article class="feature">
-        <img src="assets/img/set-arch-wide-600.webp"
-             srcset="assets/img/set-arch-wide-600.webp 600w, assets/img/set-arch-wide-1100.webp 800w"
-             sizes="(min-width: 860px) 46vw, 100vw"
-             width="800" height="534" loading="lazy" decoding="async"
-             alt="Custom-built niche wall set in warm plaster">
-        <div class="in">
-          <p class="k">02, Built for your shoot</p>
-          <h3>Set design &amp; custom props</h3>
-          <p class="price">Quoted <span>/ per build</span></p>
-          <p class="body">Naledi designs and builds the set: a single hero piece, a full campaign
-            environment, or a stage that has to survive a weekend of guests. Concept, build,
-            install and strike.</p>
-          <ul class="ticks">
-            <li>Concept boards before anything is cut</li>
-            <li>Custom-built props, made in studio</li>
-            <li>Install and strike handled</li>
-          </ul>
-          <button class="btn gold" data-jump="set">Book a design consult</button>
+      </details>
+      <details class="acc-row">
+        <summary class="acc-head"><span class="tog">+</span><span class="t">Set design</span><span class="amt">Quoted &middot; per build</span></summary>
+        <div class="acc-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p>Naledi designs and builds the set: a single hero piece, a full campaign environment, or a stage that has to survive a weekend of guests. Concept, build, install and strike.</p>
+            <ul class="ticks"><li>Concept boards before anything is cut</li><li>Custom-built props, made in studio</li><li>Install and strike handled</li></ul>
+            <button class="btn gold" data-jump="set" style="align-self:flex-start">Check availability</button>
+          </div>
+          <img src="assets/img/set-arch-wide-600.webp" alt="Custom-built niche wall set in warm plaster" loading="lazy" decoding="async">
         </div>
-      </article>
+      </details>
+      <details class="acc-row">
+        <summary class="acc-head"><span class="tog">+</span><span class="t">Venue hire</span><span class="amt">R8 500 &middot; full day</span></summary>
+        <div class="acc-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p>The whole space for launches, celebrations and shoots that need room to move. One booking takes the day.</p>
+            <ul class="ticks"><li>The entire studio, yours for the day</li><li>Styling and set dressing available</li><li>Held 48 hours pending deposit</li></ul>
+            <button class="btn gold" data-jump="venue" style="align-self:flex-start">Check availability</button>
+          </div>
+          <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
+        </div>
+      </details>
+      <details class="acc-row">
+        <summary class="acc-head"><span class="tog">+</span><span class="t">Custom art</span><span class="amt">Commission &middot; prints from R1 500</span></summary>
+        <div class="acc-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p>Original work and limited prints. Commissions start with a conversation about scale, palette and where the work will hang.</p>
+            <ul class="ticks"><li>Originals and limited prints</li><li>Prints ship nationwide</li><li>Viewings in studio by appointment</li></ul>
+            <button class="btn gold" data-jump="art" style="align-self:flex-start">Check availability</button>
+          </div>
+          <img src="assets/img/art-print-2-600.webp" alt="A painting of a woman holding a bouquet against pink" loading="lazy" decoding="async">
+        </div>
+      </details>
+      <details class="acc-row">
+        <summary class="acc-head"><span class="tog">+</span><span class="t">Art experiences</span><span class="amt">Quoted &middot; per group</span></summary>
+        <div class="acc-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p>Paint-and-sip sessions and group workshops in the space. Art experiences for everyday people, on everyday budgets.</p>
+            <ul class="ticks"><li>Groups of six and upwards</li><li>Materials and guidance included</li><li>Birthdays, teams and hen parties</li></ul>
+            <button class="btn gold" data-jump="set" style="align-self:flex-start">Check availability</button>
+          </div>
+          <img src="assets/img/venue-class-600.webp" alt="A paint and sip class at easels in the studio" loading="lazy" decoding="async">
+        </div>
+      </details>
     </div>
   </section>
 
   <section id="finder" class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Not sure what you need?</p>
-      <h2>Three questions.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">Not sure what you need?</p><h2>Start here</h2></div>
+      <p class="lede">Three questions and we will tell you which one to book.</p>
     </div>
     <div class="finder" id="finderCard"></div>
   </section>
 
   <section id="book" class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Booking</p>
-      <h2>Pick a slot. It closes the moment you take it.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">Booking</p><h2>Book</h2></div>
+      <p class="lede">Pick a slot and it closes the moment you take it. Nobody else can request that time.</p>
     </div>
 
     <div class="booker">
@@ -639,9 +733,9 @@
   <hr class="rule">
 
   <section id="more" class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Also at the studio</p>
-      <h2>The rest of what we do.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">Also at the studio</p><h2>More</h2></div>
+      <p class="lede">Prints, commissions and group sessions in the space.</p>
     </div>
     <div class="cards">
       <div class="card">
@@ -707,9 +801,9 @@
   <hr class="rule">
 
   <section id="visit" class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Visit</p>
-      <h2>39 Station Drive, Greyville.</h2>
+    <div class="sec-head split">
+      <div><p class="eyebrow">Visit</p><h2>Visit</h2></div>
+      <p class="lede">39 Station Drive, Greyville. The Station Drive precinct, Durban.</p>
     </div>
     <div class="visit">
       <div>
