@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Studio — Naledi Art</title>
+<title>Studio, Naledi Art</title>
 <link rel="icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,7 +297,7 @@
     }).then(function (out) {
       if (!out) return;
       // An authenticated but non-allowlisted account sees an empty array here,
-      // never an error — that is RLS doing its job.
+      // never an error, that is RLS doing its job.
       rows = Array.isArray(out[0]) ? out[0] : [];
       blocks = Array.isArray(out[1]) ? out[1] : [];
       render();
@@ -318,7 +318,7 @@
       if (view === 'cancelled') return isDead(b);
       if (isDead(b)) return false;
       // "Needs you" is the action queue: requests not yet confirmed, and
-      // only ones still ahead — a pending slot that has already passed is
+      // only ones still ahead, a pending slot that has already passed is
       // history, not a to-do.
       if (view === 'pending') return b.status === 'pending' && k >= t;
       if (view === 'today') return k === t;
@@ -368,7 +368,7 @@
         (pending ? '<span class="pill wait">Awaiting you</span>' : '') +
         (left ? '<span class="pill">' + esc(left) + '</span>' : '') +
         (!pending && !cancelled ? '<span class="pill ok">Confirmed</span>' : '') +
-        '<span class="amt">' + esc(b.amount || '—') + '</span>' +
+        '<span class="amt">' + esc(b.amount || ', ') + '</span>' +
       '</div>' +
       '<div class="svc">' + esc(b.service_name) + '</div>' +
       '<div class="who">' + esc(b.name) + '</div>' +
@@ -406,7 +406,7 @@
         // Reinstating a lapsed or cancelled booking fails when the time has
         // since been taken. Say so rather than appearing to do nothing.
         say(t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0
-          ? 'That time has been taken by someone else since — this booking cannot be reinstated.'
+          ? 'That time has been taken by someone else since, this booking cannot be reinstated.'
           : 'That did not save. Try again.');
         return load();
       });
@@ -433,7 +433,7 @@
     var r = e.target.closest('[data-restore]');
     if (r) {
       r.disabled = true; r.textContent = 'Restoring…';
-      // May fail if the slot was taken in the meantime — reload tells the truth.
+      // May fail if the slot was taken in the meantime, reload tells the truth.
       patch(r.getAttribute('data-restore'), { status: 'confirmed' });
       return;
     }

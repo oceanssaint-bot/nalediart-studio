@@ -1,4 +1,4 @@
-// Builds site/review/index.html — one page where Naledi can see the brand
+// Builds site/review/index.html, one page where Naledi can see the brand
 // presentation and the live website side by side.
 //
 //   node site/review/build.js
@@ -66,7 +66,7 @@ const page = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Naledi Art Studio — brand &amp; website</title>
+<title>Naledi Art Studio, brand &amp; website</title>
 <link rel="icon" href="../assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102,7 +102,10 @@ const page = `<!doctype html>
   @media (max-width:640px) { main { padding:10px; } }
 
   /* ---- presentation ---- */
-  .deck { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+  /* Sized by the HEIGHT that is actually free, not just the width. A 16:9
+     slide sized to a wide window is 1080px tall and runs off the bottom. */
+  .deck { position:relative; width:min(100%, calc((100vh - 240px) * 16 / 9));
+          aspect-ratio:16/9; margin-inline:auto; overflow:hidden;
           border-radius:14px; border:1px solid var(--line); background:var(--dark); }
   .stage { position:absolute; top:0; left:0; width:1920px; height:1080px; transform-origin:top left; }
   .slide { position:absolute; top:0; left:0; width:1920px; height:1080px; display:none; }
@@ -163,7 +166,7 @@ ${slides.map(function (s, i) {
       <button class="nb" id="fs">Fullscreen</button>
       <div class="dots" id="dots"></div>
     </div>
-    <p class="hint" style="text-align:left;margin-top:10px">Arrow keys, or swipe. On a phone the slides are small — turn it sideways, go fullscreen, or pinch to zoom.</p>
+    <p class="hint" style="text-align:left;margin-top:10px">Arrow keys, or swipe. On a phone the slides are small, turn it sideways, go fullscreen, or pinch to zoom.</p>
   </section>
 
   <section id="p-site" role="tabpanel" aria-labelledby="t-site" hidden>
@@ -175,7 +178,7 @@ ${slides.map(function (s, i) {
       <div class="frame" id="frame">
         <iframe id="siteFrame" title="Naledi Art Studio website" loading="lazy" src="about:blank"></iframe>
       </div>
-      <p class="hint">This is the live site. Booking works in here — it is the real thing, not a picture.</p>
+      <p class="hint">This is the live site. Booking works in here, it is the real thing, not a picture.</p>
     </div>
   </section>
 </main>
@@ -280,5 +283,5 @@ ${slides.map(function (s, i) {
 `;
 
 fs.writeFileSync(path.join(__dirname, 'index.html'), page);
-console.log('site/review/index.html built — ' + slides.length + ' slides, ' +
+console.log('site/review/index.html built, ' + slides.length + ' slides, ' +
   (page.length / 1024).toFixed(0) + ' KB, speaker notes stripped');

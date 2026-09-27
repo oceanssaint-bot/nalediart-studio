@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Naledi Art Studio — brand &amp; website</title>
+<title>Naledi Art Studio, brand &amp; website</title>
 <link rel="icon" href="../assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,10 @@
   @media (max-width:640px) { main { padding:10px; } }
 
   /* ---- presentation ---- */
-  .deck { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+  /* Sized by the HEIGHT that is actually free, not just the width. A 16:9
+     slide sized to a wide window is 1080px tall and runs off the bottom. */
+  .deck { position:relative; width:min(100%, calc((100vh - 240px) * 16 / 9));
+          aspect-ratio:16/9; margin-inline:auto; overflow:hidden;
           border-radius:14px; border:1px solid var(--line); background:var(--dark); }
   .stage { position:absolute; top:0; left:0; width:1920px; height:1080px; transform-origin:top left; }
   .slide { position:absolute; top:0; left:0; width:1920px; height:1080px; display:none; }
@@ -94,7 +97,7 @@
           <p style="font-size:24px; letter-spacing:5px; color:#E2B155; text-transform:uppercase">Durban &middot; Est. 2019</p>
           <h1 style="font-size:108px; font-weight:400; line-height:1.02; color:#F3EDE5">Naledi Art Studio</h1>
           <hr style="width:160px; border-top:3px solid #E2B155">
-          <p style="font-family:'Newsreader', Georgia, serif; font-size:40px; font-style:italic; font-weight:300; color:#AFA3B9">Brand identity — from the file you sent me to a finished suite</p>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:40px; font-style:italic; font-weight:300; color:#AFA3B9">Brand identity, from the file you sent me to a finished suite</p>
           </div>
           <img src="img/submark.webp" alt="Naledi Art Studio submark: a portrait crowned with sunflowers inside a ring" style="width:520px; height:520px; object-fit:contain">
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#7C7088">Prepared for Naledi Zondi</p>
@@ -138,7 +141,7 @@
           <div style="flex:1; display:flex; flex-direction:column; gap:30px">
           <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">The studio</p>
           <h2 style="font-size:60px; font-weight:400; line-height:1.1; color:#F3EDE5">Art experiences for everyday people.</h2>
-          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#AFA3B9; line-height:1.45">&ldquo;I aim to inspire creativity and offer art experiences for everyday people with everyday budgets. Whether it is a birthday shoot, campaign video, graduation party or podcast set &mdash; we do it all.&rdquo;</p>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#AFA3B9; line-height:1.45">&ldquo;I aim to inspire creativity and offer art experiences for everyday people with everyday budgets. Whether it is a birthday shoot, campaign video, graduation party or podcast set, we do it all.&rdquo;</p>
           <p style="font-size:24px; color:#7C7088">Naledi Zondi, in her own words</p>
           </div>
           <div style="width:700px; display:flex; flex-direction:column; gap:18px">
@@ -148,7 +151,7 @@
           </div>
           <div style="background:#1E1828; border-radius:14px; padding:32px; display:flex; flex-direction:column; gap:8px">
           <h3 style="font-size:28px; font-weight:500; color:#E2B155">Where</h3>
-          <p style="font-size:24px; color:#AFA3B9; line-height:1.45">39 Station Drive, Greyville &mdash; the Station Drive precinct, the makers quarter of Durban. Established 2019.</p>
+          <p style="font-size:24px; color:#AFA3B9; line-height:1.45">39 Station Drive, Greyville, the Station Drive precinct, the makers quarter of Durban. Established 2019.</p>
           </div>
           <div style="background:#1E1828; border-radius:14px; padding:32px; display:flex; flex-direction:column; gap:8px">
           <h3 style="font-size:28px; font-weight:500; color:#E2B155">Who it is for</h3>
@@ -163,7 +166,7 @@
           <p style="font-size:24px; letter-spacing:4px; color:#8A6010; text-transform:uppercase">Voice &middot; proposed</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1">Warm, plain, never precious.</h2>
           </div>
-          <p style="font-size:28px; color:#6A5F74; line-height:1.5; max-width:88ch">Drawn from how you already write. You say &ldquo;we do it all&rdquo; and &ldquo;everyday budgets&rdquo; &mdash; welcoming, unfussy, confident without posturing. Keep that. The work is the impressive part; the words do not need to be.</p>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5; max-width:88ch">Drawn from how you already write. You say &ldquo;we do it all&rdquo; and &ldquo;everyday budgets&rdquo; welcoming, unfussy, confident without posturing. Keep that. The work is the impressive part; the words do not need to be.</p>
           <div style="display:flex; flex-direction:row; gap:24px">
           <div style="flex:1; display:flex; flex-direction:column; gap:18px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:40px">
           <h3 style="font-size:30px; font-weight:500; color:#44623E">Sounds like us</h3>
@@ -198,7 +201,7 @@
           <tr><td>Share of the canvas actually drawn on</td><td style="text-align:right">18%</td></tr>
           <tr><td>Height of the entire wordmark</td><td style="text-align:right">17 px</td></tr>
           </table>
-          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4">Seventeen pixels for two lines of type. At that size the letters are not letters any more — they are grey pixels that happen to sit in a row.</p>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4">Seventeen pixels for two lines of type. At that size the letters are not letters any more, they are grey pixels that happen to sit in a row.</p>
           </div>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
           
@@ -234,7 +237,7 @@
         <div class="slide" data-i="6">
           <section id="digitise" data-transition="magic" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
           <div style="display:flex; flex-direction:column; gap:16px">
-          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step one — digitising</p>
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step one, digitising</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1">Redrawn as shapes, not pixels.</h2>
           </div>
           <div style="display:flex; flex-direction:row; gap:48px; align-items:flex-start">
@@ -246,7 +249,7 @@
           <div style="flex:1; display:flex; flex-direction:column; gap:16px">
           <img loading="lazy" src="img/after-art.webp" alt="The finished vector artwork, crisp and fully saturated" style="width:100%; height:420px; object-fit:contain; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:12px">
           <p style="font-size:28px; font-weight:500; color:#7E570D">After &middot; 3,569 drawn shapes</p>
-          <p style="font-size:24px; color:#6A5F74; line-height:1.4">Every brushstroke is now an outline with its own colour. It has no resolution — it is sharp at any size.</p>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.4">Every brushstroke is now an outline with its own colour. It has no resolution, it is sharp at any size.</p>
           </div>
           </div>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
@@ -266,7 +269,7 @@
           </div>
           </div>
           <div style="flex:1; display:flex; flex-direction:column; gap:28px">
-          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step two — repainting</p>
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step two, repainting</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1">The same corner of the crown.</h2>
           <ul style="font-size:28px; color:#6A5F74; line-height:1.5">
           <li><b style="color:#241C2C">The halo is gone.</b> The grey fringe around the hair was painted out, edge by edge.</li>
@@ -342,7 +345,7 @@
           <p style="font-size:24px; color:#6A5F74">#26282B</p>
           </div>
           </div>
-          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4; width:1300px">Each one is the median of thousands of pixels of that hue in your own artwork — so the brand colours and the painting can never drift apart. These are the sampled values. The next page turns them into the working system, where the near-black is warmed slightly to <b style="font-style:normal">Ink #241C2C</b> so it carries the plum of the painting.</p>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4; width:1300px">Each one is the median of thousands of pixels of that hue in your own artwork, so the brand colours and the painting can never drift apart. These are the sampled values. The next page turns them into the working system, where the near-black is warmed slightly to <b style="font-style:normal">Ink #241C2C</b> so it carries the plum of the painting.</p>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
           
           </section>
@@ -365,7 +368,7 @@
           <tr><td>Leaf</td><td>#44623E</td><td>68 98 62</td><td>31 0 37 62</td><td>Supporting</td></tr>
           <tr><td>Skin</td><td>#AA6B3C</td><td>170 107 60</td><td>0 37 65 33</td><td>Supporting</td></tr>
           </table>
-          <p style="font-size:24px; color:#6A5F74; line-height:1.45; max-width:92ch">CMYK is a straight conversion, not a press profile. Ask your printer to proof it on the actual stock before a long run &mdash; the golds are the ones that shift.</p>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45; max-width:92ch">CMYK is a straight conversion, not a press profile. Ask your printer to proof it on the actual stock before a long run, the golds are the ones that shift.</p>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand guidelines</p>
           </section>
         </div>
@@ -420,7 +423,7 @@
           </div>
           <div style="width:620px; display:flex; flex-direction:column; gap:28px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:56px">
           <p style="font-size:24px; letter-spacing:4px; color:#9A8FA3; text-transform:uppercase">Note on licensing</p>
-          <p style="font-size:28px; color:#241C2C; line-height:1.5">Gotham Narrow is a commercial typeface from Hoefler &amp; Co. The letters in your files are outlines, not fonts — they need no licence to open or print.</p>
+          <p style="font-size:28px; color:#241C2C; line-height:1.5">Gotham Narrow is a commercial typeface from Hoefler &amp; Co. The letters in your files are outlines, not fonts, they need no licence to open or print.</p>
           <p style="font-size:28px; color:#6A5F74; line-height:1.5">Using the typeface itself in future work does need a licence. Most desktop licences permit logo use. Century Gothic is the fallback if you would rather avoid the question entirely.</p>
           </div>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
@@ -449,7 +452,7 @@
           </table>
           <div style="background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:34px; display:flex; flex-direction:column; gap:12px">
           <h3 style="font-size:28px; font-weight:500">Rules that hold it together</h3>
-          <p style="font-size:23px; color:#6A5F74; line-height:1.45">Emphasise with weight, italic or colour &mdash; never by inventing a sixth size. Labels are uppercase with generous letter-spacing; nothing else is uppercase. Body text stops at about 70 characters a line.</p>
+          <p style="font-size:23px; color:#6A5F74; line-height:1.45">Emphasise with weight, italic or colour, never by inventing a sixth size. Labels are uppercase with generous letter-spacing; nothing else is uppercase. Body text stops at about 70 characters a line.</p>
           </div>
           <div style="background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:34px; display:flex; flex-direction:column; gap:12px">
           <h3 style="font-size:28px; font-weight:500">On screen</h3>
@@ -465,7 +468,7 @@
           <div style="background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:72px; display:flex; align-items:center; justify-content:center">
           <img loading="lazy" src="img/primary.webp" alt="The primary logo: NALEDI ART STUDIO set in two lines with a vertical rule for the letter I and the portrait forming the O" style="width:100%; height:300px; object-fit:contain">
           </div>
-          <p style="font-size:28px; color:#6A5F74; line-height:1.5">The device is your own: the vertical rule standing in for the I, and the portrait sitting in the O. The whole artwork fits inside that O — it is not a tight crop.</p>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">The device is your own: the vertical rule standing in for the I, and the portrait sitting in the O. The whole artwork fits inside that O, it is not a tight crop.</p>
           </div>
           <div style="width:680px; display:flex; flex-direction:column; gap:28px">
           <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">The primary mark</p>
@@ -478,7 +481,7 @@
           <tr><td>Rule, continuous through both lines</td><td style="text-align:right">0.077 cap</td></tr>
           <tr><td>The O, ring at 9.5% of cap</td><td style="text-align:right">0.095 cap</td></tr>
           </table>
-          <p style="font-size:26px; color:#6A5F74; line-height:1.45">Everything is expressed in cap heights rather than pixels, so the mark rebuilds exactly at any size — a business card and a building sign are the same drawing.</p>
+          <p style="font-size:26px; color:#6A5F74; line-height:1.45">Everything is expressed in cap heights rather than pixels, so the mark rebuilds exactly at any size, a business card and a building sign are the same drawing.</p>
           </div>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
           
@@ -489,7 +492,7 @@
           <div style="width:660px; display:flex; flex-direction:column; gap:28px">
           <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">The classic lockup</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1">The painting's own layout, kept.</h2>
-          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Artwork above, NALEDI ART and EST. 2019 below — the arrangement you painted. I measured it off the original canvas rather than re-inventing it.</p>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Artwork above, NALEDI ART and EST. 2019 below, the arrangement you painted. I measured it off the original canvas rather than re-inventing it.</p>
           <table style="font-family:'Jost', sans-serif; font-size:26px; color:#241C2C">
           <tr><th style="width:62%; text-align:left; font-weight:500">Taken from the painting</th><th style="width:38%; text-align:right; font-weight:500">Value</th></tr>
           <tr><td>Cap height, as a share of artwork width</td><td style="text-align:right">0.2016</td></tr>
@@ -542,7 +545,7 @@
               <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:36px; background:#ffffff; border:1px solid #e6dcd2; border-radius:16px">
                 <img loading="lazy" src="img/horizontal.webp" alt="The horizontal lockup" style="width:347px; height:145px; flex:0 0 auto; object-fit:contain">
                 <h3 style="font-family:Jost, sans-serif; font-size:32px; font-weight:500; color:#241c2c">Horizontal</h3>
-                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">Letterhead, email footer, a wide banner — wherever height is short and width is not.</p>
+                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">Letterhead, email footer, a wide banner, wherever height is short and width is not.</p>
               </div>
             </div>
             <p style="position:absolute; bottom:64px; left:128px; font-family:Jost, sans-serif; font-size:24px; color:#9a8fa3">Naledi Art Studio · Brand identity</p>
@@ -610,7 +613,7 @@
           <div style="flex:1; display:flex; flex-direction:column; gap:28px">
           <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Clear space</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1">Give it one cap height, all round.</h2>
-          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Measure the height of a capital N in the mark. Keep that much empty on every side — no type, no photograph edge, no border. For the round marks, keep a quarter of the ring's diameter.</p>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Measure the height of a capital N in the mark. Keep that much empty on every side, no type, no photograph edge, no border. For the round marks, keep a quarter of the ring's diameter.</p>
           <div style="background:#FFFFFF; border:1px dashed #D2C5B8; border-radius:16px; padding:48px; display:flex; align-items:center; justify-content:center">
           <img loading="lazy" src="img/primary.webp" alt="The primary logo shown inside its clear-space boundary" style="width:100%; height:190px; object-fit:contain">
           </div>
@@ -625,7 +628,7 @@
           <tr><td>Badge</td><td style="text-align:right">64 px</td><td style="text-align:right">18 mm</td></tr>
           <tr><td>Submark</td><td style="text-align:right">32 px</td><td style="text-align:right">10 mm</td></tr>
           </table>
-          <p style="font-size:26px; color:#6A5F74; line-height:1.45">The artwork carries a lot of fine detail. Under these sizes the sunflowers stop reading as sunflowers and turn to noise — that is when to switch to the submark or the plain-ring wordmark.</p>
+          <p style="font-size:26px; color:#6A5F74; line-height:1.45">The artwork carries a lot of fine detail. Under these sizes the sunflowers stop reading as sunflowers and turn to noise, that is when to switch to the submark or the plain-ring wordmark.</p>
           </div>
           <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
           
@@ -643,9 +646,9 @@
           <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">Backgrounds</p>
           <h2 style="font-size:64px; font-weight:400; line-height:1.1; color:#F3EDE5">Where it sits happily.</h2>
           <ul style="font-size:28px; color:#AFA3B9; line-height:1.6">
-          <li><b style="color:#F3EDE5">Cream, white, pale warm greys</b> &mdash; use the standard ink set.</li>
-          <li><b style="color:#F3EDE5">Deep plum, charcoal, black</b> &mdash; use the reversed cream set.</li>
-          <li><b style="color:#F3EDE5">Photographs</b> &mdash; only over a quiet area, and only the reversed set. Never across a face or a busy pattern.</li>
+          <li><b style="color:#F3EDE5">Cream, white, pale warm greys</b>: use the standard ink set.</li>
+          <li><b style="color:#F3EDE5">Deep plum, charcoal, black</b>: use the reversed cream set.</li>
+          <li><b style="color:#F3EDE5">Photographs</b>: only over a quiet area, and only the reversed set. Never across a face or a busy pattern.</li>
           </ul>
           <div style="background:#241C2C; border-left:4px solid #E2B155; border-radius:8px; padding:36px; display:flex; flex-direction:column; gap:12px">
           <h3 style="font-size:32px; font-weight:500; color:#E2B155">The one real trap</h3>
@@ -748,7 +751,7 @@
           <tr><td>Stickers and packaging</td><td>Oval badge on Paper</td></tr>
           <tr><td>Post with a photograph</td><td>Reversed mark, bottom left</td></tr>
           </table>
-          <p style="font-size:23px; color:#6A5F74; line-height:1.45">The submark exists because the full logo is unreadable at 32px. On a profile circle, use it &mdash; the name is already printed beside it.</p>
+          <p style="font-size:23px; color:#6A5F74; line-height:1.45">The submark exists because the full logo is unreadable at 32px. On a profile circle, use it, the name is already printed beside it.</p>
           <div style="background:#FFFFFF; border:1px solid #E6DCD2; border-radius:14px; padding:26px; display:flex; flex-direction:column; gap:6px">
           <p style="font-size:20px; letter-spacing:3px; color:#9A8FA3; text-transform:uppercase">The handle</p>
           <p style="font-size:30px; font-weight:500; color:#241C2C">@nalediart_studio</p>
@@ -833,7 +836,7 @@
       <button class="nb" id="fs">Fullscreen</button>
       <div class="dots" id="dots"></div>
     </div>
-    <p class="hint" style="text-align:left;margin-top:10px">Arrow keys, or swipe. On a phone the slides are small — turn it sideways, go fullscreen, or pinch to zoom.</p>
+    <p class="hint" style="text-align:left;margin-top:10px">Arrow keys, or swipe. On a phone the slides are small, turn it sideways, go fullscreen, or pinch to zoom.</p>
   </section>
 
   <section id="p-site" role="tabpanel" aria-labelledby="t-site" hidden>
@@ -845,7 +848,7 @@
       <div class="frame" id="frame">
         <iframe id="siteFrame" title="Naledi Art Studio website" loading="lazy" src="about:blank"></iframe>
       </div>
-      <p class="hint">This is the live site. Booking works in here — it is the real thing, not a picture.</p>
+      <p class="hint">This is the live site. Booking works in here, it is the real thing, not a picture.</p>
     </div>
   </section>
 </main>

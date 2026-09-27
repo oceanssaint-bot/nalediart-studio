@@ -214,7 +214,7 @@
                  animation: drift 64s linear infinite; }
   .river:hover .river-track, .river:focus-within .river-track { animation-play-state: paused; }
   @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  /* figure carries a default margin of 1em 40px — reset it, or every tile is
+  /* figure carries a default margin of 1em 40px, reset it, or every tile is
      80px wider than it looks and the seam maths is wrong. */
   .river-item { flex: none; width: 260px; margin: 0 14px 0 0; }
   @media (min-width: 900px) { .river-item { width: 360px; } }
@@ -525,11 +525,11 @@
              width="640" height="800" loading="lazy" decoding="async"
              alt="The raw studio floor with tall factory windows">
         <div class="in">
-          <p class="k">01 — Book by the session</p>
+          <p class="k">01, Book by the session</p>
           <h3>Photography &amp; video studio hire</h3>
           <p class="price">R800 <span>/ 2-hour session</span></p>
           <p class="body">A space designed to be photographed, not a white box. Birthday shoots,
-            campaign video, graduation portraits, podcast sets — backdrops, props and the studio's
+            campaign video, graduation portraits, podcast sets, backdrops, props and the studio's
             own built pieces come with the room.</p>
           <ul class="ticks">
             <li>Natural light and built set corners</li>
@@ -546,7 +546,7 @@
              width="800" height="534" loading="lazy" decoding="async"
              alt="Custom-built niche wall set in warm plaster">
         <div class="in">
-          <p class="k">02 — Built for your shoot</p>
+          <p class="k">02, Built for your shoot</p>
           <h3>Set design &amp; custom props</h3>
           <p class="price">Quoted <span>/ per build</span></p>
           <p class="body">Naledi designs and builds the set: a single hero piece, a full campaign
@@ -593,12 +593,12 @@
 
           <h3 style="margin-top:24px">2 · Date</h3>
           <div class="cal-head">
-            <span class="mo" id="moLabel">—</span>
+            <span class="mo" id="moLabel">, </span>
             <span class="nav-b"><button id="prevMo" aria-label="Previous month">‹</button><button id="nextMo" aria-label="Next month">›</button></span>
           </div>
           <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
           <div class="grid-d" id="grid"></div>
-          <div class="legend"><span><i></i>Open</span><span id="legendNote">Faded — closed or fully booked</span></div>
+          <div class="legend"><span><i></i>Open</span><span id="legendNote">Faded, closed or fully booked</span></div>
         </div>
 
         <div class="pane">
@@ -608,7 +608,7 @@
 
           <h3 style="margin-top:24px">4 · Your details</h3>
           <div class="summary" id="sumBox" hidden>
-            <dl><dt>Service</dt><dd id="sumSvc">—</dd><dt>When</dt><dd id="sumWhen">—</dd><dt>Amount</dt><dd id="sumAmt">—</dd></dl>
+            <dl><dt>Service</dt><dd id="sumSvc">, </dd><dt>When</dt><dd id="sumWhen">, </dd><dt>Amount</dt><dd id="sumAmt">, </dd></dl>
           </div>
           <div class="field"><label for="fName">Name</label><input id="fName" autocomplete="name" enterkeyhint="next" placeholder="Who is the booking for?"></div>
           <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
@@ -670,7 +670,7 @@
         <div class="in">
           <h3>Art experiences</h3>
           <p class="price">Quoted <span>/ per group</span></p>
-          <p>Paint-and-sip sessions and group workshops in the space — art experiences for everyday people, on everyday budgets.</p>
+          <p>Paint-and-sip sessions and group workshops in the space, art experiences for everyday people, on everyday budgets.</p>
           <button class="btn ghost sm" data-jump="set">Talk it through</button>
         </div>
       </div>
@@ -687,7 +687,7 @@
         <p class="eyebrow" style="margin-bottom:16px">About</p>
         <blockquote>“I aim to inspire creativity and offer art experiences for everyday people
           with everyday budgets. Whether it's a birthday shoot, campaign video, graduation party
-          or podcast set — we do it all.”</blockquote>
+          or podcast set, we do it all.”</blockquote>
         <p class="sig"><b>Naledi Zondi</b>Visual artist, creative director &amp; director</p>
         <p class="lede" style="margin-top:20px;font-size:16px">An award-winning art entrepreneur who
           has intertwined visual art, marketing and set design into one studio. The room you book is
@@ -730,7 +730,7 @@
       </div>
       <div>
         <h3>Getting here</h3>
-        <p style="font-size:15px;color:var(--ink-soft)">Station Drive precinct, Greyville — Durban's makers' quarter.</p>
+        <p style="font-size:15px;color:var(--ink-soft)">Station Drive precinct, Greyville, Durban's makers' quarter.</p>
         <a class="btn ghost sm" style="margin-top:12px" target="_blank" rel="noopener"
            href="https://www.google.com/maps/search/?api=1&amp;query=39%20Station%20Drive%2C%20Greyville%2C%20Durban">Get directions</a>
       </div>
@@ -765,8 +765,7 @@
   // WhatsApp, which holds nothing.
   //
   // The anon key is a PUBLISHABLE key. It is designed to ship in the page;
-  // Row Level Security in schema.sql is what actually protects the data —
-  // customers may create a booking and read only the occupied time ranges,
+  // Row Level Security in schema.sql is what actually protects the data, // customers may create a booking and read only the occupied time ranges,
   // never anyone's name, phone or email.
   // ---------------------------------------------------------------------
   window.NALEDI_SUPABASE = {
@@ -780,7 +779,7 @@
   "use strict";
 
   /* ---------------- studio facts ---------------- */
-  // Durban is UTC+2 all year — no daylight saving, so one constant is correct.
+  // Durban is UTC+2 all year, no daylight saving, so one constant is correct.
   var SAST = 120;
   // Opening hours in minutes from midnight, keyed by JS day number. Mon & Fri absent = closed.
   var HOURS = { 0: [540, 900], 2: [540, 1080], 3: [540, 1080], 4: [540, 1080], 6: [600, 1080] };
@@ -918,7 +917,7 @@
       return { svc: 'art', why: 'Commissions and prints start with a conversation about scale, palette and where the work will hang.' };
     // A build has to be priced before a date means anything, so it wins.
     if (a.set === 'yes')
-      return { svc: 'set', why: 'A build gets scoped first — concept and quote — and the shoot or event goes in the diary once that is agreed.' };
+      return { svc: 'set', why: 'A build gets scoped first, concept and quote, and the shoot or event goes in the diary once that is agreed.' };
     if (a.making === 'event')
       return { svc: 'venue', why: 'An event takes the whole space, so the day is booked to you rather than the hour.' };
     if (a.people === 'big')
@@ -986,7 +985,7 @@
   function loadLocal() { state.bookings = lsGet(LS_KEY); state.blocks = lsGet(LS_BLOCK); }
 
   /* ---------------- Supabase (the public site's shared store) -------------
-     Plain PostgREST over fetch — no SDK, so nothing extra to load and no
+     Plain PostgREST over fetch, no SDK, so nothing extra to load and no
      CDN to depend on. The `availability` view returns occupied ranges only;
      the bookings table itself is unreadable with the anon key. */
   var SB = null;
@@ -1183,15 +1182,15 @@
     }
     var step = ready ? 4 : (state.date ? 3 : 2);
     ['s1','s2','s3','s4'].forEach(function (id, i) { $(id).classList.toggle('on', i < step); });
-    $('hd-title').textContent = ready ? 'Almost there — your details' : 'Choose a service and a date';
+    $('hd-title').textContent = ready ? 'Almost there, your details' : 'Choose a service and a date';
     $('confirm').disabled = !ready || state.busy || !state.canWrite;
     $('confirm').textContent = state.busy ? 'Holding the slot…'
       : (!state.canWrite ? 'Booking unavailable here'
       : (state.shared ? 'Confirm booking' : 'Request this slot'));
     var lg = $('legendNote');
     if (lg) lg.textContent = state.shared
-      ? 'Faded — closed or fully booked'
-      : 'Faded — the studio is closed';
+      ? 'Faded, closed or fully booked'
+      : 'Faded, the studio is closed';
   }
 
   function renderPanel() {
@@ -1227,7 +1226,7 @@
   function stamp(dt) { return dt.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
   function gcalLink(bk) {
     return 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-      '&text=' + encodeURIComponent(bk.serviceName + ' — Naledi Art Studio') +
+      '&text=' + encodeURIComponent(bk.serviceName + ', Naledi Art Studio') +
       '&dates=' + stamp(toUTC(bk.date, bk.start)) + '/' + stamp(toUTC(bk.date, bk.end)) +
       '&location=' + encodeURIComponent(ADDRESS) +
       '&details=' + encodeURIComponent('Booking ' + bk.ref + '\nNaledi Art Studio, Durban\n065 838 1532');
@@ -1236,7 +1235,7 @@
     return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naledi Art Studio//Booking//EN','CALSCALE:GREGORIAN',
       'BEGIN:VEVENT','UID:' + bk.ref + '@nalediart','DTSTAMP:' + stamp(new Date()),
       'DTSTART:' + stamp(toUTC(bk.date, bk.start)), 'DTEND:' + stamp(toUTC(bk.date, bk.end)),
-      'SUMMARY:' + bk.serviceName + ' — Naledi Art Studio', 'LOCATION:' + ADDRESS,
+      'SUMMARY:' + bk.serviceName + ', Naledi Art Studio', 'LOCATION:' + ADDRESS,
       'DESCRIPTION:Booking ' + bk.ref + '. Naledi Art Studio\\, Durban. 065 838 1532.',
       'END:VEVENT','END:VCALENDAR'].join('\r\n');
   }
@@ -1282,9 +1281,9 @@
           // 23P01 is the exclusion-constraint violation: the slot is genuinely
           // gone, so keep them on the form to pick another time. PostgREST
           // reports it as 400 with the code in the body, not as 409, so match
-          // on the body — the status alone would miss it.
+          // on the body, the status alone would miss it.
           if (t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0 || r.status === 409) {
-            fail('Someone just took that slot. Pick another time — the calendar has refreshed.');
+            fail('Someone just took that slot. Pick another time, the calendar has refreshed.');
             sbRefresh();
             return;
           }
@@ -1315,7 +1314,7 @@
     }).then(function () { state.busy = false; done(bk); })
       .catch(function (e) {
         state.busy = false;
-        if (e && e.taken) fail('Someone just took that slot. Pick another time — the calendar has refreshed.');
+        if (e && e.taken) fail('Someone just took that slot. Pick another time, the calendar has refreshed.');
         else if (e && e.code === 'invalid_argument') { state.canWrite = false; fail('This view cannot save bookings. Call the studio on 065 838 1532.'); }
         else fail('That did not save. Try again, or call 065 838 1532.');
         render();
@@ -1356,7 +1355,7 @@
           ? '<p class="note" style="margin-top:14px;max-width:44ch;margin-inline:auto">' +
             'Nobody else can take this time. Naledi will confirm with you shortly.</p>'
           : '<p class="note" style="margin-top:14px;max-width:44ch;margin-inline:auto">' +
-            'Send this to Naledi to hold the slot — it is not reserved until she confirms.</p>') +
+            'Send this to Naledi to hold the slot, it is not reserved until she confirms.</p>') +
         '<div class="done-cta">' +
           (held
             ? '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to Google Calendar</a>'
@@ -1370,7 +1369,7 @@
         '<p class="note" style="margin-top:14px">' +
           (held ? 'The studio will call to confirm. ' : 'Prefer to call? ') + 'Naledi: 065 838 1532</p>' +
       '</div>';
-    $('hd-title').textContent = held ? 'Booked' : 'Almost — send it to Naledi';
+    $('hd-title').textContent = held ? 'Booked' : 'Almost, send it to Naledi';
     $('hd-sub').textContent = 'Reference ' + bk.ref;
     ['s1','s2','s3','s4'].forEach(function (id) { $(id).classList.add('on'); });
     $('againBtn').addEventListener('click', function () { location.reload(); });
@@ -1433,7 +1432,7 @@
   });
 
   // Netlify injects a fixed badge in the bottom-right corner that lands
-  // exactly on top of the dock's Book button — on a 375px screen it covers
+  // exactly on top of the dock's Book button, on a 375px screen it covers
   // it completely. The iframe is cross-origin so it cannot be restyled;
   // instead lift the dock clear of it. Absent (GitHub Pages, local), nothing
   // changes. The badge loads after us, so poll briefly for it.
@@ -1462,7 +1461,7 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     if ((reduce && reduce.matches) || !('IntersectionObserver' in window)) return;
 
-    // A hidden page — opened in a background tab, or minimised — paints no
+    // A hidden page, opened in a background tab, or minimised, paints no
     // frames, so neither requestAnimationFrame nor a CSS transition can run.
     // Hiding things there would leave the page blank until it was looked at.
     // So nothing is hidden until the page is actually visible.
@@ -1513,7 +1512,7 @@
 
     var sel = '.sec-head, .feature, .card, .booker, .finder, .about, #visit .visit > div, .hero-shot, .tile';
     var items = Array.prototype.slice.call(document.querySelectorAll(sel));
-    // Anything already on screen at load stays put — no reveal for content
+    // Anything already on screen at load stays put, no reveal for content
     // the visitor is looking at before they have scrolled at all.
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
