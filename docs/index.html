@@ -455,6 +455,35 @@
   .fresult .ra { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   @media (min-width: 560px) { .fresult .ra { flex-direction: row; align-items: center; } }
 
+  /* ---------- mosaic with bitten corners ----------
+     The round button sits in a paper-coloured disc over the card corner, so
+     the corner reads as bitten out. Same effect as the reference, without
+     needing a mask. */
+  .mosaic { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 700px) { .mosaic { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .mosaic { grid-template-columns: repeat(3, 1fr); } }
+  .mcard { position: relative; display: flex; min-height: 300px; }
+  @media (min-width: 1100px) { .mcard { min-height: 340px; } }
+  .mcard .art { flex: 1; border-radius: 18px; overflow: hidden; display: flex; }
+  .mcard.dark .art { background: var(--ink); color: var(--paper); padding: 40px;
+                     flex-direction: column; align-items: center; justify-content: center;
+                     text-align: center; gap: 10px; }
+  .mcard.dark .art h3 { font-size: 26px; font-weight: 300; text-transform: uppercase; letter-spacing: .06em; }
+  .mcard.dark .art p { font-size: 14px; color: #BCB0C6; }
+  .mcard.photo .art img { width: 100%; height: 100%; object-fit: cover; }
+  .mcard.note .art { background: transparent; border: 1px solid var(--line); padding: 34px;
+                     flex-direction: column; align-items: center; justify-content: center;
+                     text-align: center; gap: 12px; }
+  .mcard.note p { font-size: 14px; color: var(--ink-soft); line-height: 1.45; }
+  .mcard.note .star { color: var(--gold); font-size: 12px; }
+  .mcard .bite { position: absolute; right: -4px; bottom: -4px; width: 68px; height: 68px;
+                 border-radius: 50%; background: var(--paper); display: grid; place-items: center; }
+  .mcard .go { width: var(--tap); height: var(--tap); border-radius: 50%; cursor: pointer;
+               border: 1px solid var(--line-firm); background: transparent; color: var(--ink);
+               font-size: 16px; touch-action: manipulation; }
+  .mcard .go:hover { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
+  @media (min-width: 700px) { .mcard.wide { grid-column: span 2; } }
+
   /* ---------- booking ---------- */
   #book { scroll-margin-top: 72px; }
   .booker { background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
@@ -489,11 +518,16 @@
                   border: 1px solid var(--line); background: transparent; color: var(--ink); line-height: 1;
                   touch-action: manipulation; }
   .nav-b button[disabled] { opacity: .3; cursor: not-allowed; }
-  .dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 5px; }
-  .dow span { text-align: center; font-size: 11px; color: var(--ink-faint); letter-spacing: .06em; }
-  .grid-d { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .day { aspect-ratio: 1; min-height: 40px; border: 1px solid transparent; background: transparent;
-         color: var(--ink); font: inherit; font-size: 15px; border-radius: 10px; cursor: pointer;
+  .dow { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--ink);
+         border-radius: 10px 10px 0 0; padding: 13px 0; }
+  .dow span { text-align: center; font-size: 11px; color: var(--paper);
+              letter-spacing: .14em; text-transform: uppercase; }
+  .grid-d { display: grid; grid-template-columns: repeat(7, 1fr);
+            border-left: 1px solid var(--line); border-top: 1px solid var(--line);
+            border-radius: 0 0 10px 10px; overflow: hidden; }
+  .day { aspect-ratio: 1; min-height: 44px; background: transparent; color: var(--ink);
+         font: inherit; font-size: 15px; cursor: pointer; border: 0; border-radius: 0;
+         border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
          position: relative; display: flex; align-items: center; justify-content: center;
          touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .day[disabled] { color: var(--ink-faint); opacity: .42; cursor: not-allowed; }
@@ -509,9 +543,10 @@
   .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   @media (min-width: 420px) { .slots { grid-template-columns: repeat(4, 1fr); } }
   @media (min-width: 880px) { .slots { grid-template-columns: repeat(3, 1fr); } }
-  .slot { font: inherit; font-size: 14px; min-height: var(--tap); padding: 10px 4px; border-radius: 10px;
-          cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--ink);
-          font-variant-numeric: tabular-nums; touch-action: manipulation; }
+  .slot { font: inherit; font-size: 13px; min-height: var(--tap); padding: 10px 4px;
+          border-radius: 999px; cursor: pointer; border: 1px solid var(--line-firm);
+          background: transparent; color: var(--ink); letter-spacing: .06em;
+          text-transform: uppercase; font-variant-numeric: tabular-nums; touch-action: manipulation; }
   .slot[disabled] { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
   .slot[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
@@ -689,51 +724,51 @@
     </div>
     <div class="acc">
       <details class="acc-row" open>
-        <summary class="acc-head"><span class="tog">−</span><span class="t">Studio hire</span><span class="amt">R800 &middot; 2-hour session</span></summary>
+        <summary class="acc-head"><span class="t">Studio hire</span><span class="amt">R800 &middot; per hour</span><span class="tog">&minus;</span></summary>
         <div class="acc-body">
           <div style="display:flex;flex-direction:column;gap:16px">
-            <p>A space designed to be photographed, not a white box. Birthday shoots, campaign video, graduation portraits, podcast sets. Backdrops, props and the built set corners come with the room.</p>
-            <ul class="ticks"><li>Natural light and built set corners</li><li>Props and backdrops included</li><li>Extend by the session, subject to the day</li></ul>
+            <p>A flat R800 an hour, with everything in the room included. Birthday shoots, campaign video, graduation portraits, podcast sets, proposals.</p>
+            <ul class="ticks"><li>Lights, stands and softboxes, or work with the daylight</li><li>Paper backdrops, props and furniture props</li><li>Steamer and rail, Bluetooth speaker, refreshments</li><li>An assistant on hand</li><li>Book by the hour, extend on the day if it is free</li></ul>
             <button class="btn gold" data-jump="studio" style="align-self:flex-start">Check availability</button>
           </div>
-          <div class="thumbs"><img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"><div class="thumbs"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/set-arch-wide-600.webp" alt="" loading="lazy" decoding="async"><div class="thumbs"><img src="assets/img/venue-class-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/venue-event-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/studio-space-600.webp" alt="" loading="lazy" decoding="async"></div></div></div>
+          <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
         </div>
       </details>
       <details class="acc-row">
-        <summary class="acc-head"><span class="tog">+</span><span class="t">Set design</span><span class="amt">Quoted &middot; per build</span></summary>
+        <summary class="acc-head"><span class="t">Set design</span><span class="amt">Quoted &middot; per build</span><span class="tog">+</span></summary>
         <div class="acc-body">
           <div style="display:flex;flex-direction:column;gap:16px">
             <p>Naledi designs and builds the set: a single hero piece, a full campaign environment, or a stage that has to survive a weekend of guests. Concept, build, install and strike.</p>
             <ul class="ticks"><li>Concept boards before anything is cut</li><li>Custom-built props, made in studio</li><li>Install and strike handled</li></ul>
             <button class="btn gold" data-jump="set" style="align-self:flex-start">Check availability</button>
           </div>
-          <img src="assets/img/set-arch-wide-600.webp" alt="Custom-built niche wall set in warm plaster" loading="lazy" decoding="async">
+          <img src="assets/img/arch-proposal-600.webp" alt="The arch set dressed with florals and candles for a proposal" loading="lazy" decoding="async">
         </div>
       </details>
       <details class="acc-row">
-        <summary class="acc-head"><span class="tog">+</span><span class="t">Venue hire</span><span class="amt">R8 500 &middot; full day</span></summary>
+        <summary class="acc-head"><span class="t">Venue hire</span><span class="amt">R8 500 &middot; full day</span><span class="tog">+</span></summary>
         <div class="acc-body">
           <div style="display:flex;flex-direction:column;gap:16px">
             <p>The whole space for launches, celebrations and shoots that need room to move. One booking takes the day.</p>
             <ul class="ticks"><li>The entire studio, yours for the day</li><li>Styling and set dressing available</li><li>Held 48 hours pending deposit</li></ul>
             <button class="btn gold" data-jump="venue" style="align-self:flex-start">Check availability</button>
           </div>
-          <div class="thumbs"><img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async"><img src="assets/img/venue-class-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"></div>
+          <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
         </div>
       </details>
       <details class="acc-row">
-        <summary class="acc-head"><span class="tog">+</span><span class="t">Custom art</span><span class="amt">Commission &middot; prints from R1 500</span></summary>
+        <summary class="acc-head"><span class="t">Custom art</span><span class="amt">Commission &middot; prints from R1 500</span><span class="tog">+</span></summary>
         <div class="acc-body">
           <div style="display:flex;flex-direction:column;gap:16px">
             <p>Original work and limited prints. Commissions start with a conversation about scale, palette and where the work will hang.</p>
             <ul class="ticks"><li>Originals and limited prints</li><li>Prints ship nationwide</li><li>Viewings in studio by appointment</li></ul>
             <button class="btn gold" data-jump="art" style="align-self:flex-start">Check availability</button>
           </div>
-          <div class="thumbs"><img src="assets/img/art-print-2-600.webp" alt="A painting of a woman holding a bouquet against pink" loading="lazy" decoding="async"><img src="assets/img/art-eternal-valentine-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/art-bheka-mina-ngedwa-600.webp" alt="" loading="lazy" decoding="async"></div>
+          <img src="assets/img/art-valentine-sheet-600.webp" alt="Eternal Valentine, 80 by 95 cm" loading="lazy" decoding="async">
         </div>
       </details>
       <details class="acc-row">
-        <summary class="acc-head"><span class="tog">+</span><span class="t">Art experiences</span><span class="amt">Quoted &middot; per group</span></summary>
+        <summary class="acc-head"><span class="t">Art experiences</span><span class="amt">Quoted &middot; per group</span><span class="tog">+</span></summary>
         <div class="acc-body">
           <div style="display:flex;flex-direction:column;gap:16px">
             <p>Paint-and-sip sessions and group workshops in the space. Art experiences for everyday people, on everyday budgets.</p>
@@ -799,7 +834,7 @@
           <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
           <button class="btn gold block" id="confirm" disabled>Confirm booking</button>
           <p class="err" id="err" hidden></p>
-          <p class="note" style="margin-top:10px">Studio hire is confirmed on the day against the R800 session fee. Venue bookings are held for 48 hours pending deposit.</p>
+          <p class="note" style="margin-top:10px">Studio hire is charged at a flat R800 an hour. Venue bookings are held for 48 hours pending deposit.</p>
         </div>
       </div>
     </div>
@@ -826,37 +861,16 @@
       <div><p class="eyebrow">Also at the studio</p><h2>More</h2></div>
       <p class="lede">Prints, commissions and group sessions in the space.</p>
     </div>
-    <div class="cards">
-      <div class="card">
-        <img src="assets/img/venue-event-600.webp" width="533" height="800" loading="lazy" decoding="async"
-             alt="A styled event in the venue with florals and a chandelier">
-        <div class="in">
-          <h3>Venue hire</h3>
-          <p class="price">R8 500 <span>/ full day</span></p>
-          <p>The whole space for launches, celebrations and shoots that need room to move. One booking takes the day.</p>
-          <button class="btn ghost sm" data-jump="venue">Book the venue</button>
-        </div>
-      </div>
-      <div class="card">
-        <img src="assets/img/art-print-2-600.webp" width="566" height="800" loading="lazy" decoding="async"
-             alt="A painting of a woman holding a bouquet against pink">
-        <div class="in">
-          <h3>Custom art</h3>
-          <p class="price">Commission <span>/ prints from R1 500</span></p>
-          <p>Original work and limited prints. Commissions start with a conversation about scale, palette and where it will hang.</p>
-          <button class="btn ghost sm" data-jump="art">Book a consult</button>
-        </div>
-      </div>
-      <div class="card">
-        <img src="assets/img/venue-class-600.webp" width="800" height="534" loading="lazy" decoding="async"
-             alt="A paint-and-sip class at easels in the studio">
-        <div class="in">
-          <h3>Art experiences</h3>
-          <p class="price">Quoted <span>/ per group</span></p>
-          <p>Paint-and-sip sessions and group workshops in the space, art experiences for everyday people, on everyday budgets.</p>
-          <button class="btn ghost sm" data-jump="set">Talk it through</button>
-        </div>
-      </div>
+    <div class="mosaic">
+      <div class="mcard dark"><div class="art"><h3>Studio hire</h3><p>R800 an hour, flat</p></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard photo"><div class="art"><img src="assets/img/red-velvet-600.webp" alt="Deep red velvet backdrop in the studio" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard dark"><div class="art"><h3>Venue hire</h3><p>R8 500, full day</p></div><span class="bite"><button class="go" data-jump="venue" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard photo"><div class="art"><img src="assets/img/couple-600.webp" alt="A couple photographed in the dressed arch set" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="venue" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard note wide"><div class="art"><p>Lights, stands and softboxes, or the daylight</p><span class="star">&#10022;</span><p>Paper backdrops, props and furniture props</p><span class="star">&#10022;</span><p>Steamer and rail, Bluetooth speaker, an assistant</p><span class="star">&#10022;</span><p>Refreshments, subject to availability</p></div></div>
+      <div class="mcard photo"><div class="art"><img src="assets/img/yellow-gown-600.webp" alt="A portrait shoot on hay bales with florals" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard dark"><div class="art"><h3>Custom art</h3><p>Commission, prints from R1 500</p></div><span class="bite"><button class="go" data-jump="art" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard photo"><div class="art"><img src="assets/img/pampas-600.webp" alt="A styled shoot with pampas grass and sacks" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
+      <div class="mcard dark"><div class="art"><h3>Art experiences</h3><p>Quoted, per group</p></div><span class="bite"><button class="go" data-jump="set" aria-label="Book">&#8599;</button></span></div>
     </div>
   </section>
 
@@ -936,7 +950,7 @@
 </footer>
 
 <div class="dock">
-  <div class="t"><b>Studio hire from R800</b>2-hour session</div>
+  <div class="t"><b>Studio hire R800 an hour</b>Flat rate, everything included</div>
   <a href="#book" class="btn gold sm">Book a slot</a>
 </div>
 
@@ -968,7 +982,7 @@
   var HOURS = { 0: [540, 900], 2: [540, 1080], 3: [540, 1080], 4: [540, 1080], 6: [600, 1080] };
 
   var SERVICES = [
-    { id: 'studio', name: 'Photography studio hire', sub: 'Shoots, video, podcast sets', amt: 'R800', per: 'per session', dur: 120 },
+    { id: 'studio', name: 'Photography studio hire', sub: 'Shoots, video, podcast sets', amt: 'R800', per: 'per hour',    dur: 60  },
     { id: 'set',    name: 'Set design consult',      sub: 'Custom sets and props',      amt: 'Free',  per: '30 minutes',  dur: 30 },
     { id: 'venue',  name: 'Venue hire',              sub: 'The whole space, all day',   amt: 'R8 500', per: 'full day',   dur: 'day' },
     { id: 'art',    name: 'Custom art consult',      sub: 'Commissions and prints',     amt: 'Free',  per: '45 minutes',  dur: 45 }
@@ -977,15 +991,15 @@
 
   // The wall. Widths and heights are the real pixel sizes so nothing reflows as images land.
   var WALL = [
-    ['art-eternal-valentine', 'Eternal Valentine', 'Original · R12 000', 608, 800],
-    ['set-arch',              'The arch set',      'Set design',         1024, 684],
-    ['art-bheka-mina-ngedwa', 'Bheka Mina Ngedwa', 'Print · R11 000',    553, 800],
-    ['venue-class',           'Paint & sip',       'Art experiences',    800, 534],
-    ['studio-space',          'The raw studio',    'Studio hire',        640, 800],
-    ['art-print-2',           'Print 2',           'Print · R1 500',     566, 800],
-    ['venue-event',           'Styled for events', 'Venue hire',         533, 800],
-    ['set-arch-wide',         'Niche wall',        'Set design',         800, 534],
-    ['art-valentine-sheet',   'Eternal Valentine', '80 × 95 cm, 2024',   800, 800]
+    ['art-eternal-valentine', 'Eternal Valentine', 'Original, R12 000', 608, 800],
+    ['yellow-gown',           'On the hay bales',  'Portrait shoot',    1100, 1466],
+    ['art-bheka-mina-ngedwa', 'Bheka Mina Ngedwa', 'Print, R11 000',    553, 800],
+    ['pampas',                'Pampas and sacks',  'Styled shoot',      1100, 1466],
+    ['arch-desk',             'The arch as a desk','Podcast set',       1100, 1466],
+    ['art-print-2',           'Print 2',           'Print, R1 500',     566, 800],
+    ['red-velvet',            'Red velvet',        'Backdrop',          1100, 1466],
+    ['couple',                'In the dressed set','Engagement shoot',  1024, 1366],
+    ['set-arch-wide',         'The niche wall',    'Set design',        800, 534]
   ];
 
   /* ---------------- helpers ---------------- */
@@ -1105,7 +1119,7 @@
       return { svc: 'venue', why: 'An event takes the whole space, so the day is booked to you rather than the hour.' };
     if (a.people === 'big')
       return { svc: 'venue', why: 'Ten or more people need room to move. The studio is sized for small shoots; the venue is not.' };
-    return { svc: 'studio', why: 'A small shoot fits the studio exactly. Backdrops, props and the built set corners come with the room.' };
+    return { svc: 'studio', why: 'A small shoot fits the studio exactly, at a flat R800 an hour with everything in the room included.' };
   }
 
   var fAns = {}, fStep = 0;
