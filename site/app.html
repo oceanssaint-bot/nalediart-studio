@@ -223,6 +223,41 @@
   .card .btn { margin-top: auto; }
   @media (min-width: 560px) { .card .btn { align-self: flex-start; } }
 
+  /* ---------- guided finder ---------- */
+  #finder { padding-bottom: 0; }
+  .finder {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 24px; box-shadow: var(--shadow);
+  }
+  @media (min-width: 720px) { .finder { padding: 40px; } }
+  .fq { font-size: 21px; line-height: 1.25; margin-bottom: 18px; }
+  @media (min-width: 720px) { .fq { font-size: 26px; } }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    font: inherit; font-size: 15px; min-height: var(--tap); padding: 12px 20px;
+    border-radius: 999px; border: 1px solid var(--line-firm); background: transparent;
+    color: var(--ink); cursor: pointer; touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip:hover { border-color: var(--gold); }
+  .fbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .fdots { display: flex; gap: 6px; }
+  .fdots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-firm); display: block; }
+  .fdots i.on { background: var(--gold); }
+  .fback {
+    margin-left: auto; font: inherit; font-size: 14px; background: none; border: 0;
+    color: var(--ink-faint); cursor: pointer; text-decoration: underline; padding: 8px;
+  }
+  .fresult { display: flex; flex-direction: column; gap: 14px; }
+  .fresult .rk { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  .fresult h3 { font-size: 24px; }
+  @media (min-width: 720px) { .fresult h3 { font-size: 30px; } }
+  .fresult .rp { font-size: 26px; letter-spacing: -.02em; }
+  .fresult .rp span { font-size: 13px; color: var(--ink-faint); letter-spacing: 0; }
+  .fresult .rw { font-size: 15px; color: var(--ink-soft); line-height: 1.5; max-width: 54ch; }
+  .fresult .ra { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  @media (min-width: 560px) { .fresult .ra { flex-direction: row; align-items: center; } }
+
   /* ---------- booking ---------- */
   #book { scroll-margin-top: 72px; }
   .booker { background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
@@ -463,6 +498,14 @@
         </div>
       </article>
     </div>
+  </section>
+
+  <section id="finder" class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Not sure what you need?</p>
+      <h2>Three questions.</h2>
+    </div>
+    <div class="finder" id="finderCard"></div>
   </section>
 
   <section id="book" class="wrap">
@@ -753,6 +796,75 @@
     if (e.key === 'Escape') closeLb();
     else if (e.key === 'ArrowLeft') openLb((lbIdx - 1 + WALL.length) % WALL.length);
     else if (e.key === 'ArrowRight') openLb((lbIdx + 1) % WALL.length);
+  });
+
+  /* ---------------- guided finder ----------------
+     Most people do not know whether they want studio hire, the venue or a
+     set build. Three questions decide it, then hand straight to the booker
+     with the service already chosen. */
+  var FIND = [
+    { id: 'making', q: 'What are you making?', opts: [
+        ['shoot', 'A photoshoot'], ['video', 'A video'],
+        ['event', 'An event'], ['art', 'Artwork'] ] },
+    { id: 'people', q: 'How many people will be there?', opts: [
+        ['solo', 'Just me'], ['small', '2 – 6'], ['big', '10 or more'] ],
+      skip: function (a) { return a.making === 'art'; } },
+    { id: 'set', q: 'Do you need a set built?', opts: [
+        ['yes', 'Yes, build something'], ['no', 'Use what is there'] ],
+      skip: function (a) { return a.making === 'art'; } }
+  ];
+
+  function recommend(a) {
+    if (a.making === 'art')
+      return { svc: 'art', why: 'Commissions and prints start with a conversation about scale, palette and where the work will hang.' };
+    // A build has to be priced before a date means anything, so it wins.
+    if (a.set === 'yes')
+      return { svc: 'set', why: 'A build gets scoped first — concept and quote — and the shoot or event goes in the diary once that is agreed.' };
+    if (a.making === 'event')
+      return { svc: 'venue', why: 'An event takes the whole space, so the day is booked to you rather than the hour.' };
+    if (a.people === 'big')
+      return { svc: 'venue', why: 'Ten or more people need room to move. The studio is sized for small shoots; the venue is not.' };
+    return { svc: 'studio', why: 'A small shoot fits the studio exactly. Backdrops, props and the built set corners come with the room.' };
+  }
+
+  var fAns = {}, fStep = 0;
+  function fVisible() { return FIND.filter(function (q) { return !(q.skip && q.skip(fAns)); }); }
+
+  function renderFinder() {
+    var host = $('finderCard'); if (!host) return;
+    var qs = fVisible();
+    if (fStep >= qs.length) return finderResult();
+    var q = qs[fStep];
+    host.innerHTML =
+      '<div class="fbar"><span class="fdots">' +
+        qs.map(function (_, i) { return '<i class="' + (i <= fStep ? 'on' : '') + '"></i>'; }).join('') +
+      '</span>' + (fStep > 0 ? '<button class="fback" data-fback="1">Back</button>' : '') + '</div>' +
+      '<p class="fq">' + esc(q.q) + '</p>' +
+      '<div class="chips">' + q.opts.map(function (o) {
+        return '<button class="chip" data-fa="' + esc(q.id) + '" data-fv="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
+      }).join('') + '</div>';
+  }
+
+  function finderResult() {
+    var rec = recommend(fAns), svc = svcById(rec.svc);
+    $('finderCard').innerHTML =
+      '<div class="fresult">' +
+        '<p class="rk">What I would book</p>' +
+        '<h3>' + esc(svc.name) + '</h3>' +
+        '<p class="rp">' + esc(svc.amt) + ' <span>' + esc(svc.per) + '</span></p>' +
+        '<p class="rw">' + esc(rec.why) + '</p>' +
+        '<div class="ra">' +
+          '<button class="btn gold" data-jump="' + esc(rec.svc) + '">See available times</button>' +
+          '<button class="btn ghost" data-fstart="1">Start again</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('[data-fa]');
+    if (c) { fAns[c.getAttribute('data-fa')] = c.getAttribute('data-fv'); fStep++; renderFinder(); return; }
+    if (e.target.closest('[data-fback]')) { fStep = Math.max(0, fStep - 1); renderFinder(); return; }
+    if (e.target.closest('[data-fstart]')) { fAns = {}; fStep = 0; renderFinder(); }
   });
 
   /* ---------------- booking state ---------------- */
@@ -1243,6 +1355,7 @@
   })();
 
   $('yr').textContent = new Date().getFullYear();
+  renderFinder();
   render();
   connect();
 })();
