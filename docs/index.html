@@ -218,6 +218,43 @@
              background: rgba(255,255,255,.14); color: #fff; font-size: 22px; cursor: pointer; }
   .lb .arw.l { left: 8px; } .lb .arw.r { right: 8px; }
 
+  /* ---------- story river ----------
+     A band that drifts on its own. Built as a CSS marquee: the set of tiles
+     is duplicated and the track slides exactly half its width, so the loop
+     has no seam and it costs nothing to run. */
+  .river-sec { padding-block: 40px 44px; overflow: hidden; }
+  @media (min-width: 900px) { .river-sec { padding-block: 68px; } }
+  .river { overflow: hidden; }
+  /* No `gap` here on purpose: each tile carries its own trailing margin, so
+     one set is exactly half the track and translateX(-50%) lands seamlessly.
+     With a gap it lands half a gap short and the loop visibly jumps. */
+  .river-track { display: flex; width: max-content;
+                 animation: drift 64s linear infinite; }
+  .river:hover .river-track, .river:focus-within .river-track { animation-play-state: paused; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  /* figure carries a default margin of 1em 40px — reset it, or every tile is
+     80px wider than it looks and the seam maths is wrong. */
+  .river-item { flex: none; width: 260px; margin: 0 14px 0 0; }
+  @media (min-width: 900px) { .river-item { width: 360px; } }
+  .river-item img { width: 100%; height: 220px; object-fit: cover; border-radius: 12px; background: var(--surface-2); }
+  @media (min-width: 900px) { .river-item img { height: 300px; } }
+  .river-item span { display: block; margin-top: 9px; font-size: 13px; color: var(--ink-faint); }
+
+  /* On a phone there is no hover to pause it, and a drifting band you cannot
+     stop is worse than one you can push. Swipe it instead. */
+  @media (hover: none) {
+    .river { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+             padding-inline: var(--gut); }
+    .river::-webkit-scrollbar { display: none; }
+    .river-track { animation: none; width: auto; }
+    .river-item { scroll-snap-align: start; }
+    .river-item.dup { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .river { overflow-x: auto; padding-inline: var(--gut); }
+    .river-track { animation: none; }
+  }
+
   /* ---------- the two headline services ---------- */
   .features { display: grid; gap: 16px; }
   @media (min-width: 860px) { .features { grid-template-columns: 1fr 1fr; gap: 20px; } }
@@ -679,6 +716,14 @@
     </div>
   </section>
 
+  <section id="river" class="river-sec">
+    <div class="wrap sec-head">
+      <p class="eyebrow">In the room</p>
+      <h2>The space, in use.</h2>
+    </div>
+    <div class="river" id="river-strip"></div>
+  </section>
+
   <hr class="rule">
 
   <section id="visit" class="wrap">
@@ -812,6 +857,33 @@
     host.addEventListener('click', function (e) {
       var b = e.target.closest('[data-i]'); if (b) openLb(+b.getAttribute('data-i'));
     });
+  })();
+
+  /* ---------------- story river ----------------
+     Her photographs and her work, drifting. The set is written out twice so
+     the marquee loops seamlessly; the second copy is hidden from screen
+     readers, and from the swipeable phone version entirely. */
+  (function buildRiver() {
+    var host = $('river-strip'); if (!host) return;
+    var ITEMS = [
+      ['set-arch', 'The arch set'],
+      ['studio-space', 'The studio floor'],
+      ['venue-class', 'Paint and sip in the space'],
+      ['art-eternal-valentine', 'Eternal Valentine'],
+      ['venue-event', 'Styled for an event'],
+      ['set-arch-wide', 'The niche wall'],
+      ['art-bheka-mina-ngedwa', 'Bheka Mina Ngedwa'],
+      ['art-print-2', 'Print 2']
+    ];
+    var run = function (dup) {
+      return ITEMS.map(function (t) {
+        return '<figure class="river-item' + (dup ? ' dup' : '') + '"' + (dup ? ' aria-hidden="true"' : '') + '>' +
+          '<img src="assets/img/' + t[0] + '-600.webp" alt="' + (dup ? '' : esc(t[1])) + '" ' +
+          'loading="lazy" decoding="async">' +
+          '<span>' + esc(t[1]) + '</span></figure>';
+      }).join('');
+    };
+    host.innerHTML = '<div class="river-track">' + run(false) + run(true) + '</div>';
   })();
 
   var lbIdx = -1, lbEl = null;
