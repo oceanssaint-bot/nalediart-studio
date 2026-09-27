@@ -654,7 +654,10 @@
   // customers may create a booking and read only the occupied time ranges,
   // never anyone's name, phone or email.
   // ---------------------------------------------------------------------
-  window.NALEDI_SUPABASE = { url: "", anonKey: "" };
+  window.NALEDI_SUPABASE = {
+    url:     "https://wsvdozihlwtnvuoegnzd.supabase.co",
+    anonKey: "sb_publishable_W92EOM4CQyRieZwwXqIE7Q_ZWdM07H-"
+  };
 </script>
 
 <script>
@@ -1060,8 +1063,10 @@
         if (r.ok) { sbRefresh(); return done(bk); }
         return r.text().then(function (t) {
           // 23P01 is the exclusion-constraint violation: the slot is genuinely
-          // gone, so keep them on the form to pick another time.
-          if (r.status === 409 || t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0) {
+          // gone, so keep them on the form to pick another time. PostgREST
+          // reports it as 400 with the code in the body, not as 409, so match
+          // on the body — the status alone would miss it.
+          if (t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0 || r.status === 409) {
             fail('Someone just took that slot. Pick another time — the calendar has refreshed.');
             sbRefresh();
             return;
