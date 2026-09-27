@@ -492,7 +492,7 @@
           </div>
           <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
           <div class="grid-d" id="grid"></div>
-          <div class="legend"><span><i></i>Open</span><span>Faded — closed or fully booked</span></div>
+          <div class="legend"><span><i></i>Open</span><span id="legendNote">Faded — closed or fully booked</span></div>
         </div>
 
         <div class="pane">
@@ -742,8 +742,13 @@
   var state = {
     svc: 'studio', date: null, start: null,
     month: new Date(today.getFullYear(), today.getMonth(), 1),
-    bookings: [], blocks: [], busy: false, canWrite: true, isStudio: false
+    bookings: [], blocks: [], busy: false, canWrite: true, isStudio: false,
+    // true only where a shared store backs the calendar. Without one (the
+    // plain static build) a slot cannot be held, so the page asks for a
+    // request and hands it to WhatsApp rather than claiming a confirmation.
+    shared: false
   };
+  var WHATSAPP = '27658381532';
 
   /* ---------------- storage: shared store, else this browser ---------------- */
   var DB = null, LS_KEY = 'naledi.bookings.v1', LS_BLOCK = 'naledi.blocks.v1';
@@ -755,7 +760,7 @@
     if (!window.claude || typeof window.claude.use !== 'function') { loadLocal(); render(); return; }
     window.claude.use('db').then(function (db) {
       if (!db) { loadLocal(); render(); return; }
-      DB = db;
+      DB = db; state.shared = true;
       db.collection('bookings').where('date', '>=', ymd(today)).orderBy('date').limit(500)
         .onSnapshot(function (snap) {
           state.bookings = snap.docs.map(function (d) { var o = d.data() || {}; o._id = d.id; return o; })
@@ -890,7 +895,12 @@
     $('hd-title').textContent = ready ? 'Almost there — your details' : 'Choose a service and a date';
     $('confirm').disabled = !ready || state.busy || !state.canWrite;
     $('confirm').textContent = state.busy ? 'Holding the slot…'
-      : (!state.canWrite ? 'Booking unavailable here' : 'Confirm booking');
+      : (!state.canWrite ? 'Booking unavailable here'
+      : (state.shared ? 'Confirm booking' : 'Request this slot'));
+    var lg = $('legendNote');
+    if (lg) lg.textContent = state.shared
+      ? 'Faded — closed or fully booked'
+      : 'Faded — the studio is closed';
   }
 
   function renderPanel() {
@@ -983,24 +993,49 @@
       });
   });
 
+  function waLink(bk) {
+    var when = dayFromStr(bk.date).toLocaleDateString('en-ZA',
+      { weekday: 'long', day: 'numeric', month: 'long' }) + ', ' + nice(bk.start) + '–' + nice(bk.end);
+    var msg = 'Hi Naledi, I would like to book the studio.\n\n' +
+      'Service: ' + bk.serviceName + '\n' +
+      'When: ' + when + '\n' +
+      'Amount: ' + bk.amount + '\n' +
+      'Name: ' + bk.name + '\n' +
+      (bk.phone ? 'Mobile: ' + bk.phone + '\n' : '') +
+      (bk.email ? 'Email: ' + bk.email + '\n' : '') +
+      (bk.notes ? '\n' + bk.notes + '\n' : '') +
+      '\nRef: ' + bk.ref;
+    return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg);
+  }
+
   function done(bk) {
+    // With a shared store the slot is genuinely held. Without one, nothing
+    // reaches the studio until the customer sends the message, so the page
+    // says so plainly instead of claiming a confirmation.
+    var held = state.shared;
     $('stage').innerHTML =
       '<div class="done" style="grid-column:1/-1">' +
-        '<div class="tick">✓</div>' +
-        '<h3 style="font-size:23px">You are booked in.</h3>' +
+        '<div class="tick">' + (held ? '✓' : '→') + '</div>' +
+        '<h3 style="font-size:23px">' + (held ? 'You are booked in.' : 'One last step.') + '</h3>' +
         '<p style="color:var(--ink-soft);margin-top:8px">' + esc(bk.serviceName) + ' · ' +
           esc(dayFromStr(bk.date).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })) +
           ', ' + esc(nice(bk.start)) + '–' + esc(nice(bk.end)) + '</p>' +
         '<p style="color:var(--ink-soft)">' + esc(ADDRESS) + '</p>' +
         '<p class="ref">' + esc(bk.ref) + '</p>' +
+        (held ? '' : '<p class="note" style="margin-top:14px;max-width:44ch;margin-inline:auto">' +
+          'Send this to Naledi to hold the slot — it is not reserved until she confirms.</p>') +
         '<div class="done-cta">' +
-          '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to Google Calendar</a>' +
+          (held
+            ? '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to Google Calendar</a>'
+            : '<a class="btn gold" target="_blank" rel="noopener" href="' + esc(waLink(bk)) + '">Send on WhatsApp</a>') +
+          (held ? '' : '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(gcalLink(bk)) + '">Add to calendar</a>') +
           '<button class="btn ghost" id="icsBtn">Download .ics</button>' +
-          '<button class="btn ghost" id="againBtn">Book another</button>' +
+          '<button class="btn ghost" id="againBtn">' + (held ? 'Book another' : 'Start again') + '</button>' +
         '</div>' +
-        '<p class="note" style="margin-top:14px">The studio will call to confirm. Naledi: 065 838 1532</p>' +
+        '<p class="note" style="margin-top:14px">' +
+          (held ? 'The studio will call to confirm. ' : 'Prefer to call? ') + 'Naledi: 065 838 1532</p>' +
       '</div>';
-    $('hd-title').textContent = 'Booked';
+    $('hd-title').textContent = held ? 'Booked' : 'Almost — send it to Naledi';
     $('hd-sub').textContent = 'Reference ' + bk.ref;
     ['s1','s2','s3','s4'].forEach(function (id) { $(id).classList.add('on'); });
     $('againBtn').addEventListener('click', function () { location.reload(); });
