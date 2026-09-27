@@ -9,8 +9,8 @@ const doc = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Naledi Art Studio, Durban — custom art, photography studio hire, venue hire and set design. Check availability and book online.">
-<meta property="og:title" content="Naledi Art Studio — Durban">
+<meta name="description" content="Naledi Art Studio, Durban. Custom art, photography studio hire, venue hire and set design. Check availability and book online.">
+<meta property="og:title" content="Naledi Art Studio, Durban">
 <meta property="og:description" content="Custom art, studio hire, venue hire and set design in Greyville, Durban. Book a slot online.">
 <link rel="icon" href="assets/icon.png">
 <link rel="apple-touch-icon" href="assets/icon.png">
@@ -30,4 +30,4 @@ ${body}
 // head/body boundary goes just before the first element that must render.
 const out = doc.replace('<header class="bar">', '</head>\n<body>\n<header class="bar">');
 fs.writeFileSync(path.join(__dirname, 'index.html'), out);
-console.log('site/index.html built — ' + (out.length / 1024).toFixed(0) + ' KB');
+console.log('site/index.html built, ' + (out.length / 1024).toFixed(0) + ' KB');

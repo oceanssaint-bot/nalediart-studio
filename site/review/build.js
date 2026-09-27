@@ -66,7 +66,7 @@ const page = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Naledi Art Studio, brand &amp; website</title>
+<title>Naledi Art Studio, brand and website</title>
 <link rel="icon" href="../assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,7 +140,7 @@ const page = `<!doctype html>
 <header>
   <div class="bar">
     <img src="../assets/logo.png" alt="Naledi Art Studio">
-    <span class="who">Brand &amp; website</span>
+    <span class="who">Brand and website</span>
     <div class="tabs" role="tablist">
       <button class="tab" id="t-deck" role="tab" aria-selected="true" aria-controls="p-deck">Presentation</button>
       <button class="tab" id="t-site" role="tab" aria-selected="false" aria-controls="p-site">The website</button>

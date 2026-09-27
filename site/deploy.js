@@ -33,5 +33,5 @@ for (const page of ['index.html', 'studio.html', 'review/index.html']) {
   for (const m of new Set(html.match(/(\.\.\/)?(assets|img)\/[A-Za-z0-9/._-]+\.(webp|png)/g) || []))
     if (!fs.existsSync(path.resolve(dir, m))) { console.error('MISSING ' + m + ' (referenced by ' + page + ')'); missing++; }
 }
-console.log(missing ? missing + ' missing asset(s)' : 'docs/ staged — every referenced asset present');
+console.log(missing ? missing + ' missing asset(s)' : 'docs/ staged, every referenced asset present');
 process.exit(missing ? 1 : 0);
