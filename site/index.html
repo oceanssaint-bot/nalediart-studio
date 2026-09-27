@@ -241,6 +241,19 @@
   .card .btn { margin-top: auto; }
   @media (min-width: 560px) { .card .btn { align-self: flex-start; } }
 
+  /* ---------- motion ----------
+     The page is complete with no script: the pre-state below is applied by
+     JS only, so a failed or blocked script leaves everything visible.
+     Anyone asking for less motion gets none at all. */
+  .pre { opacity: 0; transform: translateY(20px); }
+  .in  { opacity: 1; transform: none;
+         transition: opacity .62s ease, transform .62s cubic-bezier(.2,.75,.3,1); }
+  .hero h1 .w { display: inline-block; }
+  .hero h1 .w.pre { transform: translateY(0.34em); }
+  @media (prefers-reduced-motion: reduce) {
+    .pre, .in { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
   /* ---------- guided finder ---------- */
   #finder { padding-bottom: 0; }
   .finder {
@@ -1372,6 +1385,89 @@
         clearInterval(timer);
       }
     }, 500);
+  })();
+
+  /* ---------------- motion ----------------
+     Reveal on scroll and a headline that sets itself word by word. Done with
+     IntersectionObserver and CSS rather than a scroll library: the same
+     result for about 2 KB instead of 120, which matters more here than the
+     extra easing would. Nothing is hidden until we know we can reveal it. */
+  (function motion() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if ((reduce && reduce.matches) || !('IntersectionObserver' in window)) return;
+
+    // A hidden page — opened in a background tab, or minimised — paints no
+    // frames, so neither requestAnimationFrame nor a CSS transition can run.
+    // Hiding things there would leave the page blank until it was looked at.
+    // So nothing is hidden until the page is actually visible.
+    if (document.visibilityState === 'hidden') {
+      document.addEventListener('visibilitychange', function again() {
+        if (document.visibilityState !== 'visible') return;
+        document.removeEventListener('visibilitychange', again);
+        motion();
+      });
+      return;
+    }
+
+    function revealAll() {
+      Array.prototype.forEach.call(document.querySelectorAll('.pre'), function (el) {
+        el.style.transitionDelay = '0ms'; el.classList.add('in');
+      });
+    }
+    // Last resort: if a first frame still never arrives, show everything.
+    var painted = false;
+    requestAnimationFrame(function () { painted = true; });
+    setTimeout(function () { if (!painted) revealAll(); }, 1200);
+
+    // Split the headline into words without disturbing the <em> inside it.
+    var h1 = document.querySelector('.hero h1');
+    if (h1) {
+      var walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT, null, false), texts = [];
+      while (walker.nextNode()) texts.push(walker.currentNode);
+      texts.forEach(function (n) {
+        var frag = document.createDocumentFragment();
+        n.nodeValue.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var s = document.createElement('span');
+          s.className = 'w'; s.textContent = part;
+          frag.appendChild(s);
+        });
+        n.parentNode.replaceChild(frag, n);
+      });
+      var words = h1.querySelectorAll('.w');
+      Array.prototype.forEach.call(words, function (w) { w.classList.add('pre'); });
+      requestAnimationFrame(function () {
+        Array.prototype.forEach.call(words, function (w, i) {
+          w.style.transitionDelay = (i * 55) + 'ms';
+          w.classList.add('in');
+        });
+      });
+    }
+
+    var sel = '.sec-head, .feature, .card, .booker, .finder, .about, #visit .visit > div, .hero-shot, .tile';
+    var items = Array.prototype.slice.call(document.querySelectorAll(sel));
+    // Anything already on screen at load stays put — no reveal for content
+    // the visitor is looking at before they have scrolled at all.
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        el.style.transitionDelay = (Math.min(+el.dataset.mi || 0, 5) * 70) + 'ms';
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+    items.forEach(function (el) {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
+      // stagger within a row of siblings
+      var sibs = el.parentNode ? Array.prototype.filter.call(el.parentNode.children, function (c) {
+        return c.className === el.className; }) : [];
+      el.dataset.mi = Math.max(0, sibs.indexOf(el));
+      el.classList.add('pre');
+      io.observe(el);
+    });
   })();
 
   $('yr').textContent = new Date().getFullYear();
