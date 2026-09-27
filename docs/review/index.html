@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Naledi Art Studio — brand &amp; website</title>
+<link rel="icon" href="../assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper:#FBF8F4; --surface:#FFFFFF; --ink:#241C2C; --soft:#6A5F74;
+    --faint:#9A8FA3; --line:#E6DCD2; --gold:#A87614; --dark:#16111D;
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  html, body { margin:0; }
+  body { background:var(--paper); color:var(--ink);
+         font:400 16px/1.5 Jost,'Century Gothic',system-ui,sans-serif; }
+  img { max-width:100%; display:block; }
+
+  header { border-bottom:1px solid var(--line); background:var(--surface);
+           position:sticky; top:env(safe-area-inset-top,0px); z-index:20; }
+  .bar { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+         padding:12px 18px; max-width:1500px; margin-inline:auto; }
+  .bar img { height:26px; width:auto; }
+  .bar .who { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+  .tabs { display:flex; gap:6px; margin-left:auto; }
+  .tab { font:inherit; font-size:14px; min-height:42px; padding:9px 18px; border-radius:999px;
+         border:1px solid var(--line); background:transparent; color:var(--soft); cursor:pointer; }
+  .tab[aria-selected="true"] { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .out { font:inherit; font-size:13px; color:var(--faint); text-decoration:none;
+         padding:9px 14px; border-radius:999px; border:1px solid var(--line); min-height:42px;
+         display:inline-flex; align-items:center; }
+
+  main { max-width:1500px; margin-inline:auto; padding:18px; }
+  @media (max-width:640px) { main { padding:10px; } }
+
+  /* ---- presentation ---- */
+  .deck { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+          border-radius:14px; border:1px solid var(--line); background:var(--dark); }
+  .stage { position:absolute; top:0; left:0; width:1920px; height:1080px; transform-origin:top left; }
+  .slide { position:absolute; top:0; left:0; width:1920px; height:1080px; display:none; }
+  .slide.on { display:block; }
+  .slide > section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+  .deck:fullscreen { aspect-ratio:auto; width:100vw; height:100vh; border:0; border-radius:0; }
+  .deck-nav { display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:wrap; }
+  .nb { font:inherit; font-size:15px; min-height:44px; min-width:44px; padding:10px 18px;
+        border-radius:999px; border:1px solid var(--line); background:var(--surface);
+        color:var(--ink); cursor:pointer; }
+  .nb[disabled] { opacity:.35; cursor:not-allowed; }
+  .count { font-size:14px; color:var(--faint); font-variant-numeric:tabular-nums; }
+  .dots { display:flex; gap:5px; flex-wrap:wrap; margin-left:auto; }
+  .dot { width:9px; height:9px; border-radius:50%; border:0; padding:0; cursor:pointer;
+         background:var(--line); }
+  .dot[aria-current="true"] { background:var(--gold); }
+  @media (max-width:640px) { .dots { display:none; } }
+
+  /* ---- website ---- */
+  .site-wrap { display:flex; flex-direction:column; gap:12px; align-items:center; }
+  .frame { width:100%; border:1px solid var(--line); border-radius:14px; overflow:hidden;
+           background:var(--surface); }
+  .frame.phone { width:390px; max-width:100%; border-radius:26px; }
+  .frame iframe { display:block; width:100%; height:78vh; min-height:520px; border:0; }
+  .frame.phone iframe { height:74vh; }
+  .sizes { display:flex; gap:8px; }
+  .hint { font-size:13px; color:var(--faint); text-align:center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <img src="../assets/logo.png" alt="Naledi Art Studio">
+    <span class="who">Brand &amp; website</span>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="t-deck" role="tab" aria-selected="true" aria-controls="p-deck">Presentation</button>
+      <button class="tab" id="t-site" role="tab" aria-selected="false" aria-controls="p-site">The website</button>
+    </div>
+    <a class="out" href="../index.html" target="_blank" rel="noopener">Open site ↗</a>
+  </div>
+</header>
+
+<main>
+  <section id="p-deck" role="tabpanel" aria-labelledby="t-deck">
+    <div class="deck" id="deck">
+      <div class="stage" id="stage">
+        <div class="slide on" data-i="0">
+          <section id="cover" data-transition="fade" style="background:#16111D; color:#F3EDE5; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px; display:flex; flex-direction:row; align-items:center; gap:96px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:5px; color:#E2B155; text-transform:uppercase">Durban &middot; Est. 2019</p>
+          <h1 style="font-size:108px; font-weight:400; line-height:1.02; color:#F3EDE5">Naledi Art Studio</h1>
+          <hr style="width:160px; border-top:3px solid #E2B155">
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:40px; font-style:italic; font-weight:300; color:#AFA3B9">Brand identity — from the file you sent me to a finished suite</p>
+          </div>
+          <img src="img/submark.webp" alt="Naledi Art Studio submark: a portrait crowned with sunflowers inside a ring" style="width:520px; height:520px; object-fit:contain">
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#7C7088">Prepared for Naledi Zondi</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="1">
+          <section id="origin" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:80px; align-items:center">
+          <img loading="lazy" src="img/original-file.webp" alt="The original logo file: a small faded painting above the words NALEDI ART, surrounded by empty white space" style="width:560px; height:746px; object-fit:contain; border:1px solid #E6DCD2">
+          <div style="flex:1; display:flex; flex-direction:column; gap:32px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Where we started</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">The file you sent me.</h2>
+          <table style="font-family:'Jost', sans-serif; font-size:28px; color:#241C2C">
+          <tr><th style="width:62%; text-align:left; font-weight:500">The file itself</th><th style="width:38%; text-align:right; font-weight:500">858 &times; 1144 px</th></tr>
+          <tr><td>The artwork inside it</td><td style="text-align:right">418 &times; 418 px</td></tr>
+          <tr><td>Share of the canvas actually drawn on</td><td style="text-align:right">18%</td></tr>
+          <tr><td>Height of the entire wordmark</td><td style="text-align:right">17 px</td></tr>
+          </table>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4">Seventeen pixels for two lines of type. At that size the letters are not letters any more — they are grey pixels that happen to sit in a row.</p>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="2">
+          <section id="problem" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:56px">
+          <div style="display:flex; flex-direction:column; gap:16px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">The diagnosis</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Three problems, not one.</h2>
+          </div>
+          <div style="display:flex; flex-direction:row; gap:32px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:44px">
+          <p style="font-size:64px; font-weight:300; color:#D29E38">01</p>
+          <h3 style="font-size:40px; font-weight:500; line-height:1.15">The cut-out failed</h3>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.45">Whoever removed the background left a grey halo around every edge. On white you barely notice. On anything else it shows as a dirty outline.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:44px">
+          <p style="font-size:64px; font-weight:300; color:#D29E38">02</p>
+          <h3 style="font-size:40px; font-weight:500; line-height:1.15">There was nothing to enlarge</h3>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.45">418 pixels is a thumbnail. Enough for a small website image, nowhere near enough for a banner, a vinyl sign or a printed catalogue.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:44px">
+          <p style="font-size:64px; font-weight:300; color:#D29E38">03</p>
+          <h3 style="font-size:40px; font-weight:500; line-height:1.15">Pieces were missing</h3>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.45">The hair and several sunflowers stopped where the eraser stopped, not where the painting did. Shapes ended mid-petal.</p>
+          </div>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="3">
+          <section id="digitise" data-transition="magic" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+          <div style="display:flex; flex-direction:column; gap:16px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step one — digitising</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Redrawn as shapes, not pixels.</h2>
+          </div>
+          <div style="display:flex; flex-direction:row; gap:48px; align-items:flex-start">
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px">
+          <img loading="lazy" src="img/before-art.webp" alt="The original artwork, soft-edged and washed out, enlarged to show its limits" style="width:100%; height:420px; object-fit:contain; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:12px">
+          <p style="font-size:28px; font-weight:500">Before &middot; 418 px of painting</p>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.4">Enlarged to this size it goes soft immediately. Every edge is a gradient of grey.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px">
+          <img loading="lazy" src="img/after-art.webp" alt="The finished vector artwork, crisp and fully saturated" style="width:100%; height:420px; object-fit:contain; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:12px">
+          <p style="font-size:28px; font-weight:500; color:#7E570D">After &middot; 3,569 drawn shapes</p>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.4">Every brushstroke is now an outline with its own colour. It has no resolution — it is sharp at any size.</p>
+          </div>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="4">
+          <section id="repaint" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:64px; align-items:center">
+          <div style="display:flex; flex-direction:row; gap:20px">
+          <div style="display:flex; flex-direction:column; gap:14px">
+          <img loading="lazy" src="img/zoom-before.webp" alt="Detail of the original: pixelated sunflowers with a grey halo bleeding around the hair" style="width:380px; height:427px; object-fit:cover; border-radius:12px">
+          <p style="font-size:24px; color:#6A5F74">Before</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:14px">
+          <img loading="lazy" src="img/zoom-after.webp" alt="The same detail repainted: clean petal edges, solid dark hair, saturated gold" style="width:380px; height:427px; object-fit:cover; border-radius:12px">
+          <p style="font-size:24px; color:#7E570D; font-weight:500">After</p>
+          </div>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Step two — repainting</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">The same corner of the crown.</h2>
+          <ul style="font-size:28px; color:#6A5F74; line-height:1.5">
+          <li><b style="color:#241C2C">The halo is gone.</b> The grey fringe around the hair was painted out, edge by edge.</li>
+          <li><b style="color:#241C2C">The hair was completed.</b> Where it had been cut off flat, the shape was carried back to where the painting meant it to end.</li>
+          <li><b style="color:#241C2C">Cut flowers were made whole.</b> Petals that stopped mid-stroke were redrawn to full.</li>
+          <li><b style="color:#241C2C">The colour was brought back.</b> The golds had gone chalky in the handling; they are returned to the strength of the original painting.</li>
+          </ul>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="5">
+          <section id="master" data-transition="fade" style="background:#16111D; color:#F3EDE5; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px; display:flex; flex-direction:row; gap:96px; align-items:center">
+          <img loading="lazy" src="img/after-art.webp" alt="The finished master artwork" style="width:680px; height:720px; object-fit:contain">
+          <div style="flex:1; display:flex; flex-direction:column; gap:36px">
+          <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">The master</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1; color:#F3EDE5">One file everything else comes from.</h2>
+          <div style="display:flex; flex-direction:row; gap:56px">
+          <div style="display:flex; flex-direction:column; gap:8px">
+          <p style="font-size:64px; font-weight:300; color:#E2B155">3,569</p>
+          <p style="font-size:24px; color:#AFA3B9">drawn shapes</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px">
+          <p style="font-size:64px; font-weight:300; color:#E2B155">2,202</p>
+          <p style="font-size:24px; color:#AFA3B9">distinct colours</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px">
+          <p style="font-size:64px; font-weight:300; color:#E2B155">&infin;</p>
+          <p style="font-size:24px; color:#AFA3B9">maximum size</p>
+          </div>
+          </div>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#AFA3B9; line-height:1.45">Every mark in this document is built from this one artwork. Change it here and everything downstream follows.</p>
+          </div>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="6">
+          <section id="palette" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:48px">
+          <div style="display:flex; flex-direction:column; gap:16px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Colour</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Taken out of the painting, not chosen next to it.</h2>
+          </div>
+          <div style="display:flex; flex-direction:row; gap:24px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#D29E38; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Sunflower</p>
+          <p style="font-size:24px; color:#6A5F74">#D29E38</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#AA6B3C; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Skin</p>
+          <p style="font-size:24px; color:#6A5F74">#AA6B3C</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#40284D; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Plum</p>
+          <p style="font-size:24px; color:#6A5F74">#40284D</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#CF8598; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Blossom</p>
+          <p style="font-size:24px; color:#6A5F74">#CF8598</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#44623E; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Leaf</p>
+          <p style="font-size:24px; color:#6A5F74">#44623E</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+          <div style="background:#26282B; height:200px; border-radius:12px"></div>
+          <p style="font-size:28px; font-weight:500">Ink</p>
+          <p style="font-size:24px; color:#6A5F74">#26282B</p>
+          </div>
+          </div>
+          <p style="font-family:'Newsreader', Georgia, serif; font-size:32px; font-style:italic; font-weight:300; color:#6A5F74; line-height:1.4; width:1300px">Each one is the median of thousands of pixels of that hue in your own artwork — so the brand colours and the painting can never drift apart. In day-to-day use three of them carry almost everything: ink, sunflower and a warm cream ground.</p>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="7">
+          <section id="type" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:80px; align-items:center">
+          <div style="flex:1; display:flex; flex-direction:column; gap:32px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Typeface</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Gotham Narrow, Light.</h2>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Your existing letters were narrower than standard Gotham. Rather than guess, I measured the logo you were already using and compared candidates against it.</p>
+          <table style="font-family:'Jost', sans-serif; font-size:28px; color:#241C2C">
+          <tr><th style="width:46%; text-align:left; font-weight:500">Measured</th><th style="width:27%; text-align:right; font-weight:500">Yours</th><th style="width:27%; text-align:right; font-weight:500">Gotham Narrow</th></tr>
+          <tr><td>Width of NALEDART</td><td style="text-align:right">7.10 &times; cap</td><td style="text-align:right">7.04 &times; cap</td></tr>
+          <tr><td>Stem weight</td><td style="text-align:right">7.7%</td><td style="text-align:right">7.1%</td></tr>
+          </table>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Six hundredths of a cap height apart on width. The small weight gap is closed with a hairline stroke, so the set letters sit exactly on top of the ones you have been using.</p>
+          </div>
+          <div style="width:620px; display:flex; flex-direction:column; gap:28px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:56px">
+          <p style="font-size:24px; letter-spacing:4px; color:#9A8FA3; text-transform:uppercase">Note on licensing</p>
+          <p style="font-size:28px; color:#241C2C; line-height:1.5">Gotham Narrow is a commercial typeface from Hoefler &amp; Co. The letters in your files are outlines, not fonts — they need no licence to open or print.</p>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Using the typeface itself in future work does need a licence. Most desktop licences permit logo use. Century Gothic is the fallback if you would rather avoid the question entirely.</p>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="8">
+          <section id="primary" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:80px; align-items:center">
+          <div style="flex:1; display:flex; flex-direction:column; gap:36px">
+          <div style="background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:72px; display:flex; align-items:center; justify-content:center">
+          <img loading="lazy" src="img/primary.webp" alt="The primary logo: NALEDI ART STUDIO set in two lines with a vertical rule for the letter I and the portrait forming the O" style="width:100%; height:300px; object-fit:contain">
+          </div>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">The device is your own: the vertical rule standing in for the I, and the portrait sitting in the O. The whole artwork fits inside that O — it is not a tight crop.</p>
+          </div>
+          <div style="width:680px; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">The primary mark</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Built to the measurement, not the eye.</h2>
+          <table style="font-family:'Jost', sans-serif; font-size:26px; color:#241C2C">
+          <tr><th style="width:52%; text-align:left; font-weight:500">Measured from your logo</th><th style="width:48%; text-align:right; font-weight:500">This build</th></tr>
+          <tr><td>Stem weight, 7.7% of cap</td><td style="text-align:right">7.7%</td></tr>
+          <tr><td>Line 1 ink width, 7.10 &times; cap</td><td style="text-align:right">7.08 &times; cap</td></tr>
+          <tr><td>Leading, 1.36 &times; cap</td><td style="text-align:right">matched</td></tr>
+          <tr><td>Rule, continuous through both lines</td><td style="text-align:right">0.077 cap</td></tr>
+          <tr><td>The O, ring at 9.5% of cap</td><td style="text-align:right">0.095 cap</td></tr>
+          </table>
+          <p style="font-size:26px; color:#6A5F74; line-height:1.45">Everything is expressed in cap heights rather than pixels, so the mark rebuilds exactly at any size — a business card and a building sign are the same drawing.</p>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="9">
+          <section id="classic" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:80px; align-items:center">
+          <div style="width:660px; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">The classic lockup</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">The painting's own layout, kept.</h2>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Artwork above, NALEDI ART and EST. 2019 below — the arrangement you painted. I measured it off the original canvas rather than re-inventing it.</p>
+          <table style="font-family:'Jost', sans-serif; font-size:26px; color:#241C2C">
+          <tr><th style="width:62%; text-align:left; font-weight:500">Taken from the painting</th><th style="width:38%; text-align:right; font-weight:500">Value</th></tr>
+          <tr><td>Cap height, as a share of artwork width</td><td style="text-align:right">0.2016</td></tr>
+          <tr><td>Line width, as a share of artwork width</td><td style="text-align:right">1.4562</td></tr>
+          <tr><td>Painted stroke weight</td><td style="text-align:right">4.0% of cap</td></tr>
+          <tr><td>Built at</td><td style="text-align:right">6.5% of cap</td></tr>
+          </table>
+          <p style="font-size:26px; color:#6A5F74; line-height:1.45">Weight is the one thing I changed on purpose. At 4.0% the letters looked starved next to the artwork. A second version at 7.7% exists if you would rather both lockups feel identical in weight.</p>
+          </div>
+          <div style="flex:1; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:56px; display:flex; align-items:center; justify-content:center">
+          <img loading="lazy" src="img/classic.webp" alt="The classic lockup: the portrait artwork above the words NALEDI ART and EST. 2019" style="width:100%; height:620px; object-fit:contain">
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="10">
+          <section id="suite" data-transition="fade" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:96px 128px 160px; display:flex; flex-direction:column; gap:32px">
+          <div style="display:flex; flex-direction:row; align-items:baseline; gap:32px">
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">The full suite.</h2>
+          <p style="font-size:28px; color:#6A5F74">Seventeen files, every one built from the same artwork</p>
+          </div>
+          <img loading="lazy" src="img/suite.webp" alt="Contact sheet of the whole logo suite: primary, flush primary, badge, horizontal, submark, monogram, wordmark and the classic lockup" style="width:100%; height:660px; object-fit:contain">
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="11">
+          <section id="marks" style="display:flex; flex-direction:column; gap:44px; padding:128px 128px 160px; background:#fbf8f4">
+            <div style="display:flex; flex-direction:column; gap:14px">
+              <p style="font-family:Jost, sans-serif; font-size:24px; letter-spacing:4px; text-transform:uppercase; color:#7e570d">Which mark, when</p>
+              <h2 style="font-family:Jost, sans-serif; font-size:64px; font-weight:400; line-height:1.1; color:#241c2c">Four you will actually reach for.</h2>
+            </div>
+            <div style="display:flex; flex-direction:row; gap:24px">
+              <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:36px; background:#ffffff; border:1px solid #e6dcd2; border-radius:16px">
+                <img loading="lazy" src="img/primary.webp" alt="The primary logo" style="height:150px; object-fit:contain">
+                <h3 style="font-family:Jost, sans-serif; font-size:32px; font-weight:500; color:#241c2c">Primary</h3>
+                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">The default. Website header, invoices, proposals, anywhere with room for two lines.</p>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:36px; background:#ffffff; border:1px solid #e6dcd2; border-radius:16px">
+                <img loading="lazy" src="img/badge.webp" alt="The oval Durban badge" style="height:150px; object-fit:contain">
+                <h3 style="font-family:Jost, sans-serif; font-size:32px; font-weight:500; color:#241c2c">Badge</h3>
+                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">Stickers, packaging tape, wax seals, the back of a canvas. Carries Durban in the ring.</p>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:36px; background:#ffffff; border:1px solid #e6dcd2; border-radius:16px">
+                <img loading="lazy" src="img/submark.webp" alt="The circular submark" style="height:150px; object-fit:contain">
+                <h3 style="font-family:Jost, sans-serif; font-size:32px; font-weight:500; color:#241c2c">Submark</h3>
+                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">Social avatar, favicon, app icon. Anywhere the name is already beside it.</p>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:18px; flex:1; padding:36px; background:#ffffff; border:1px solid #e6dcd2; border-radius:16px">
+                <img loading="lazy" src="img/horizontal.webp" alt="The horizontal lockup" style="width:347px; height:145px; flex:0 0 auto; object-fit:contain">
+                <h3 style="font-family:Jost, sans-serif; font-size:32px; font-weight:500; color:#241c2c">Horizontal</h3>
+                <p style="font-family:Jost, sans-serif; font-size:24px; line-height:1.45; color:#6a5f74">Letterhead, email footer, a wide banner — wherever height is short and width is not.</p>
+              </div>
+            </div>
+            <p style="position:absolute; bottom:64px; left:128px; font-family:Jost, sans-serif; font-size:24px; color:#9a8fa3">Naledi Art Studio · Brand identity</p>
+            
+          </section>
+        </div>
+        <div class="slide" data-i="12">
+          <section id="clearspace" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:row; gap:72px; align-items:center">
+          <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Clear space</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Give it one cap height, all round.</h2>
+          <p style="font-size:28px; color:#6A5F74; line-height:1.5">Measure the height of a capital N in the mark. Keep that much empty on every side — no type, no photograph edge, no border. For the round marks, keep a quarter of the ring's diameter.</p>
+          <div style="background:#FFFFFF; border:1px dashed #D2C5B8; border-radius:16px; padding:48px; display:flex; align-items:center; justify-content:center">
+          <img loading="lazy" src="img/primary.webp" alt="The primary logo shown inside its clear-space boundary" style="width:100%; height:190px; object-fit:contain">
+          </div>
+          </div>
+          <div style="width:700px; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">How small it may go</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Below these, use a simpler mark.</h2>
+          <table style="font-family:'Jost', sans-serif; font-size:28px; color:#241C2C">
+          <tr><th style="width:44%; text-align:left; font-weight:500">Mark</th><th style="width:28%; text-align:right; font-weight:500">Screen</th><th style="width:28%; text-align:right; font-weight:500">Print</th></tr>
+          <tr><td>Primary</td><td style="text-align:right">120 px wide</td><td style="text-align:right">32 mm</td></tr>
+          <tr><td>Horizontal</td><td style="text-align:right">180 px wide</td><td style="text-align:right">45 mm</td></tr>
+          <tr><td>Badge</td><td style="text-align:right">64 px</td><td style="text-align:right">18 mm</td></tr>
+          <tr><td>Submark</td><td style="text-align:right">32 px</td><td style="text-align:right">10 mm</td></tr>
+          </table>
+          <p style="font-size:26px; color:#6A5F74; line-height:1.45">The artwork carries a lot of fine detail. Under these sizes the sunflowers stop reading as sunflowers and turn to noise — that is when to switch to the submark or the plain-ring wordmark.</p>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="13">
+          <section id="backgrounds" data-transition="fade" style="background:#16111D; color:#F3EDE5; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px; display:flex; flex-direction:row; gap:80px; align-items:center">
+          <div style="flex:1; display:flex; flex-direction:column; gap:36px">
+          <div style="background:#241C2C; border-radius:16px; padding:64px; display:flex; align-items:center; justify-content:center">
+          <img loading="lazy" src="img/primary-reversed.webp" alt="The logo reversed in cream on a dark ground" style="width:100%; height:260px; object-fit:contain">
+          </div>
+          <p style="font-size:26px; color:#AFA3B9; line-height:1.45">The reversed set is cream, not white. Pure white vibrates against the plum and looks harsh in print.</p>
+          </div>
+          <div style="width:720px; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">Backgrounds</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1; color:#F3EDE5">Where it sits happily.</h2>
+          <ul style="font-size:28px; color:#AFA3B9; line-height:1.6">
+          <li><b style="color:#F3EDE5">Cream, white, pale warm greys</b> &mdash; use the standard ink set.</li>
+          <li><b style="color:#F3EDE5">Deep plum, charcoal, black</b> &mdash; use the reversed cream set.</li>
+          <li><b style="color:#F3EDE5">Photographs</b> &mdash; only over a quiet area, and only the reversed set. Never across a face or a busy pattern.</li>
+          </ul>
+          <div style="background:#241C2C; border-left:4px solid #E2B155; border-radius:8px; padding:36px; display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:32px; font-weight:500; color:#E2B155">The one real trap</h3>
+          <p style="font-size:26px; color:#AFA3B9; line-height:1.45">Her hair is very dark. On a near-black ground the full-colour artwork loses its outline and the head disappears into the background. On dark grounds use the reversed set, or the submark, which carries a ring to hold the edge.</p>
+          </div>
+          </div>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="14">
+          <section id="misuse" style="background:#FBF8F4; color:#241C2C; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+          <div style="display:flex; flex-direction:column; gap:14px">
+          <p style="font-size:24px; letter-spacing:4px; color:#7E570D; text-transform:uppercase">Please avoid</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1">Six ways to undo all of this.</h2>
+          </div>
+          <div style="display:flex; flex-direction:row; gap:24px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Stretching it</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">Scale from a corner, holding proportion. A squashed face is the first thing anyone notices.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Recolouring the artwork</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">The painting stays as painted. Only the lettering and the rule may change colour.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Re-typing the words</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">The spacing is measured, not typed. Use the supplied files rather than setting the name fresh.</p>
+          </div>
+          </div>
+          <div style="display:flex; flex-direction:row; gap:24px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Adding effects</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">No drop shadows, outlines, glows or bevels. The artwork already carries its own texture.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Cropping the O</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">The whole artwork sits inside that circle on purpose. A tighter crop cuts the sunflowers again.</p>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; background:#FFFFFF; border:1px solid #E6DCD2; border-radius:16px; padding:36px">
+          <h3 style="font-size:30px; font-weight:500">Rebuilding from a screenshot</h3>
+          <p style="font-size:24px; color:#6A5F74; line-height:1.45">That is how we got here. Always start from the supplied SVG or PDF.</p>
+          </div>
+          </div>
+          <p style="position:absolute; left:128px; bottom:64px; font-size:24px; color:#9A8FA3">Naledi Art Studio &middot; Brand identity</p>
+          
+          </section>
+        </div>
+        <div class="slide" data-i="15">
+          <section id="files" style="background:#16111D; color:#F3EDE5; font-family:'Jost', 'Century Gothic', sans-serif; padding:128px; display:flex; flex-direction:row; gap:80px">
+          <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+          <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">What you have</p>
+          <h2 style="font-size:64px; font-weight:400; line-height:1.1; color:#F3EDE5">The handover.</h2>
+          <table style="font-family:'Jost', sans-serif; font-size:26px; color:#F3EDE5">
+          <tr><th style="width:34%; text-align:left; font-weight:500">Format</th><th style="width:66%; text-align:left; font-weight:500">Use it for</th></tr>
+          <tr><td>SVG</td><td>Web, and any designer you hand the brand to</td></tr>
+          <tr><td>PDF</td><td>Printers, signwriters, embroiderers</td></tr>
+          <tr><td>PNG</td><td>Transparent, several sizes, for documents and social</td></tr>
+          <tr><td>AI</td><td>The editable master artwork</td></tr>
+          </table>
+          <p style="font-size:26px; color:#AFA3B9; line-height:1.45">Every file was checked to render with no fonts installed, so a printer who does not own Gotham Narrow still gets the right letters.</p>
+          </div>
+          <div style="width:740px; display:flex; flex-direction:column; gap:24px">
+          <p style="font-size:24px; letter-spacing:4px; color:#E2B155; text-transform:uppercase">Before you print</p>
+          <div style="background:#1E1828; border-radius:12px; padding:32px; display:flex; flex-direction:column; gap:10px">
+          <h3 style="font-size:30px; font-weight:500; color:#F3EDE5">Digital print, not screen print</h3>
+          <p style="font-size:25px; color:#AFA3B9; line-height:1.4">2,202 colours cannot be separated into spot inks. For fabric, ask for DTG or DTF.</p>
+          </div>
+          <div style="background:#1E1828; border-radius:12px; padding:32px; display:flex; flex-direction:column; gap:10px">
+          <h3 style="font-size:30px; font-weight:500; color:#F3EDE5">Convert to CMYK for litho</h3>
+          <p style="font-size:25px; color:#AFA3B9; line-height:1.4">The files are sRGB. Ask your printer to convert and send a proof. The golds are the ones to check.</p>
+          </div>
+          <div style="background:#1E1828; border-radius:12px; padding:32px; display:flex; flex-direction:column; gap:10px">
+          <h3 style="font-size:30px; font-weight:500; color:#F3EDE5">Two things still open</h3>
+          <p style="font-size:25px; color:#AFA3B9; line-height:1.4">Which weight for the classic lockup, 6.5% or 7.7%. And the monogram reads as a word: N beside O can be read as NO. Say the word and I will rework it.</p>
+          </div>
+          </div>
+          
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="deck-nav">
+      <button class="nb" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nb" id="next" aria-label="Next slide">›</button>
+      <span class="count"><span id="cur">1</span> / 16</span>
+      <button class="nb" id="fs">Fullscreen</button>
+      <div class="dots" id="dots"></div>
+    </div>
+    <p class="hint" style="text-align:left;margin-top:10px">Arrow keys, or swipe. On a phone the slides are small — turn it sideways, go fullscreen, or pinch to zoom.</p>
+  </section>
+
+  <section id="p-site" role="tabpanel" aria-labelledby="t-site" hidden>
+    <div class="site-wrap">
+      <div class="sizes">
+        <button class="nb" data-size="full" aria-pressed="true">Desktop</button>
+        <button class="nb" data-size="phone" aria-pressed="false">Phone</button>
+      </div>
+      <div class="frame" id="frame">
+        <iframe id="siteFrame" title="Naledi Art Studio website" loading="lazy" src="about:blank"></iframe>
+      </div>
+      <p class="hint">This is the live site. Booking works in here — it is the real thing, not a picture.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var stage = document.getElementById('stage');
+  var deck = document.getElementById('deck');
+  var at = 0;
+
+  // The slides are drawn on a fixed 1920x1080 canvas; scale it to whatever
+  // width the page has rather than reflowing anything.
+  function fit() {
+    var w = deck.clientWidth, h = deck.clientHeight;
+    var s = Math.min(w / 1920, h / 1080);
+    // centred, so fullscreen on a screen that is not 16:9 letterboxes cleanly
+    stage.style.transform = 'translate(' + ((w - 1920 * s) / 2).toFixed(1) + 'px,' +
+      ((h - 1080 * s) / 2).toFixed(1) + 'px) scale(' + s + ')';
+  }
+  addEventListener('resize', fit);
+
+  var dots = document.getElementById('dots');
+  dots.innerHTML = slides.map(function (_, i) {
+    return '<button class="dot" data-go="' + i + '" aria-label="Slide ' + (i + 1) + '"></button>';
+  }).join('');
+
+  function show(i) {
+    at = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, n) { s.classList.toggle('on', n === at); });
+    document.getElementById('cur').textContent = at + 1;
+    document.getElementById('prev').disabled = at === 0;
+    document.getElementById('next').disabled = at === slides.length - 1;
+    [].forEach.call(dots.children, function (d, n) {
+      d.setAttribute('aria-current', n === at ? 'true' : 'false');
+    });
+  }
+
+  document.getElementById('prev').addEventListener('click', function () { show(at - 1); });
+  document.getElementById('next').addEventListener('click', function () { show(at + 1); });
+  dots.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-go]'); if (b) show(+b.getAttribute('data-go'));
+  });
+  addEventListener('keydown', function (e) {
+    if (document.getElementById('p-deck').hidden) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(at + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(at - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+  });
+
+  var x0 = null;
+  deck.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  deck.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 45) show(at + (dx < 0 ? 1 : -1));
+    x0 = null;
+  }, { passive: true });
+
+  /* ---- tabs ---- */
+  var loaded = false;
+  function tab(which) {
+    var isDeck = which === 'deck';
+    document.getElementById('p-deck').hidden = !isDeck;
+    document.getElementById('p-site').hidden = isDeck;
+    document.getElementById('t-deck').setAttribute('aria-selected', isDeck ? 'true' : 'false');
+    document.getElementById('t-site').setAttribute('aria-selected', isDeck ? 'false' : 'true');
+    if (isDeck) { fit(); return; }
+    // The site is only fetched once the tab is actually opened.
+    if (!loaded) { document.getElementById('siteFrame').src = '../index.html'; loaded = true; }
+  }
+  document.getElementById('t-deck').addEventListener('click', function () { tab('deck'); });
+  document.getElementById('t-site').addEventListener('click', function () { tab('site'); });
+
+  document.querySelector('.sizes').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-size]'); if (!b) return;
+    document.getElementById('frame').classList.toggle('phone', b.dataset.size === 'phone');
+    [].forEach.call(this.children, function (c) {
+      c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+    });
+  });
+
+  var fsBtn = document.getElementById('fs');
+  fsBtn.addEventListener('click', function () {
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    var go = deck.requestFullscreen && deck.requestFullscreen();
+    // Phones and some embedded views refuse it; say so rather than doing nothing.
+    if (go && go.catch) go.catch(function () { fsBtn.disabled = true; fsBtn.textContent = 'Not available'; });
+    else if (!go) { fsBtn.disabled = true; fsBtn.textContent = 'Not available'; }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    fit(); fsBtn.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';
+  });
+
+  fit();
+  show(0);
+})();
+</script>
+</body>
+</html>
