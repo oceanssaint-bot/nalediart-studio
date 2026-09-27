@@ -760,7 +760,7 @@
   var state = {
     svc: 'studio', date: null, start: null,
     month: new Date(today.getFullYear(), today.getMonth(), 1),
-    bookings: [], blocks: [], busy: false, canWrite: true, isStudio: false,
+    bookings: [], blocks: [], busy: false, canWrite: true, isStudio: false, finished: false,
     // true only where a shared store backs the calendar. Without one (the
     // plain static build) a slot cannot be held, so the page asks for a
     // request and hands it to WhatsApp rather than claiming a confirmation.
@@ -1000,7 +1000,13 @@
       : '<div class="note">Nothing booked yet.</div>';
   }
 
-  function render() { renderServices(); renderCalendar(); renderSlots(); renderSummary(); renderPanel(); }
+  function render() {
+    // Once the booking succeeds, done() replaces the whole stage and the form
+    // elements no longer exist. A refresh landing after that must not try to
+    // redraw them.
+    if (state.finished || !$('svcList')) { renderPanel(); return; }
+    renderServices(); renderCalendar(); renderSlots(); renderSummary(); renderPanel();
+  }
 
   /* ---------------- calendar handoff ---------------- */
   function toUTC(dateStr, minutes) {
@@ -1125,6 +1131,7 @@
     // reaches the studio until the customer sends the message, so the page
     // says so plainly instead of claiming a confirmation.
     var held = state.shared;
+    state.finished = true;
     $('stage').innerHTML =
       '<div class="done" style="grid-column:1/-1">' +
         '<div class="tick">' + (held ? '✓' : '→') + '</div>' +
