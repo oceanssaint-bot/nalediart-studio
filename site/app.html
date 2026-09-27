@@ -1218,6 +1218,27 @@
     else { state.blocks.push({ date: d, _id: d }); lsSet(LS_BLOCK, state.blocks); render(); }
   });
 
+  // Netlify injects a fixed badge in the bottom-right corner that lands
+  // exactly on top of the dock's Book button — on a 375px screen it covers
+  // it completely. The iframe is cross-origin so it cannot be restyled;
+  // instead lift the dock clear of it. Absent (GitHub Pages, local), nothing
+  // changes. The badge loads after us, so poll briefly for it.
+  (function clearFixedBadge() {
+    var tries = 0;
+    var timer = setInterval(function () {
+      var f = document.getElementById('nl-badge-frame');
+      var h = f ? Math.ceil(f.getBoundingClientRect().height) : 0;
+      if (h > 0) {
+        var dock = document.querySelector('.dock');
+        if (dock) dock.style.paddingBottom = 'calc(' + (h + 8) + 'px + env(safe-area-inset-bottom, 0px))';
+        document.body.style.paddingBottom = (84 + h) + 'px';
+        clearInterval(timer);
+      } else if (++tries > 20) {
+        clearInterval(timer);
+      }
+    }, 500);
+  })();
+
   $('yr').textContent = new Date().getFullYear();
   render();
   connect();
