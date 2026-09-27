@@ -167,6 +167,7 @@
       <button class="btn ghost sm" id="refresh" style="margin-left:auto">Refresh</button>
     </div>
 
+    <p class="err" id="msg" hidden></p>
     <div id="list"></div>
 
     <div class="card">
@@ -204,6 +205,20 @@
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   var token = null, rows = [], blocks = [], view = 'pending';
+  // Must match expire_stale_requests()'s default in supabase/auto-expiry.sql.
+  var HOLD_HOURS = 48;
+
+  function isDead(b) { return b.status === 'cancelled' || b.status === 'expired'; }
+
+  // How much of the hold window a pending request has left.
+  function holdLeft(b) {
+    if (!b.created_at) return null;
+    var ms = new Date(b.created_at).getTime() + HOLD_HOURS * 3600000 - Date.now();
+    if (new Date(b.starts_at).getTime() < Date.now()) return null;  // already under way
+    if (ms <= 0) return 'releasing now';
+    var h = Math.floor(ms / 3600000);
+    return h >= 1 ? 'holds ' + h + 'h' : 'holds ' + Math.max(1, Math.floor(ms / 60000)) + 'm';
+  }
 
   // Kept in sessionStorage, not localStorage: it clears when the tab closes,
   // which is the safer default on a phone that gets handed around.
@@ -300,8 +315,8 @@
     var t = todayKey();
     return rows.filter(function (b) {
       var k = dayKey(b.starts_at);
-      if (view === 'cancelled') return b.status === 'cancelled';
-      if (b.status === 'cancelled') return false;
+      if (view === 'cancelled') return isDead(b);
+      if (isDead(b)) return false;
       // "Needs you" is the action queue: requests not yet confirmed, and
       // only ones still ahead — a pending slot that has already passed is
       // history, not a to-do.
@@ -318,7 +333,7 @@
 
   function render() {
     var t = todayKey();
-    var live = rows.filter(function (b) { return b.status !== 'cancelled'; });
+    var live = rows.filter(function (b) { return !isDead(b); });
     var upcoming = live.filter(function (b) { return dayKey(b.starts_at) >= t; });
     var todays = live.filter(function (b) { return dayKey(b.starts_at) === t; });
     var waiting = live.filter(function (b) { return b.status === 'pending' && dayKey(b.starts_at) >= t; });
@@ -339,16 +354,19 @@
 
   function card(b) {
     var t = todayKey(), k = dayKey(b.starts_at);
-    var cancelled = b.status === 'cancelled';
+    var cancelled = isDead(b);
+    var expired = b.status === 'expired';
     var pending = b.status === 'pending';
+    var left = pending ? holdLeft(b) : null;
     var phone = (b.phone || '').replace(/\s+/g, '');
     var wa = phone ? 'https://wa.me/' + phone.replace(/^0/, '27').replace(/^\+/, '') : null;
     return '<article class="bk' + (cancelled ? ' cancelled' : '') + (pending ? ' pending' : '') + '">' +
       '<div class="top">' +
         '<span class="when">' + esc(longDay(b.starts_at)) + ' · ' + esc(timeOf(b.starts_at)) + '–' + esc(timeOf(b.ends_at)) + '</span>' +
         (k === t && !cancelled ? '<span class="pill today">Today</span>' : '') +
-        (cancelled ? '<span class="pill">Cancelled</span>' : '') +
+        (expired ? '<span class="pill">Lapsed</span>' : (cancelled ? '<span class="pill">Cancelled</span>' : '')) +
         (pending ? '<span class="pill wait">Awaiting you</span>' : '') +
+        (left ? '<span class="pill">' + esc(left) + '</span>' : '') +
         (!pending && !cancelled ? '<span class="pill ok">Confirmed</span>' : '') +
         '<span class="amt">' + esc(b.amount || '—') + '</span>' +
       '</div>' +
@@ -371,13 +389,28 @@
   }
 
   /* ---------------- actions ---------------- */
+  function say(text) {
+    var m = $('msg');
+    if (!text) { m.hidden = true; return; }
+    m.textContent = text; m.hidden = false;
+  }
+
   function patch(id, body) {
+    say('');
     return fetch(REST + '/bookings?id=eq.' + encodeURIComponent(id), {
       method: 'PATCH', headers: headers({ Prefer: 'return=minimal' }), body: JSON.stringify(body)
     }).then(function (r) {
       if (r.status === 401) { signedOut('Your session expired. Sign in again.'); return; }
-      return load();
-    });
+      if (r.ok) return load();
+      return r.text().then(function (t) {
+        // Reinstating a lapsed or cancelled booking fails when the time has
+        // since been taken. Say so rather than appearing to do nothing.
+        say(t.indexOf('23P01') >= 0 || t.indexOf('bookings_no_overlap') >= 0
+          ? 'That time has been taken by someone else since — this booking cannot be reinstated.'
+          : 'That did not save. Try again.');
+        return load();
+      });
+    }).catch(function () { say('Could not reach the server. Try again.'); });
   }
 
   document.addEventListener('click', function (e) {
