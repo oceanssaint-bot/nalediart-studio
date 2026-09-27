@@ -100,6 +100,10 @@
   .pill { font-size:11px; letter-spacing:.1em; text-transform:uppercase;
           padding:3px 9px; border-radius:999px; border:1px solid var(--line-firm); color:var(--ink-faint); }
   .pill.today { color:var(--leaf); border-color:var(--leaf); }
+  .pill.wait { color:var(--gold); border-color:var(--gold); }
+  .pill.ok { color:var(--leaf); border-color:var(--leaf); }
+  .bk.pending { border-color:var(--gold); border-left-width:3px; }
+  .btn.confirm { background:var(--leaf); color:#F4FBF4; border-color:var(--leaf); }
 
   .blk { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:15px; }
   .blk:last-child { border-bottom:0; }
@@ -155,7 +159,8 @@
     <div class="sum" id="summary"></div>
 
     <div class="tabs">
-      <button class="tab" data-view="upcoming" aria-pressed="true">Upcoming</button>
+      <button class="tab" data-view="pending" aria-pressed="true">Needs you</button>
+      <button class="tab" data-view="upcoming" aria-pressed="false">Upcoming</button>
       <button class="tab" data-view="today" aria-pressed="false">Today</button>
       <button class="tab" data-view="past" aria-pressed="false">Past</button>
       <button class="tab" data-view="cancelled" aria-pressed="false">Cancelled</button>
@@ -198,7 +203,7 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  var token = null, rows = [], blocks = [], view = 'upcoming';
+  var token = null, rows = [], blocks = [], view = 'pending';
 
   // Kept in sessionStorage, not localStorage: it clears when the tab closes,
   // which is the safer default on a phone that gets handed around.
@@ -294,9 +299,13 @@
   function filtered() {
     var t = todayKey();
     return rows.filter(function (b) {
-      var k = dayKey(b.starts_at), cancelled = b.status !== 'confirmed';
-      if (view === 'cancelled') return cancelled;
-      if (cancelled) return false;
+      var k = dayKey(b.starts_at);
+      if (view === 'cancelled') return b.status === 'cancelled';
+      if (b.status === 'cancelled') return false;
+      // "Needs you" is the action queue: requests not yet confirmed, and
+      // only ones still ahead — a pending slot that has already passed is
+      // history, not a to-do.
+      if (view === 'pending') return b.status === 'pending' && k >= t;
       if (view === 'today') return k === t;
       if (view === 'upcoming') return k >= t;
       return k < t;
@@ -309,13 +318,14 @@
 
   function render() {
     var t = todayKey();
-    var live = rows.filter(function (b) { return b.status === 'confirmed'; });
+    var live = rows.filter(function (b) { return b.status !== 'cancelled'; });
     var upcoming = live.filter(function (b) { return dayKey(b.starts_at) >= t; });
     var todays = live.filter(function (b) { return dayKey(b.starts_at) === t; });
+    var waiting = live.filter(function (b) { return b.status === 'pending' && dayKey(b.starts_at) >= t; });
     $('summary').innerHTML =
+      '<div><b>' + waiting.length + '</b>need confirming</div>' +
       '<div><b>' + todays.length + '</b>today</div>' +
-      '<div><b>' + upcoming.length + '</b>upcoming</div>' +
-      '<div><b>' + live.length + '</b>total booked</div>';
+      '<div><b>' + upcoming.length + '</b>upcoming</div>';
 
     var list = filtered();
     $('list').innerHTML = list.length ? list.map(card).join('')
@@ -329,14 +339,17 @@
 
   function card(b) {
     var t = todayKey(), k = dayKey(b.starts_at);
-    var cancelled = b.status !== 'confirmed';
+    var cancelled = b.status === 'cancelled';
+    var pending = b.status === 'pending';
     var phone = (b.phone || '').replace(/\s+/g, '');
     var wa = phone ? 'https://wa.me/' + phone.replace(/^0/, '27').replace(/^\+/, '') : null;
-    return '<article class="bk' + (cancelled ? ' cancelled' : '') + '">' +
+    return '<article class="bk' + (cancelled ? ' cancelled' : '') + (pending ? ' pending' : '') + '">' +
       '<div class="top">' +
         '<span class="when">' + esc(longDay(b.starts_at)) + ' · ' + esc(timeOf(b.starts_at)) + '–' + esc(timeOf(b.ends_at)) + '</span>' +
         (k === t && !cancelled ? '<span class="pill today">Today</span>' : '') +
         (cancelled ? '<span class="pill">Cancelled</span>' : '') +
+        (pending ? '<span class="pill wait">Awaiting you</span>' : '') +
+        (!pending && !cancelled ? '<span class="pill ok">Confirmed</span>' : '') +
         '<span class="amt">' + esc(b.amount || '—') + '</span>' +
       '</div>' +
       '<div class="svc">' + esc(b.service_name) + '</div>' +
@@ -347,6 +360,7 @@
       '</div>' +
       (b.notes ? '<div class="notes">“' + esc(b.notes) + '”</div>' : '') +
       '<div class="acts">' +
+        (pending ? '<button class="btn sm confirm" data-confirm="' + esc(b.id) + '">Confirm booking</button>' : '') +
         (wa ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa) + '">WhatsApp</a>' : '') +
         (cancelled
           ? '<button class="btn ghost sm" data-restore="' + esc(b.id) + '">Restore</button>'
@@ -367,6 +381,14 @@
   }
 
   document.addEventListener('click', function (e) {
+    var cf = e.target.closest('[data-confirm]');
+    if (cf) {
+      // Confirming only changes status; the slot was already held from the
+      // moment the request came in, so nothing about availability moves here.
+      cf.disabled = true; cf.textContent = 'Confirming…';
+      patch(cf.getAttribute('data-confirm'), { status: 'confirmed', confirmed_at: new Date().toISOString() });
+      return;
+    }
     var c = e.target.closest('[data-cancel]');
     if (c) {
       // Cancelling frees the slot: the overlap constraint only covers
