@@ -8,3 +8,5 @@ site/assets/photos/
 # out, since the same images are already committed as webp in
 # site/review/img.
 presentation/img/
+brand-suite/build/node_modules/
+brand-suite/build/.tmp/

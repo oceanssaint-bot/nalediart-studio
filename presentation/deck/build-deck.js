@@ -175,7 +175,7 @@ SLIDES.digitise = slide('digitise',
   body(
     strip([
       [B.beforeArt, 'The original artwork, soft-edged and washed out, enlarged to show its limits', 'Before &middot; 418 px of painting'],
-      [B.afterArt, 'The finished vector artwork, crisp and fully saturated', 'After &middot; 3,569 drawn shapes']
+      [B.afterArt, 'The finished vector artwork, crisp and fully saturated', 'After &middot; 3,448 drawn shapes']
     ], { fit: 'contain' }) +
     cols([
       p('Enlarged to this size it goes soft immediately. Every edge is a gradient of grey.', { max: 52 }),
@@ -211,8 +211,8 @@ SLIDES.master = slide('master',
     ' align-items:center">\n' +
     '<div style="display:flex; flex-direction:column; gap:44px">\n' +
     cols([
-      '<p style="font-size:86px; font-weight:200; line-height:1; color:' + T.ink + '">3,569</p>' + label('drawn shapes'),
-      '<p style="font-size:86px; font-weight:200; line-height:1; color:' + T.ink + '">2,202</p>' + label('distinct colours'),
+      '<p style="font-size:86px; font-weight:200; line-height:1; color:' + T.ink + '">3,448</p>' + label('drawn shapes'),
+      '<p style="font-size:86px; font-weight:200; line-height:1; color:' + T.ink + '">2,124</p>' + label('distinct colours'),
       '<p style="font-size:86px; font-weight:200; line-height:1; color:' + T.ink + '">&infin;</p>' + label('maximum size')
     ], { gap: 12 }) +
     p('Every mark in this document is built from this one artwork. Change it here and everything downstream follows.', { max: 56, size: 25 }) +
@@ -220,7 +220,7 @@ SLIDES.master = slide('master',
     fig(B.afterArt, 'The finished master artwork', '', { h: 520, fit: 'contain' }) +
     '</div>\n') +
   foot(FOOT_ID, 9) +
-  notes('The 2,202 colours matter later, in the production notes: that many colours means digital printing rather than screen printing.'));
+  notes('The 2,124 colours matter later, in the production notes: that many colours means digital printing rather than screen printing.'));
 
 /* ------------------------------------------------------------------ 10 */
 const SWATCH = [
@@ -595,7 +595,7 @@ SLIDES.files = slide('files',
     '</div>\n' +
     '<div style="display:flex; flex-direction:column; gap:24px">\n' +
     '<div style="display:flex; flex-direction:column; gap:10px; border-top:1px solid ' + T.line + '; padding-top:20px">\n' +
-    h3('Digital print, not screen print') + p('2,202 colours cannot be separated into spot inks. For fabric, ask for DTG or DTF.', { max: 46, size: 21 }) + '</div>\n' +
+    h3('Digital print, not screen print') + p('2,124 colours cannot be separated into spot inks. For fabric, ask for DTG or DTF.', { max: 46, size: 21 }) + '</div>\n' +
     '<div style="display:flex; flex-direction:column; gap:10px; border-top:1px solid ' + T.line + '; padding-top:20px">\n' +
     h3('Convert to CMYK for litho') + p('The files are sRGB. Ask your printer to convert and send a proof. The golds are the ones to check.', { max: 46, size: 21 }) + '</div>\n' +
     '<div style="display:flex; flex-direction:column; gap:10px; border-top:1px solid ' + T.lit + '; padding-top:20px">\n' +
