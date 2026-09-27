@@ -35,6 +35,9 @@
     --gold:#E2B155; --blossom:#E7A3B4; --leaf:#8FB286;
   }
   * { box-sizing:border-box; }
+  /* Must outrank the display rules below, or `hidden` on a flex element
+     (the sign-out button) does nothing. */
+  [hidden] { display:none !important; }
   html { -webkit-text-size-adjust:100%; }
   body { margin:0; background:var(--paper); color:var(--ink);
          font:400 16px/1.55 Jost,"Century Gothic",system-ui,sans-serif;
