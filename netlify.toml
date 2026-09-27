@@ -20,10 +20,15 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# These filenames are stable: logo.png is always logo.png. "immutable" told
+# every browser and every CDN edge never to check again for a year, so the
+# logo update of 27 September 2026 would have stayed invisible to anyone who
+# had already opened the site. An hour, revalidated, until the filenames
+# carry a content hash.
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=3600, must-revalidate"
 
 # The dashboard should never be indexed.
 [[headers]]
