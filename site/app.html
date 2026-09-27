@@ -126,6 +126,36 @@
   nav.links a.txt { display: none; text-decoration: none; font-size: 14px; color: var(--ink-soft); }
   @media (min-width: 760px) { nav.links a.txt { display: inline; } }
 
+  /* ---------- burger and mobile menu ---------- */
+  .burger { display: inline-flex; align-items: center; justify-content: center; flex: none;
+            width: var(--tap); height: var(--tap); border-radius: 50%; cursor: pointer;
+            border: 1px solid var(--line-firm); background: transparent;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  @media (min-width: 760px) { .burger { display: none; } }
+  .burger i { display: block; width: 17px; height: 1px; background: var(--ink); position: relative; }
+  .burger i::before, .burger i::after {
+    content: ''; position: absolute; left: 0; width: 17px; height: 1px; background: var(--ink); }
+  .burger i::before { top: -6px; } .burger i::after { top: 6px; }
+
+  .menu { position: fixed; inset: 0; z-index: 90; background: var(--paper);
+          display: flex; flex-direction: column; overflow-y: auto;
+          padding: env(safe-area-inset-top, 0px) var(--gut) calc(env(safe-area-inset-bottom, 0px) + 28px); }
+  .menu-top { display: flex; align-items: center; height: 58px; }
+  .menu-top img { height: 26px; width: auto; }
+  .menu-close { margin-left: auto; width: var(--tap); height: var(--tap); border-radius: 50%;
+                border: 1px solid var(--line-firm); background: transparent; color: var(--ink);
+                font-size: 20px; line-height: 1; cursor: pointer; }
+  .menu-nav { margin-top: 20px; border-top: 1px solid var(--line); }
+  .menu-nav a { display: flex; align-items: flex-start; gap: 14px; padding: 24px 0 0;
+                border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+  /* Same move as the accordion: the letters sit across the rule. */
+  .menu-nav a .t { font-size: 38px; font-weight: 200; text-transform: uppercase;
+                   letter-spacing: .012em; line-height: 1; margin-bottom: -.11em; flex: 1; }
+  .menu-nav a .n { font-size: 12px; color: var(--ink-faint); letter-spacing: .1em; margin-top: 6px; }
+  .menu-foot { margin-top: auto; padding-top: 34px; display: flex; flex-direction: column; gap: 6px; }
+  .menu-foot a { color: var(--ink); text-decoration: none; font-size: 16px; }
+  .menu-foot p { font-size: 13px; color: var(--ink-faint); }
+
   /* ---------- hero ---------- */
   .hero { padding-block: 30px 26px; }
   .hero h1 { font-size: 38px; line-height: 1.02; letter-spacing: -.03em; }
@@ -153,7 +183,11 @@
   .sec-head { margin-bottom: 34px; }
   .sec-head .eyebrow { display: block; margin-bottom: 10px; }
   /* Title on the left, the sentence it used to be on the right. */
-  .sec-head.split { display: grid; gap: 16px; align-items: end; }
+  .sec-head.split { display: grid; gap: 16px; align-items: end;
+                    border-bottom: 1px solid var(--line); padding-bottom: 0; }
+  /* The rule runs through the feet of the letters rather than under them. */
+  .sec-head.split h2 { margin-bottom: -.11em; }
+  .sec-head.split .lede { margin-bottom: 14px; }
   @media (min-width: 900px) {
     .sec-head.split { grid-template-columns: 1fr 34ch; gap: 56px; margin-bottom: 48px; }
     .sec-head.split .lede { font-size: 17px; }
@@ -162,7 +196,13 @@
   /* ---------- marquee ----------
      A black band of repeating text. Same trick as the story river: the run is
      written twice and the track slides exactly half its width. */
-  .marquee { background: var(--ink); overflow: hidden; padding-block: 13px; }
+  /* The band is perforated top and bottom, like a ticket stub. */
+  .marquee { background: var(--ink); overflow: hidden; padding-block: 13px; position: relative; }
+  .marquee::before, .marquee::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 3px;
+    background-image: repeating-linear-gradient(90deg, var(--paper) 0 5px, transparent 5px 11px);
+  }
+  .marquee::before { top: 0; } .marquee::after { bottom: 0; }
   .marquee-track { display: flex; width: max-content; animation: slide 38s linear infinite; }
   .marquee span { flex: none; color: var(--paper); font-size: 12px; letter-spacing: .22em;
                   text-transform: uppercase; padding-right: 26px; white-space: nowrap; }
@@ -174,23 +214,31 @@
   .acc { border-top: 1px solid var(--line); }
   .acc-row { border-bottom: 1px solid var(--line); }
   .acc-head {
-    width: 100%; background: none; border: 0; padding: 22px 0; cursor: pointer;
-    display: flex; align-items: center; gap: 18px; text-align: left; color: var(--ink);
+    width: 100%; background: none; border: 0; padding: 26px 0 0; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 18px; text-align: left; color: var(--ink);
     font: inherit; touch-action: manipulation;
   }
-  .acc-head .t { font-size: 28px; font-weight: 300; text-transform: uppercase; letter-spacing: .01em; line-height: 1; }
-  @media (min-width: 720px) { .acc-head { padding: 30px 0; } .acc-head .t { font-size: 46px; } }
-  @media (min-width: 1200px) { .acc-head .t { font-size: 60px; } }
-  .acc-head .amt { margin-left: auto; font-size: 14px; color: var(--ink-faint); white-space: nowrap; }
+  .acc-head .t { font-size: 30px; font-weight: 200; text-transform: uppercase;
+                 letter-spacing: .012em; line-height: 1; flex: 1; margin-bottom: -.11em; }
+  @media (min-width: 720px) { .acc-head { padding-top: 34px; } .acc-head .t { font-size: 54px; } }
+  @media (min-width: 1200px) { .acc-head .t { font-size: 76px; } }
+  .acc-head .amt { flex: none; font-size: 13px; color: var(--ink-faint); white-space: nowrap;
+                   letter-spacing: .1em; text-transform: uppercase; margin-top: 8px; }
   .acc-head .tog {
-    flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-firm);
+    flex: none; margin-top: 4px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-firm);
     display: grid; place-items: center; font-size: 17px; color: var(--ink-soft); line-height: 1;
   }
   .acc-row[open] .acc-head .tog { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
-  .acc-body { padding: 0 0 28px; display: grid; gap: 22px; }
-  @media (min-width: 860px) { .acc-body { grid-template-columns: 1.1fr 1fr; gap: 44px; align-items: start; } }
+  .acc-body { padding: 26px 0 34px; display: grid; gap: 22px; }
+  /* Deliberate air: on a wide screen the body occupies the right third only. */
+  @media (min-width: 900px) {
+    .acc-body { grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+                padding-left: 34%; padding-top: 30px; padding-bottom: 54px; }
+  }
   .acc-body p { font-size: 15px; color: var(--ink-soft); line-height: 1.55; max-width: 56ch; }
-  .acc-body img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 12px; }
+  .acc-body > img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; }
+  .thumbs { display: flex; gap: 6px; }
+  .thumbs img { width: 33.333%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; }
 
   /* ---------- statement band ---------- */
   .band { position: relative; border-radius: 16px; overflow: hidden; background: var(--ink); }
@@ -536,9 +584,30 @@
       <a href="#services" class="txt">Studio</a>
       <a href="#visit" class="txt">Visit</a>
       <a href="#book" class="btn gold sm">Book</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i></button>
     </nav>
   </div>
 </header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu-top">
+    <img class="ink" src="assets/logo.png" alt="Naledi Art Studio" width="120" height="26">
+    <img class="rev" src="assets/logo-reversed.png" alt="Naledi Art Studio" width="120" height="26">
+    <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="menu-nav">
+    <a href="#gallery"><span class="t">Work</span><span class="n">01</span></a>
+    <a href="#services"><span class="t">Services</span><span class="n">02</span></a>
+    <a href="#finder"><span class="t">Start here</span><span class="n">03</span></a>
+    <a href="#book"><span class="t">Book</span><span class="n">04</span></a>
+    <a href="#visit"><span class="t">Visit</span><span class="n">05</span></a>
+  </nav>
+  <div class="menu-foot">
+    <a href="https://www.instagram.com/nalediart_studio/" target="_blank" rel="noopener">@nalediart_studio</a>
+    <a href="tel:0658381532">065 838 1532</a>
+    <p>39 Station Drive, Greyville, Durban</p>
+  </div>
+</div>
 
 <main>
   <section class="hero wrap">
@@ -607,7 +676,7 @@
             <ul class="ticks"><li>Natural light and built set corners</li><li>Props and backdrops included</li><li>Extend by the session, subject to the day</li></ul>
             <button class="btn gold" data-jump="studio" style="align-self:flex-start">Check availability</button>
           </div>
-          <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
+          <div class="thumbs"><img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"><div class="thumbs"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/set-arch-wide-600.webp" alt="" loading="lazy" decoding="async"><div class="thumbs"><img src="assets/img/venue-class-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/venue-event-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/studio-space-600.webp" alt="" loading="lazy" decoding="async"></div></div></div>
         </div>
       </details>
       <details class="acc-row">
@@ -629,7 +698,7 @@
             <ul class="ticks"><li>The entire studio, yours for the day</li><li>Styling and set dressing available</li><li>Held 48 hours pending deposit</li></ul>
             <button class="btn gold" data-jump="venue" style="align-self:flex-start">Check availability</button>
           </div>
-          <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
+          <div class="thumbs"><img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async"><img src="assets/img/venue-class-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/set-arch-600.webp" alt="" loading="lazy" decoding="async"></div>
         </div>
       </details>
       <details class="acc-row">
@@ -640,7 +709,7 @@
             <ul class="ticks"><li>Originals and limited prints</li><li>Prints ship nationwide</li><li>Viewings in studio by appointment</li></ul>
             <button class="btn gold" data-jump="art" style="align-self:flex-start">Check availability</button>
           </div>
-          <img src="assets/img/art-print-2-600.webp" alt="A painting of a woman holding a bouquet against pink" loading="lazy" decoding="async">
+          <div class="thumbs"><img src="assets/img/art-print-2-600.webp" alt="A painting of a woman holding a bouquet against pink" loading="lazy" decoding="async"><img src="assets/img/art-eternal-valentine-600.webp" alt="" loading="lazy" decoding="async"><img src="assets/img/art-bheka-mina-ngedwa-600.webp" alt="" loading="lazy" decoding="async"></div>
         </div>
       </details>
       <details class="acc-row">
@@ -1627,6 +1696,25 @@
       el.classList.add('pre');
       io.observe(el);
     });
+  })();
+
+  /* ---------------- mobile menu ---------------- */
+  (function menu() {
+    var panel = $('menu'), open = $('burger'), close = $('menuClose');
+    if (!panel || !open) return;
+    function set(on) {
+      panel.hidden = !on;
+      open.setAttribute('aria-expanded', on ? 'true' : 'false');
+      // stop the page behind it scrolling while the panel is up
+      document.body.style.overflow = on ? 'hidden' : '';
+      if (on) close.focus(); else open.focus();
+    }
+    open.addEventListener('click', function () { set(true); });
+    close.addEventListener('click', function () { set(false); });
+    panel.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) set(false); });
+    // a wide window has the full nav, so the panel must not be left open
+    addEventListener('resize', function () { if (innerWidth >= 760 && !panel.hidden) set(false); });
   })();
 
   $('yr').textContent = new Date().getFullYear();
