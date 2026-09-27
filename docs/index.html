@@ -71,7 +71,7 @@
     -webkit-font-smoothing: antialiased; overflow-x: hidden;
   }
   img { max-width: 100%; display: block; }
-  .wrap { width: 100%; max-width: 1140px; margin-inline: auto; padding-inline: var(--gut); }
+  .wrap { width: 100%; margin-inline: auto; padding-inline: var(--gut); }
 
   h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.015em; text-wrap: balance; }
   h2 { font-size: 27px; line-height: 1.14; }
@@ -80,6 +80,11 @@
   a  { color: inherit; }
   @media (min-width: 720px) { h2 { font-size: 36px; } }
   @media (min-width: 1000px) { :root { --gut: 28px; } h2 { font-size: 42px; } }
+  /* Full width, so the gutter has to grow with the screen or the content
+     runs into the glass on a big monitor. */
+  @media (min-width: 1400px) { :root { --gut: 48px; } }
+  @media (min-width: 1800px) { :root { --gut: 72px; } }
+  @media (min-width: 2400px) { :root { --gut: 104px; } }
 
   .eyebrow { font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
              color: var(--gold); font-weight: 500; }
@@ -88,6 +93,10 @@
   @media (min-width: 720px) { .lede { font-size: 20px; } }
   .rule { height: 1px; background: var(--line); border: 0; margin: 0; }
   .note { font-size: 13px; color: var(--ink-faint); }
+  /* The page is full width; running text is not. Past about 70 characters a
+     line the eye loses its place on the way back. */
+  h2 { max-width: 20ch; }
+  .feature .body, .card p, .ticks li, .fresult .rw, .visit p { max-width: 58ch; }
 
   /* ---------- buttons: every one clears the thumb target ---------- */
   .btn {
@@ -163,6 +172,10 @@
   .wall { columns: 2; column-gap: 10px; }
   @media (min-width: 620px)  { .wall { columns: 3; column-gap: 12px; } }
   @media (min-width: 1000px) { .wall { columns: 4; column-gap: 14px; } }
+  /* More columns rather than bigger tiles as the screen grows. */
+  @media (min-width: 1500px) { .wall { columns: 5; } }
+  @media (min-width: 2000px) { .wall { columns: 6; } }
+  @media (min-width: 2600px) { .wall { columns: 7; } }
   .tile {
     break-inside: avoid; margin: 0 0 10px; padding: 0; border: 0; width: 100%;
     background: var(--surface-2); border-radius: 12px; overflow: hidden;
