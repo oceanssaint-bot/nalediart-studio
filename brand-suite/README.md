@@ -12,8 +12,10 @@ letter I, and the portrait as the O. The artwork is your vector file, untouched.
 | `01-primary-gold-rule` | The rule in sunflower gold. |
 | `02-classic` | The painted original's layout: artwork over NALEDI ART / EST. 2019. |
 | `02-classic-heavier` | Same, at the current logo's stroke weight. |
-| `03-badge` | Circular stamp — name arced above, EST. 2019 below. For stickers, packaging, wax seals. |
-| `03-badge-gold` | The badge in gold. |
+| `03-badge-oval` | **The badge.** Oval stamp — name arced above, DURBAN · EST. 2019 below. For stickers, packaging, wax seals. |
+| `03-badge-oval-gold` | The badge in gold. |
+| `03-badge-oval-plain` | Oval badge without the city line. |
+| `03-badge`, `03-badge-durban`, `03-badge-gold` | The earlier circular versions, kept as alternates. |
 | `04-submark` | The portrait in a ring. Social avatar, favicon, stamp. |
 | `04-submark-gold-ring` | With a gold ring. |
 | `05-horizontal` | Submark + name on one line. Letterhead, email footer, website header. |
@@ -71,6 +73,14 @@ GothamNarrow is a commercial typeface (Hoefler & Co). The letters here are
 outlines rather than font files, but using a typeface in a logo still needs a
 licence permitting it. Most desktop licences do. Century Gothic is the
 already-installed fallback if you would rather avoid the question.
+
+## The badge shape
+
+The badge is an **oval**, 150 : 170 — taller than it is wide. It began as a
+circle stretched vertically in the website footer; Naledi preferred that
+proportion, so it is now the drawn shape rather than a rendering accident.
+The ratio is baked into `03-badge-oval.svg`, so nothing downstream has to
+stretch anything: place it at its natural aspect.
 
 ## Colour
 
