@@ -13,7 +13,9 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SLIDES = path.join(ROOT, 'presentation', 'deck', 'project', 'slides');
-const ORDER = ['cover','contents','foundation','voice','origin','problem','digitise','repaint','master','palette','colour-spec','colour-use','type','typescale','primary','classic','suite','marks','layout','photography','clearspace','backgrounds','misuse','web','stationery','social','files','governance'];
+// One order, kept in the deck's own index so the generator and this build
+// can never disagree about how many slides there are.
+const ORDER = require(path.join(ROOT, 'presentation', 'deck', 'project', 'deck.json')).order;
 
 // Uploaded asset id -> the local file that holds the same image.
 const BLOB = {
@@ -41,6 +43,12 @@ let unresolved = [];
 const slides = ORDER.map(function (id) {
   let s = fs.readFileSync(path.join(SLIDES, id + '.html'), 'utf8').trim();
   s = s.replace(/<aside>[\s\S]*?<\/aside>/g, '');            // presenter notes
+  // Her own photographs, shared with the website rather than duplicated.
+  s = s.replace(/\/_studio\/([a-z0-9-]+)/g, function (m, name) {
+    const file = path.join(ROOT, 'site', 'assets', 'img', name + '-1100.webp');
+    if (!fs.existsSync(file)) { unresolved.push(id + ' -> studio/' + name); return m; }
+    return '../assets/img/' + name + '-1100.webp';
+  });
   s = s.replace(/\/_blob\/([0-9a-f]{32})/g, function (m, hash) {
     if (!BLOB[hash]) { unresolved.push(id + ' -> ' + hash); return m; }
     return 'img/' + BLOB[hash] + '.webp';
@@ -75,7 +83,7 @@ const page = `<!doctype html>
   :root {
     color-scheme: light;
     --paper:#FBF8F4; --surface:#FFFFFF; --ink:#241C2C; --soft:#6A5F74;
-    --faint:#9A8FA3; --line:#E6DCD2; --gold:#A87614; --dark:#16111D;
+    --faint:#9A8FA3; --line:#E6DCD2; --gold:#8A6010; --dark:#16111D;
   }
   * { box-sizing:border-box; }
   [hidden] { display:none !important; }

@@ -1,0 +1,72 @@
+{
+  "v": 4,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-09-27T10:40:00Z"
+  },
+  "title": "Naledi Art Studio, Brand Guidelines",
+  "order": [
+    "cover",
+    "contents",
+    "foundation",
+    "voice",
+    "origin",
+    "problem",
+    "digitise",
+    "repaint",
+    "master",
+    "palette",
+    "colour-spec",
+    "colour-use",
+    "type",
+    "typescale",
+    "primary",
+    "classic",
+    "suite",
+    "marks",
+    "layout",
+    "photography",
+    "clearspace",
+    "backgrounds",
+    "misuse",
+    "web",
+    "in-use",
+    "stationery",
+    "social",
+    "files",
+    "governance"
+  ],
+  "sections": {
+    "s1": {
+      "description": "What the studio is and how it speaks",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "Where the logo came from and what was done to it",
+      "start": "origin"
+    },
+    "s3": {
+      "description": "The system: colour, typography, the marks and layout",
+      "start": "palette"
+    },
+    "s4": {
+      "description": "Using it, and what not to do",
+      "start": "clearspace"
+    },
+    "s5": {
+      "description": "The brand in the world, and who keeps it consistent",
+      "start": "web"
+    }
+  },
+  "faces": {
+    "jost": {
+      "family": "Jost",
+      "href": "https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap"
+    },
+    "newsreader": {
+      "family": "Newsreader",
+      "href": "https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap"
+    }
+  },
+  "designSystems": []
+}

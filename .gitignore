@@ -3,4 +3,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 site/assets/photos/
-presentation/
+# The deck source is tracked: the slides are generated from build-deck.js
+# and site/review/build.js reads them. Only the heavy PNG originals stay
+# out, since the same images are already committed as webp in
+# site/review/img.
+presentation/img/
