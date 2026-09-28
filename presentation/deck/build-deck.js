@@ -369,9 +369,9 @@ SLIDES.classic = slide('classic',
       ['Cap height, share of artwork width', '0.2016'],
       ['Line width, share of artwork width', '1.4562'],
       ['Painted stroke weight', '4.0% of cap'],
-      ['Built at', '6.5% of cap']
+      ['Built at', '7.9% of cap']
     ], { size: 24 }) +
-    p('Weight is the one thing I changed on purpose. At 4.0% the letters looked starved next to the artwork. A second version at 7.7% exists if you would rather both lockups feel identical in weight.', { max: 50 }) +
+    p('Weight is the one thing I changed on purpose. At 4.0% the letters looked starved next to the artwork. It is set in Jost Light, the same face and the same stem as the primary, so the two lockups sit together without either looking thin. A heavier cut in Jost Regular exists if you would rather the words carried more.', { max: 50 }) +
     '</div>\n' +
     fig(B.classic, 'The classic lockup: the portrait artwork above the words NALEDI ART and EST. 2019', 'Artwork above, the words below, as you painted it', { h: 470, fit: 'contain' }) +
     '</div>\n', { top: 46 }) +
@@ -600,7 +600,7 @@ SLIDES.files = slide('files',
     h3('Convert to CMYK for litho') + p('The files are sRGB. Ask your printer to convert and send a proof. The golds are the ones to check.', { max: 46, size: 21 }) + '</div>\n' +
     '<div style="display:flex; flex-direction:column; gap:10px; border-top:1px solid ' + T.lit + '; padding-top:20px">\n' +
     label('Two things still open') +
-    p('Which weight for the classic lockup, 6.5% or 7.7%. And the monogram reads as a word: N beside O can be read as NO. Say the word and I will rework it.', { max: 46, size: 21 }) + '</div>\n' +
+    p('The classic lockup in Jost Light, as built, or the heavier cut in Jost Regular. And the monogram reads as a word: N beside O can be read as NO. Say the word and I will rework it.', { max: 46, size: 21 }) + '</div>\n' +
     '</div>\n</div>\n', { top: 44 }) +
   foot(FOOT_GL, 28) +
   notes('End on the two open decisions, so she leaves with something to answer rather than only something to admire.'));

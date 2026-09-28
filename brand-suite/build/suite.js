@@ -9,34 +9,45 @@ const ot = require('opentype.js');
 const { pathData } = require('./pathdata');
 const L = require('./lockup');
 
-const UF = 'C:/Users/IC RUSTENBURG/AppData/Local/Microsoft/Windows/Fonts/';
 const loadFont = p => { const b = fs.readFileSync(p); return ot.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)); };
-const F = loadFont('D:/Naledi Art Studio/fonts/Jost-Light.ttf');
-const UPEM = F.unitsPerEm;
-const CAP = Math.abs(F.charToGlyph('H').getPath(0, 0, UPEM).getBoundingBox().y1);
-const STEM = (b => (b.x2 - b.x1) / CAP)(F.charToGlyph('I').getPath(0, 0, UPEM).getBoundingBox());
+
+// Everything is set from a Jost file. The classic lockup was the last mark
+// still set in Gotham, and Gotham's CFF outlines do not survive this
+// pipeline: the D came out with no left stem and the R with an open bowl.
+// `face` makes the same layout available for any Jost weight.
+function face(ttf) {
+  const F = loadFont(ttf);
+  const UPEM = F.unitsPerEm;
+  const CAP = Math.abs(F.charToGlyph('H').getPath(0, 0, UPEM).getBoundingBox().y1);
+  const STEM = (b => (b.x2 - b.x1) / CAP)(F.charToGlyph('I').getPath(0, 0, UPEM).getBoundingBox());
+
+  function run(text, cap, track) {
+    const size = cap * UPEM / CAP, scale = size / UPEM;
+    const glyphs = F.stringToGlyphs(text);
+    let x = 0; const placed = [];
+    for (const g of glyphs) { placed.push({ g, x }); x += g.advanceWidth * scale + track * size; }
+    const bb = g => g.getPath(0, 0, size).getBoundingBox();
+    const inkL = placed[0].x + bb(glyphs[0]).x1;
+    const inkR = placed[placed.length - 1].x + bb(glyphs[glyphs.length - 1]).x2;
+    return { ink: inkR - inkL, inkL, size,
+      path: (originX, baselineY) => placed.map(p => pathData(p.g.getPath(originX - inkL + p.x, baselineY, size))).join('') };
+  }
+  const trackFor = (text, cap, targetInk) => {
+    let lo = -0.3, hi = 1.2, t = 0;
+    for (let i = 0; i < 50; i++) { t = (lo + hi) / 2; (run(text, cap, t).ink < targetInk) ? lo = t : hi = t; }
+    return t;
+  };
+  return { F, UPEM, CAP, STEM, run, trackFor };
+}
+
+const LIGHT = face('D:/Naledi Art Studio/fonts/Jost-Light.ttf');
+const { UPEM, CAP, STEM, run, trackFor } = LIGHT;
+const F = LIGHT.F;
 
 const INK = '#241C2C';
 const GOLD = '#D29E38';
 const ART = L.artwork();
 
-/* ------------------------------------------------------------- straight --- */
-function run(text, cap, track) {
-  const size = cap * UPEM / CAP, scale = size / UPEM;
-  const glyphs = F.stringToGlyphs(text);
-  let x = 0; const placed = [];
-  for (const g of glyphs) { placed.push({ g, x }); x += g.advanceWidth * scale + track * size; }
-  const bb = g => g.getPath(0, 0, size).getBoundingBox();
-  const inkL = placed[0].x + bb(glyphs[0]).x1;
-  const inkR = placed[placed.length - 1].x + bb(glyphs[glyphs.length - 1]).x2;
-  return { ink: inkR - inkL, inkL, size,
-    path: (originX, baselineY) => placed.map(p => pathData(p.g.getPath(originX - inkL + p.x, baselineY, size))).join('') };
-}
-const trackFor = (text, cap, targetInk) => {
-  let lo = -0.3, hi = 1.2, t = 0;
-  for (let i = 0; i < 50; i++) { t = (lo + hi) / 2; (run(text, cap, t).ink < targetInk) ? lo = t : hi = t; }
-  return t;
-};
 const weightStroke = (cap, stem) => Math.max(0, (stem - STEM) * cap);
 
 /* ------------------------------------------------------------- on a arc --- */
@@ -222,4 +233,4 @@ function monogram({ cap = 200, ink = INK, mark = 'roundel', id = 'mg' } = {}) {
   return svgWrap(-pad, -cap * 0.16, rightW + pad * 2, cap * 1.42, body);
 }
 
-module.exports = { primary, wordmark, badge, submark, horizontal, monogram, run, trackFor, arcText, roundel, INK, GOLD };
+module.exports = { primary, wordmark, badge, submark, horizontal, monogram, run, trackFor, arcText, roundel, face, INK, GOLD };

@@ -27,21 +27,48 @@ write('01-primary-reversed', S.primary({ cap: 120, ink: CREAM, id: 'p2' }));
 write('01-primary-gold-rule', S.primary({ cap: 120, spine: GOLD, id: 'p3' }));
 write('01-primary-flush', S.primary({ cap: 120, id: 'p4', flush: true }), [2400, 1200]);
 
-/* ---- 2. classic: the painted original's layout ------------------------- */
-const AW = L.artwork().vb[2];
-function classic(stem) {
-  const FONT = 'gothamThin', f = L.font(FONT);
-  const natural = (b => (b.x2 - b.x1) / L.capOf(f))(f.charToGlyph('I').getPath(0, 0, f.unitsPerEm).getBoundingBox());
-  const cap1 = (1.4562 * AW) / (L.line(FONT, 'NALEDI ART', 100, 0).width / 100);
-  const capE = cap1 * (0.053 / 0.2016);
-  let lo = -0.2, hi = 1.5, tE = 0;
-  for (let i = 0; i < 44; i++) { tE = (lo + hi) / 2; (L.line(FONT, 'EST. 2019', capE, tE).width < 0.320 * AW * (cap1 / (0.2016 * AW))) ? lo = tE : hi = tE; }
-  return L.lockup({ font: FONT, colour: '#3B342E', gaps: [0.063, 0.029],
-    stroke: [Math.max(0, (stem - natural) * cap1), Math.max(0, (stem - natural) * capE)],
-    lines: [{ text: 'NALEDI ART', cap: cap1 / AW, track: 0 }, { text: 'EST. 2019', cap: capE / AW, track: tE }] });
+/* ---- 2. classic: the painted original's layout -------------------------
+   Set in Jost, like every other mark. It was the last thing still set in
+   Gotham, and Gotham's CFF outlines do not survive this pipeline: the D
+   came out with no left stem and the R with an open bowl.
+
+   Both numbers come off the painting rather than one being derived from
+   the other: the cap height is 0.2016 of the artwork's width and the line
+   measures 1.4562 of it, so the type is tracked out to land on that width
+   exactly, the same way the primary is built. */
+const A = L.artwork();
+const AW = A.vb[2], AH = A.vb[3];
+const M = { cap: 0.2016, line: 1.4562, capEst: 0.053, lineEst: 0.320,
+            pad: 0.06, gap1: 0.063, gap2: 0.029 };
+
+function classic(weight) {
+  const f = S.face('D:/Naledi Art Studio/fonts/Jost-' + weight + '.ttf');
+  const cap1 = M.cap * AW, capE = M.capEst * AW;
+  const l1 = f.run('NALEDI ART', cap1, f.trackFor('NALEDI ART', cap1, M.line * AW));
+  const l2 = f.run('EST. 2019', capE, f.trackFor('EST. 2019', capE, M.lineEst * AW));
+
+  const pad = M.pad * AW;
+  const W = Math.max(AW, l1.ink, l2.ink) + pad * 2, cx = W / 2;
+  const y1 = pad + AH + M.gap1 * AW + cap1;
+  const y2 = y1 + M.gap2 * AW + capE;
+  const H = y2 + pad;
+  const ink = '#3B342E';
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W.toFixed(1) + ' ' + H.toFixed(1) +
+    '" width="' + W.toFixed(0) + '" height="' + H.toFixed(0) + '">' +
+    '<g transform="translate(' + ((W - AW) / 2).toFixed(1) + ',' + pad.toFixed(1) + ')">' + A.inner + '</g>' +
+    '<path fill="' + ink + '" d="' + l1.path(cx - l1.ink / 2, y1) + '"/>' +
+    '<path fill="' + ink + '" d="' + l2.path(cx - l2.ink / 2, y2) + '"/>' +
+    '</svg>';
 }
-write('02-classic', classic(0.065), [2400, 1200]);
-write('02-classic-heavier', classic(0.077));
+write('02-classic', classic('Light'), [2400, 1200]);
+write('02-classic-heavier', classic('Regular'));
+
+// Say what was actually built, so the guidelines can quote it.
+for (const w of ['Light', 'Regular']) {
+  const f = S.face('D:/Naledi Art Studio/fonts/Jost-' + w + '.ttf');
+  console.log('  classic in Jost ' + w.padEnd(8) + ' stem ' + (f.STEM * 100).toFixed(1) + '% of cap');
+}
 
 /* ---- 3-6. the rest of the suite ---------------------------------------- */
 // The badges are held back. Naledi asked for them to be left alone in the
