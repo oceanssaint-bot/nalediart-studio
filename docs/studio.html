@@ -87,6 +87,47 @@
   .ob .ob-n { margin:10px 0 0; font-size:13px; color:#6A5F74; }
   .ob a { color:#8C2F2A; }
 
+  .more { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+          padding:16px 0 4px; }
+
+  /* ---- the invoice ---- */
+  .invoice { position:fixed; inset:0; background:rgba(20,14,26,.55); z-index:60;
+             overflow:auto; padding:20px; }
+  .invsheet { max-width:760px; margin:0 auto; background:#FFFFFF; border-radius:14px;
+              padding:34px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+  .invbar { display:flex; gap:10px; justify-content:flex-end; margin-bottom:26px; }
+  .ivhead { display:flex; justify-content:space-between; align-items:flex-start;
+            gap:20px; border-bottom:1px solid var(--line); padding-bottom:20px; }
+  .ivhead img { height:44px; width:auto; }
+  .ivno { text-align:right; }
+  .ivno b { display:block; font-size:19px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .ivno span { font-size:13px; color:var(--faint); }
+  .ivcols { display:flex; gap:40px; flex-wrap:wrap; padding:22px 0; }
+  .ivcols > div { flex:1; min-width:180px; }
+  .ivcols h4 { margin:0 0 7px; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+               color:var(--faint); font-weight:500; }
+  .ivcols p { margin:0; font-size:14px; line-height:1.55; color:var(--ink); }
+  .ivt { width:100%; border-collapse:collapse; margin-top:8px; }
+  .ivt th { text-align:left; font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+            color:var(--faint); font-weight:500; padding:0 0 10px; border-bottom:1px solid var(--firm); }
+  .ivt td { padding:16px 0; border-bottom:1px solid var(--line); font-size:15px; vertical-align:top; }
+  .ivt .r { text-align:right; }
+  .ivsub { font-size:13px; color:var(--soft); }
+  .ivtot td { font-size:19px; font-weight:500; border-bottom:0; padding-top:18px; }
+  .ivfoot { padding-top:20px; }
+  .ivl { display:flex; justify-content:space-between; gap:20px; padding:8px 0;
+         border-bottom:1px solid var(--line); font-size:14px; }
+  .ivl span:first-child { color:var(--faint); }
+  .ivl span:last-child { color:var(--ink); text-align:right; }
+  .ivfoot .ivsub { padding-top:12px; display:block; }
+
+  @media print {
+    body > *:not(.invoice) { display:none !important; }
+    .invoice { position:static; background:#FFFFFF; padding:0; overflow:visible; }
+    .invsheet { box-shadow:none; border-radius:0; max-width:none; padding:0; }
+    .invbar { display:none; }
+  }
+
   .tab { font:inherit; font-size:14px; min-height:40px; padding:8px 15px; border-radius:999px;
          border:1px solid var(--line); background:transparent; color:var(--ink-soft); cursor:pointer; }
   .tab[aria-pressed="true"] { background:var(--ink); color:var(--paper); border-color:var(--ink); }
@@ -166,6 +207,15 @@
 
   <section id="app" hidden>
     <div class="ob" id="override" hidden></div>
+    <div class="invoice" id="invoice" hidden>
+      <div class="invsheet">
+        <div class="invbar">
+          <button class="btn ghost sm" id="invClose">Close</button>
+          <button class="btn sm" id="invPrint">Print or save as PDF</button>
+        </div>
+        <div id="invBody"></div>
+      </div>
+    </div>
     <div class="sum" id="summary"></div>
 
     <div class="tabs">
@@ -174,6 +224,7 @@
       <button class="tab" data-view="today" aria-pressed="false">Today</button>
       <button class="tab" data-view="past" aria-pressed="false">Past</button>
       <button class="tab" data-view="cancelled" aria-pressed="false">Cancelled</button>
+      <button class="btn ghost sm" id="zohoCsv" style="margin-left:auto">Export for Zoho</button>
       <button class="btn ghost sm" id="refresh" style="margin-left:auto">Refresh</button>
     </div>
 
@@ -298,10 +349,152 @@
     if (msg) showLoginErr(msg);
   }
 
+  /* ---------------- invoicing ----------------
+     THE ONLY PART OF THIS FILE NALEDI EDITS. Fill these in once and every
+     invoice carries them. Anything left blank is simply left off the
+     invoice rather than printed as a placeholder, so a half-filled block
+     cannot put "your bank here" in front of a client.
+
+     VAT: leave vatNumber empty unless the studio is registered. An invoice
+     may not show VAT that is not being charged. */
+  var BILLING = {
+    name:      'Naledi Art Studio',
+    address:   '39 Station Drive, Greyville, Durban, 4001',
+    phone:     '065 838 1532',
+    email:     'naledi@nalediart.com',
+    reg:       '',                 // company registration number, if any
+    vatNumber: '',                 // leave empty if not VAT registered
+    bank:      '',                 // e.g. 'FNB · Cheque · 1234567890 · Branch 250655'
+    terms:     'Payable on booking. The date is held 48 hours pending deposit.'
+  };
+
+  function invoiceNo(b) {
+    // The booking reference is already unique and already known to the
+    // client, so the invoice is numbered from it rather than from a second
+    // counter that could drift out of step.
+    return 'INV-' + String(b.ref || '').toUpperCase();
+  }
+  function moneyOf(b) {
+    var m = String(b.amount || '').replace(/[^0-9.]/g, '');
+    return m ? Number(m) : null;
+  }
+  function whenOf(b) {
+    var a = new Date(b.starts_at), z = new Date(b.ends_at);
+    var f = function (d) {
+      return d.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', hour12: false,
+                                             timeZone: 'Africa/Johannesburg' });
+    };
+    return a.toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long',
+                                           year: 'numeric', timeZone: 'Africa/Johannesburg' }) +
+           ', ' + f(a) + ' to ' + f(z);
+  }
+
+  function openInvoice(b) {
+    var amt = moneyOf(b);
+    var line = function (label, value) {
+      return value ? '<div class="ivl"><span>' + esc(label) + '</span><span>' + esc(value) + '</span></div>' : '';
+    };
+    $('invBody').innerHTML =
+      '<div class="ivhead">' +
+        '<div><img src="assets/logo.png" alt="Naledi Art Studio" width="150" height="61"></div>' +
+        '<div class="ivno"><b>' + esc(invoiceNo(b)) + '</b><span>' +
+          new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' }) +
+        '</span></div>' +
+      '</div>' +
+      '<div class="ivcols">' +
+        '<div><h4>From</h4><p>' + esc(BILLING.name) + '<br>' + esc(BILLING.address).replace(/, /g, ',<br>') +
+          '<br>' + esc(BILLING.phone) + '<br>' + esc(BILLING.email) +
+          (BILLING.reg ? '<br>Reg ' + esc(BILLING.reg) : '') +
+          (BILLING.vatNumber ? '<br>VAT ' + esc(BILLING.vatNumber) : '') + '</p></div>' +
+        '<div><h4>To</h4><p>' + esc(b.name) +
+          (b.phone ? '<br>' + esc(b.phone) : '') +
+          (b.email ? '<br>' + esc(b.email) : '') + '</p></div>' +
+      '</div>' +
+      '<table class="ivt"><tr><th>Description</th><th class="r">Amount</th></tr>' +
+        '<tr><td><b>' + esc(b.service_name) + '</b><br><span class="ivsub">' + esc(whenOf(b)) + '</span>' +
+          (b.notes ? '<br><span class="ivsub">' + esc(b.notes) + '</span>' : '') + '</td>' +
+        '<td class="r">' + esc(b.amount || '') + '</td></tr>' +
+        '<tr class="ivtot"><td class="r">Total due</td><td class="r">' +
+          (amt !== null ? 'R' + amt.toLocaleString('en-ZA') : esc(b.amount || '')) + '</td></tr>' +
+      '</table>' +
+      '<div class="ivfoot">' +
+        line('Booking reference', b.ref) +
+        line('Payment terms', BILLING.terms) +
+        line('Banking', BILLING.bank) +
+        (BILLING.vatNumber ? '' : '<p class="ivsub">Not registered for VAT. No VAT is charged on this invoice.</p>') +
+      '</div>';
+    $('invoice').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeInvoice() { $('invoice').hidden = true; document.body.style.overflow = ''; }
+
+  // Zoho Books imports invoices from CSV. These are its field names, so the
+  // file drops straight into Sales > Invoices > Import.
+  function zohoCsv(list) {
+    var head = ['Invoice Number', 'Invoice Date', 'Customer Name', 'Item Name',
+                'Item Description', 'Quantity', 'Item Price', 'Reference Number',
+                'Email', 'Phone', 'Notes'];
+    var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    var rows = list.map(function (b) {
+      return [invoiceNo(b), new Date(b.starts_at).toISOString().slice(0, 10), b.name,
+              b.service_name, whenOf(b), 1, moneyOf(b) === null ? '' : moneyOf(b),
+              b.ref, b.email || '', b.phone || '', b.notes || ''].map(q).join(',');
+    });
+    return head.map(q).join(',') + '\n' + rows.join('\n');
+  }
+  function downloadZoho() {
+    var list = filtered().filter(function (b) { return !isDead(b) && b.status === 'confirmed'; });
+    if (!list.length) return;
+    var blob = new Blob([zohoCsv(list)], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'naledi-invoices-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  }
+
   /* ---------------- data ---------------- */
+  // A month of history is kept in the live set so "Past" opens with
+  // something on it before the first page of the archive lands.
+  var PAST_PAGE = 50;
+  var past = { rows: [], offset: 0, more: true, busy: false, loaded: false };
+
+  function liveFrom() {
+    var d = new Date(Date.now() - 31 * 864e5);
+    return encodeURIComponent(d.toISOString());
+  }
+
+  // The archive, oldest-falls-off-the-end, a page at a time.
+  function loadPast(reset) {
+    if (reset) { past = { rows: [], offset: 0, more: true, busy: false, loaded: true }; }
+    if (past.busy || !past.more) return Promise.resolve();
+    past.busy = true; render();
+    return fetch(REST + '/bookings?select=*&starts_at=lt.' + liveFrom() +
+                 '&order=starts_at.desc&limit=' + PAST_PAGE + '&offset=' + past.offset,
+                 { headers: headers() })
+      .then(function (r) {
+        if (r.status === 401) { signedOut('Your session expired. Sign in again.'); return null; }
+        return r.json();
+      })
+      .then(function (out) {
+        past.busy = false;
+        if (!out) return;
+        var got = Array.isArray(out) ? out : [];
+        past.rows = past.rows.concat(got);
+        past.offset += got.length;
+        past.more = got.length === PAST_PAGE;
+        render();
+      })
+      .catch(function () { past.busy = false; past.more = false; render(); });
+  }
+
   function load() {
     return Promise.all([
-      fetch(REST + '/bookings?select=*&order=starts_at.desc&limit=500', { headers: headers() }),
+      // Everything from a month back forward. At the studio's busiest that
+      // is under a hundred rows, and it can never push the live tabs out of
+      // the window the way one flat limit did. The archive is paged, below.
+      fetch(REST + '/bookings?select=*&starts_at=gte.' + liveFrom() +
+            '&order=starts_at.desc&limit=1000', { headers: headers() }),
       fetch(REST + '/blocks?select=day&order=day', { headers: headers() })
     ]).then(function (rs) {
       if (rs[0].status === 401 || rs[1].status === 401) { signedOut('Your session expired. Sign in again.'); return null; }
@@ -323,9 +516,11 @@
   }
 
   /* ---------------- render ---------------- */
+  var allRows = [];
   function filtered() {
     var t = todayKey();
-    return rows.filter(function (b) {
+    var src = (view === 'past' || view === 'cancelled') ? allRows : rows;
+    return src.filter(function (b) {
       var k = dayKey(b.starts_at);
       if (view === 'cancelled') return isDead(b);
       if (isDead(b)) return false;
@@ -347,6 +542,11 @@
   function render() {
     var t = todayKey();
     var live = rows.filter(function (b) { return !isDead(b); });
+    // The archive sits behind the live set; a row can be in both when it
+    // straddles the month boundary, so it is keyed out by id.
+    var seen = {};
+    rows.forEach(function (b) { seen[b.id] = true; });
+    allRows = rows.concat(past.rows.filter(function (b) { return !seen[b.id]; }));
     var upcoming = live.filter(function (b) { return dayKey(b.starts_at) >= t; });
     var todays = live.filter(function (b) { return dayKey(b.starts_at) === t; });
     var waiting = live.filter(function (b) { return b.status === 'pending' && dayKey(b.starts_at) >= t; });
@@ -374,13 +574,26 @@
       '<div><b>' + upcoming.length + '</b>upcoming</div>';
 
     var list = filtered();
-    $('list').innerHTML = list.length ? list.map(card).join('')
-      : '<div class="empty">Nothing here.</div>';
+    $('list').innerHTML = (list.length ? list.map(card).join('')
+      : '<div class="empty">Nothing here.</div>') + pastFoot(list.length);
 
     $('blocks').innerHTML = blocks.length ? blocks.map(function (b) {
       return '<div class="blk"><span class="d">' + esc(b.day) + '</span><span class="note">Closed</span>' +
              '<span class="x"><button class="btn ghost sm" data-unblock="' + esc(b.day) + '">Reopen</button></span></div>';
     }).join('') : '<div class="empty">No dates closed.</div>';
+  }
+
+  // The archive is fetched a page at a time, so the list has to say whether
+  // it is showing everything or only what has been asked for so far.
+  function pastFoot(shown) {
+    if (view !== 'past' && view !== 'cancelled') return '';
+    if (past.busy) return '<div class="more"><span class="note">Loading…</span></div>';
+    if (past.more) return '<div class="more">' +
+      '<button class="btn ghost" id="morePast">Load older bookings</button>' +
+      '<span class="note">' + shown + ' shown</span></div>';
+    return past.loaded
+      ? '<div class="more"><span class="note">' + shown + ' shown, that is all of them.</span></div>'
+      : '';
   }
 
   function card(b) {
@@ -410,6 +623,7 @@
       (b.notes ? '<div class="notes">“' + esc(b.notes) + '”</div>' : '') +
       '<div class="acts">' +
         (pending ? '<button class="btn sm confirm" data-confirm="' + esc(b.id) + '">Confirm booking</button>' : '') +
+        (!pending && !cancelled ? '<button class="btn ghost sm" data-invoice="' + esc(b.id) + '">Invoice</button>' : '') +
         (wa ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa) + '">WhatsApp</a>' : '') +
         (cancelled
           ? '<button class="btn ghost sm" data-restore="' + esc(b.id) + '">Restore</button>'
@@ -476,6 +690,16 @@
         .then(function (res) { if (res.status === 401) return signedOut('Your session expired. Sign in again.'); load(); });
       return;
     }
+    var iv = e.target.closest('[data-invoice]');
+    if (iv) {
+      var bk = allRows.concat(rows).filter(function (x) { return x.id === iv.getAttribute('data-invoice'); })[0];
+      if (bk) openInvoice(bk);
+      return;
+    }
+    if (e.target.closest('#invClose')) { closeInvoice(); return; }
+    if (e.target.closest('#invPrint')) { window.print(); return; }
+    if (e.target.closest('#zohoCsv')) { downloadZoho(); return; }
+    if (e.target.closest('#morePast')) { loadPast(false); return; }
     var tb = e.target.closest('[data-view]');
     if (tb) {
       view = tb.getAttribute('data-view');
@@ -483,6 +707,8 @@
         x.setAttribute('aria-pressed', x === tb ? 'true' : 'false');
       });
       render();
+      // The archive is only fetched when it is actually looked at.
+      if ((view === 'past' || view === 'cancelled') && !past.loaded) loadPast(true);
     }
   });
 
@@ -497,7 +723,12 @@
     });
   });
 
-  $('refresh').addEventListener('click', load);
+  $('refresh').addEventListener('click', function () {
+    past.loaded = false;
+    load().then(function () {
+      if (view === 'past' || view === 'cancelled') loadPast(true);
+    });
+  });
 
   /* ---------------- boot ---------------- */
   token = loadToken();
