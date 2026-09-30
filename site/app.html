@@ -159,47 +159,14 @@
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden;
              clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-  /* ---------- hero: one photograph, inset, two floating pills ----------
-     The reference leads with the image and puts no type over it. */
-  .stage { position: relative; border-radius: 18px; overflow: hidden; background: var(--surface-2); }
-  .stage img { width: 100%; height: 62vh; min-height: 380px; object-fit: cover; display: block;
-               transition: opacity .22s ease; }
-  @media (prefers-reduced-motion: reduce) { .stage img { transition: none; } }
-  @media (min-width: 900px) { .stage img { height: 78vh; max-height: 740px; } }
-  .stage-tag { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 2px;
-               background: var(--paper); border-radius: 999px; padding: 5px 6px; }
-  .stage-tag span { font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-                    color: var(--ink); padding: 0 8px; white-space: nowrap; }
-  .sarr { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent;
-          color: var(--ink); font-size: 15px; line-height: 1; cursor: pointer; touch-action: manipulation; }
-  .sarr:hover { background: var(--surface-2); }
-  .stage-cta { position: absolute; right: 14px; bottom: 14px; display: inline-flex; align-items: center;
-               gap: 10px; background: var(--paper); color: var(--ink); text-decoration: none;
-               border-radius: 999px; padding: 0 20px; min-height: var(--tap);
-               font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
-  .stage-cta:hover { background: var(--gold); color: #FFF8E9; }
-
-  /* ---------- hero ---------- */
-  .hero { padding: 10px var(--gut) 0; }
-  @media (min-width: 900px) { .hero { padding-top: 14px; } }
-  .hero h1 { font-size: 38px; line-height: 1.02; letter-spacing: -.03em; }
-  .hero h1 em { font-family: Newsreader, Georgia, serif; font-style: italic; font-weight: 300; color: var(--gold); }
-  .hero .lede { margin-top: 16px; }
-  .hero-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
-  .hero-shot { margin-top: 26px; border-radius: 16px; overflow: hidden; background: var(--surface-2); }
-  .hero-shot img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
-  .hero-meta { display: grid; gap: 14px; margin-top: 24px; font-size: 13px; color: var(--ink-faint); }
+  /* ---------- hero: the booking system opens the page ----------
+     It carries .wrap, so the side gutter comes from there. */
+  .hero { padding-block: 16px 6px; }
+  @media (min-width: 900px) { .hero { padding-block: 34px 8px; } }
+  .hero-meta { display: grid; gap: 14px; margin-top: 26px; font-size: 13px; color: var(--ink-faint); }
   .hero-meta b { display: block; color: var(--ink); font-weight: 500; font-size: 14.5px; }
   @media (min-width: 560px) {
-    .hero-cta { flex-direction: row; flex-wrap: wrap; }
     .hero-meta { grid-template-columns: repeat(3, auto); justify-content: start; gap: 26px; }
-  }
-  @media (min-width: 900px) {
-    .hero { padding-block: 60px 44px; }
-    .hero h1 { font-size: 68px; }
-    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
-    .hero-shot { margin-top: 0; }
-    .hero-shot img { aspect-ratio: 4/5; }
   }
 
   section { padding-block: 56px; }
@@ -440,8 +407,6 @@
   .pre { opacity: 0; transform: translateY(20px); }
   .in  { opacity: 1; transform: none;
          transition: opacity .62s ease, transform .62s cubic-bezier(.2,.75,.3,1); }
-  .hero h1 .w { display: inline-block; }
-  .hero h1 .w.pre { transform: translateY(0.34em); }
   @media (prefers-reduced-motion: reduce) {
     .pre, .in { opacity: 1 !important; transform: none !important; transition: none !important; }
   }
@@ -689,21 +654,73 @@
 </div>
 
 <main>
-  <section class="hero">
-    <!-- The reference opens on one photograph with no headline over it. The
-         page title stays for screen readers and search, but is not shown. -->
+  <!-- The booking system IS the landing. Everything below it is the case for
+       using it, so it now sits above that case rather than after it. -->
+  <section class="hero wrap" id="book">
     <h1 class="sr-only">Naledi Art Studio, photography studio and set design in Greyville, Durban</h1>
-    <div class="stage">
-      <img id="heroImg" src="assets/img/arch-proposal-1100.webp" width="1024" height="1366"
-           fetchpriority="high" alt="The arch set dressed with florals and candles for a proposal">
-      <div class="stage-tag">
-        <button class="sarr" id="heroPrev" aria-label="Previous photograph">&#8249;</button>
-        <span id="heroLabel">Dressed for a proposal</span>
-        <button class="sarr" id="heroNext" aria-label="Next photograph">&#8250;</button>
-      </div>
-      <a href="#book" class="stage-cta">Book a slot <span aria-hidden="true">&#8594;</span></a>
+    <div class="sec-head split">
+      <div><p class="eyebrow">Booking</p><h2>Book a slot</h2></div>
+      <p class="lede">Pick a slot and it closes the moment you take it. Nobody else can request that time.</p>
     </div>
-    <div class="hero-meta wrap">
+
+    <div class="booker">
+      <div class="booker-head">
+        <div>
+          <div style="font-size:15px;font-weight:500" id="hd-title">Choose a service and a date</div>
+          <div style="font-size:13px;color:var(--ink-faint)" id="hd-sub">All times are Durban time (SAST)</div>
+        </div>
+        <div class="steps" aria-hidden="true"><i class="on" id="s1"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
+      </div>
+
+      <div class="booker-body" id="stage">
+        <div class="pane">
+          <h3>1 · Service</h3>
+          <div class="svc-list" id="svcList"></div>
+
+          <h3 style="margin-top:24px">2 · Date</h3>
+          <div class="cal-head">
+            <span class="mo" id="moLabel">, </span>
+            <span class="nav-b"><button id="prevMo" aria-label="Previous month">‹</button><button id="nextMo" aria-label="Next month">›</button></span>
+          </div>
+          <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid-d" id="grid"></div>
+          <div class="legend"><span><i></i>Open</span><span id="legendNote">Faded, closed or fully booked</span></div>
+        </div>
+
+        <div class="pane">
+          <h3>3 · Time</h3>
+          <div class="slots" id="slots"></div>
+          <p class="note" id="slotNote" style="margin-top:10px"></p>
+
+          <h3 style="margin-top:24px">4 · Your details</h3>
+          <div class="summary" id="sumBox" hidden>
+            <dl><dt>Service</dt><dd id="sumSvc">, </dd><dt>When</dt><dd id="sumWhen">, </dd><dt>Amount</dt><dd id="sumAmt">, </dd></dl>
+          </div>
+          <div class="field"><label for="fName">Name</label><input id="fName" autocomplete="name" enterkeyhint="next" placeholder="Who is the booking for?"></div>
+          <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
+          <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="you@example.com"></div>
+          <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
+          <button class="btn gold block" id="confirm" disabled>Confirm booking</button>
+          <p class="err" id="err" hidden></p>
+          <p class="note" style="margin-top:10px">Studio hire is charged at a flat R800 an hour. Venue bookings are held for 48 hours pending deposit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="studioPanel" hidden style="margin-top:18px">
+      <div style="margin-bottom:12px">
+        <h3 style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500">Studio panel</h3>
+        <span class="note">Only you see this. Close a date to keep it off the calendar.</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+        <input type="date" id="blockDate" style="font:inherit;font-size:16px;min-height:46px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink)">
+        <button class="btn ghost sm" id="blockAdd">Close this date</button>
+      </div>
+      <div id="blockList" style="font-size:14px;margin-bottom:16px"></div>
+      <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">Upcoming bookings</div>
+      <div id="bkList"></div>
+    </div>
+    <div class="hero-meta">
       <div><b>39 Station Drive</b>Greyville, Durban</div>
       <div><b>Tue to Thu, Sat, Sun</b>Closed Mon and Fri</div>
       <div><b>R800 an hour</b>Studio hire, flat rate</div>
@@ -723,7 +740,7 @@
   </section>
 
 
-  <section class="wrap">
+  <section id="statement" class="wrap">
     <div class="band">
       <img src="assets/img/pampas-1100.webp" alt="" loading="lazy" decoding="async">
       <div class="in">
@@ -816,72 +833,6 @@
     <div class="finder" id="finderCard"></div>
   </section>
 
-  <section id="book" class="wrap">
-    <div class="sec-head split">
-      <div><p class="eyebrow">Booking</p><h2>Book</h2></div>
-      <p class="lede">Pick a slot and it closes the moment you take it. Nobody else can request that time.</p>
-    </div>
-
-    <div class="booker">
-      <div class="booker-head">
-        <div>
-          <div style="font-size:15px;font-weight:500" id="hd-title">Choose a service and a date</div>
-          <div style="font-size:13px;color:var(--ink-faint)" id="hd-sub">All times are Durban time (SAST)</div>
-        </div>
-        <div class="steps" aria-hidden="true"><i class="on" id="s1"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
-      </div>
-
-      <div class="booker-body" id="stage">
-        <div class="pane">
-          <h3>1 · Service</h3>
-          <div class="svc-list" id="svcList"></div>
-
-          <h3 style="margin-top:24px">2 · Date</h3>
-          <div class="cal-head">
-            <span class="mo" id="moLabel">, </span>
-            <span class="nav-b"><button id="prevMo" aria-label="Previous month">‹</button><button id="nextMo" aria-label="Next month">›</button></span>
-          </div>
-          <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-          <div class="grid-d" id="grid"></div>
-          <div class="legend"><span><i></i>Open</span><span id="legendNote">Faded, closed or fully booked</span></div>
-        </div>
-
-        <div class="pane">
-          <h3>3 · Time</h3>
-          <div class="slots" id="slots"></div>
-          <p class="note" id="slotNote" style="margin-top:10px"></p>
-
-          <h3 style="margin-top:24px">4 · Your details</h3>
-          <div class="summary" id="sumBox" hidden>
-            <dl><dt>Service</dt><dd id="sumSvc">, </dd><dt>When</dt><dd id="sumWhen">, </dd><dt>Amount</dt><dd id="sumAmt">, </dd></dl>
-          </div>
-          <div class="field"><label for="fName">Name</label><input id="fName" autocomplete="name" enterkeyhint="next" placeholder="Who is the booking for?"></div>
-          <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
-          <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="you@example.com"></div>
-          <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
-          <button class="btn gold block" id="confirm" disabled>Confirm booking</button>
-          <p class="err" id="err" hidden></p>
-          <p class="note" style="margin-top:10px">Studio hire is charged at a flat R800 an hour. Venue bookings are held for 48 hours pending deposit.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="studioPanel" hidden style="margin-top:18px">
-      <div style="margin-bottom:12px">
-        <h3 style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500">Studio panel</h3>
-        <span class="note">Only you see this. Close a date to keep it off the calendar.</span>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
-        <input type="date" id="blockDate" style="font:inherit;font-size:16px;min-height:46px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink)">
-        <button class="btn ghost sm" id="blockAdd">Close this date</button>
-      </div>
-      <div id="blockList" style="font-size:14px;margin-bottom:16px"></div>
-      <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">Upcoming bookings</div>
-      <div id="bkList"></div>
-    </div>
-  </section>
-
-  <hr class="rule">
 
   <section id="more" class="wrap">
     <div class="sec-head split">
@@ -903,7 +854,7 @@
 
   <hr class="rule">
 
-  <section class="wrap">
+  <section id="about" class="wrap">
     <div class="about">
       <img src="assets/img/naledi-600.webp" width="288" height="288" loading="lazy" decoding="async"
            alt="Naledi Zondi, founder of Naledi Art Studio">
@@ -1045,71 +996,6 @@
   function overlaps(a1, a2, b1, b2) { return a1 < b2 && b1 < a2; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-
-  /* ---------------- the hero carousel ----------------
-     One photograph at a time, named in the pill at its top left. It advances
-     on its own, stops the moment anyone touches it, and holds still for a
-     reader who has asked for no motion. */
-  (function heroCarousel() {
-    var img = $('heroImg'), lab = $('heroLabel'), prev = $('heroPrev'), next = $('heroNext');
-    if (!img || !lab || !prev || !next) return;
-
-    var SLIDES = [
-      ['arch-proposal', 'Dressed for a proposal', 'The arch set dressed with florals and candles for a proposal', 1024, 1366],
-      ['yellow-gown',   'Portrait shoot', 'A portrait shoot in a yellow gown on hay bales',               1100, 1466],
-      ['arch-desk',     'Podcast set',    'The arch reworked as a desk for a podcast set',                1100, 1466],
-      ['venue-event',   'Styled event',   'A styled event in the venue with florals and a chandelier',     533,  800],
-      ['red-velvet',    'Velvet backdrop', 'A deep red velvet backdrop hung in the studio',               1100, 1466]
-    ];
-    var src = function (n) { return 'assets/img/' + SLIDES[n][0] + '-1100.webp'; };
-
-    var i = 0, busy = false, timer = null, touched = false;
-    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function warm(n) { var w = new Image(); w.src = src((n + SLIDES.length) % SLIDES.length); }
-
-    function show(n) {
-      n = (n + SLIDES.length) % SLIDES.length;
-      if (busy || n === i) return;
-      busy = true;
-      var s = SLIDES[n], pre = new Image();
-      var land = function () {
-        img.style.opacity = '0';
-        setTimeout(function () {
-          img.src = pre.src;
-          img.setAttribute('width', s[3]); img.setAttribute('height', s[4]);
-          img.alt = s[2]; lab.textContent = s[1];
-          img.style.opacity = '1';
-          i = n; busy = false; warm(i + 1);
-        }, still ? 0 : 200);
-      };
-      pre.onload = land;
-      pre.onerror = function () { busy = false; };   // a missing file must not jam the carousel
-      pre.src = src(n);
-      if (pre.complete) land();
-    }
-
-    function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function go()   { stop(); if (!still && !touched) timer = setInterval(function () { show(i + 1); }, 6500); }
-
-    function by(step) { touched = true; stop(); show(i + step); }
-    prev.addEventListener('click', function () { by(-1); });
-    next.addEventListener('click', function () { by(1); });
-
-    // Swipe, because this is read on a phone first.
-    var x0 = null;
-    img.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
-    img.addEventListener('touchend', function (e) {
-      if (x0 === null) return;
-      var dx = e.changedTouches[0].clientX - x0; x0 = null;
-      if (Math.abs(dx) > 42) by(dx < 0 ? 1 : -1);
-    }, { passive: true });
-
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') go(); else stop();
-    });
-    warm(1); go();
-  })();
 
   /* ---------------- the wall ---------------- */
   (function buildWall() {
@@ -1773,33 +1659,8 @@
     requestAnimationFrame(function () { painted = true; });
     setTimeout(function () { if (!painted) revealAll(); }, 1200);
 
-    // Split the headline into words without disturbing the <em> inside it.
-    var h1 = document.querySelector('.hero h1');
-    if (h1) {
-      var walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT, null, false), texts = [];
-      while (walker.nextNode()) texts.push(walker.currentNode);
-      texts.forEach(function (n) {
-        var frag = document.createDocumentFragment();
-        n.nodeValue.split(/(\s+)/).forEach(function (part) {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-          var s = document.createElement('span');
-          s.className = 'w'; s.textContent = part;
-          frag.appendChild(s);
-        });
-        n.parentNode.replaceChild(frag, n);
-      });
-      var words = h1.querySelectorAll('.w');
-      Array.prototype.forEach.call(words, function (w) { w.classList.add('pre'); });
-      requestAnimationFrame(function () {
-        Array.prototype.forEach.call(words, function (w, i) {
-          w.style.transitionDelay = (i * 55) + 'ms';
-          w.classList.add('in');
-        });
-      });
-    }
 
-    var sel = '.sec-head, .feature, .card, .booker, .finder, .about, #visit .visit > div, .hero-shot, .tile';
+    var sel = '.sec-head, .feature, .card, .booker, .finder, .about, #visit .visit > div, .tile';
     var items = Array.prototype.slice.call(document.querySelectorAll(sel));
     // Anything already on screen at load stays put, no reveal for content
     // the visitor is looking at before they have scrolled at all.

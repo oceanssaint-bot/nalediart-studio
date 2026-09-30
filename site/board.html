@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Naledi Art Studio, page order</title>
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Newsreader:ital,wght@0,300;1,300&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper:#FBF8F4; --surface:#FFFFFF; --ink:#241C2C; --soft:#6A5F74;
+    --faint:#9A8FA3; --line:#E6DCD2; --firm:#D2C5B8; --gold:#8A6010; --lit:#D29E38;
+    --gut:18px;
+  }
+  @media (min-width:1000px) { :root { --gut:28px; } }
+  * { box-sizing:border-box; }
+  html, body { margin:0; }
+  body { background:var(--paper); color:var(--ink);
+         font:400 16px/1.5 Jost,'Century Gothic',system-ui,sans-serif;
+         padding-top:env(safe-area-inset-top,0px); }
+
+  header { border-bottom:1px solid var(--line); padding:20px var(--gut) 18px; }
+  .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+             color:var(--gold); font-weight:500; margin:0 0 10px; }
+  h1 { margin:0; font-size:34px; font-weight:200; letter-spacing:.01em;
+       text-transform:uppercase; line-height:.95; }
+  @media (min-width:720px) { h1 { font-size:54px; } }
+  header p.lede { margin:14px 0 0; max-width:56ch; font-family:Newsreader,Georgia,serif;
+                  font-style:italic; font-size:17px; line-height:1.5; color:var(--soft); }
+
+  main { padding:20px var(--gut) 40px; }
+  ol { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+  @media (min-width:860px) { ol { grid-template-columns:1fr 1fr; } }
+
+  li { border:1px solid var(--line); border-radius:16px; background:var(--surface);
+       overflow:hidden; display:flex; flex-direction:column; }
+  li.drag { opacity:.4; }
+  li.over { border-color:var(--lit); box-shadow:0 0 0 2px rgba(210,158,56,.35); }
+
+  .top { display:flex; align-items:center; gap:12px; padding:12px 14px;
+         border-bottom:1px solid var(--line); cursor:grab; }
+  .top:active { cursor:grabbing; }
+  .pos { width:30px; height:30px; flex:none; border-radius:50%; background:var(--ink);
+         color:var(--paper); display:grid; place-items:center; font-size:13px;
+         font-variant-numeric:tabular-nums; }
+  .name { flex:1; min-width:0; }
+  .name b { display:block; font-weight:400; font-size:17px; }
+  .name span { display:block; font-size:12.5px; color:var(--faint); }
+  .moves { display:flex; gap:6px; flex:none; }
+  .moves button { width:38px; height:38px; border-radius:50%; border:1px solid var(--firm);
+                  background:transparent; color:var(--ink); font-size:15px; cursor:pointer;
+                  line-height:1; touch-action:manipulation; }
+  .moves button:disabled { opacity:.3; cursor:default; }
+  .moves button:not(:disabled):hover { background:var(--gold); border-color:var(--gold); color:#FFF8E9; }
+
+  /* A live slice of the real page: the iframe loads index.html at this
+     section's anchor, so the thumbnail is the section itself, never a
+     screenshot that can go out of date. */
+  .shot { position:relative; height:250px; overflow:hidden; background:var(--paper); }
+  @media (min-width:520px) { .shot { height:300px; } }
+  .shot iframe { position:absolute; top:0; left:0; width:1280px; height:1000px; border:0;
+                 transform-origin:top left; pointer-events:none; }
+
+  .out { margin-top:28px; border-top:1px solid var(--line); padding-top:22px; }
+  .out h2 { margin:0 0 12px; font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+            color:var(--faint); font-weight:500; }
+  .out ol { counter-reset:none; display:block; }
+  #orderText { width:100%; min-height:190px; font:inherit; font-size:14px; line-height:1.7;
+               border:1px solid var(--line); border-radius:12px; padding:14px;
+               background:var(--surface); color:var(--ink); resize:vertical; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .btn { font:inherit; font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+         min-height:46px; padding:0 22px; border-radius:999px; cursor:pointer;
+         border:1px solid var(--firm); background:transparent; color:var(--ink); }
+  .btn.gold { background:var(--gold); border-color:var(--gold); color:#FFF8E9; }
+  .note { font-size:13px; color:var(--faint); margin:10px 0 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Page order</p>
+  <h1>Rearrange the page</h1>
+  <p class="lede">Every block of the site, in the order it currently runs. Drag a card, or use the arrows, until the order is the one you want, then send me the list at the bottom.</p>
+</header>
+
+<main>
+  <ol id="list"></ol>
+
+  <div class="out">
+    <h2>The order you have made</h2>
+    <textarea id="orderText" readonly></textarea>
+    <div class="row">
+      <button class="btn gold" id="copy">Copy this order</button>
+      <button class="btn" id="reset">Back to how it is now</button>
+    </div>
+    <p class="note" id="copyNote">Send me that list and I will rebuild the page in that order.</p>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // The page as it stands. `id` is the anchor in index.html.
+  var SECTIONS = [
+    { id: 'book',      name: 'Booking',        what: 'Service, date, time, details. The landing.' },
+    { id: 'gallery',   name: 'The wall',       what: 'Her work, Pinterest-style' },
+    { id: 'statement', name: 'Statement band', what: '"The room you book is the room she built"' },
+    { id: 'services',  name: 'Services',       what: 'Five rows, opened one at a time' },
+    { id: 'finder',    name: 'Guided finder',  what: 'Three questions, then it picks for you' },
+    { id: 'more',      name: 'More',           what: 'The mosaic: prints, commissions, groups' },
+    { id: 'about',     name: 'About',          what: 'Naledi, in her own words' },
+    { id: 'river',     name: 'The river',      what: 'The drifting band of photographs' },
+    { id: 'visit',     name: 'Visit',          what: 'Address, hours, how to get there' }
+  ];
+
+  var order = SECTIONS.map(function (s) { return s.id; });
+  var list = document.getElementById('list');
+  var out = document.getElementById('orderText');
+  var byId = {};
+  SECTIONS.forEach(function (s) { byId[s.id] = s; });
+
+  function card(id, i) {
+    var s = byId[id];
+    var li = document.createElement('li');
+    li.draggable = true;
+    li.dataset.id = id;
+    li.innerHTML =
+      '<div class="top">' +
+        '<span class="pos">' + (i + 1) + '</span>' +
+        '<span class="name"><b></b><span></span></span>' +
+        '<span class="moves">' +
+          '<button data-move="-1" aria-label="Move up">&#9650;</button>' +
+          '<button data-move="1" aria-label="Move down">&#9660;</button>' +
+        '</span>' +
+      '</div>' +
+      '<div class="shot"><iframe loading="lazy" title="" scrolling="no"></iframe></div>';
+    li.querySelector('.name b').textContent = s.name;
+    li.querySelector('.name span').textContent = s.what;
+    var f = li.querySelector('iframe');
+    f.title = s.name;
+    f.src = 'index.html#' + id;
+    f.addEventListener('load', function () { aim(f, id); });
+    return li;
+  }
+
+  // The iframe renders the page at 1280 wide; scale it to the card.
+  function fit() {
+    var w = list.querySelector('li');
+    if (!w) return;
+    var k = w.querySelector('.shot').clientWidth / 1280;
+    Array.prototype.forEach.call(list.querySelectorAll('iframe'), function (f) {
+      f.style.transform = 'scale(' + k + ')';
+    });
+  }
+
+  // board.html and index.html are always the same origin, so the frame can
+  // be aimed properly: park the section at the top and take the sticky
+  // header out of the shot, rather than letting the anchor land roughly and
+  // the header sit over every thumbnail. If that ever fails, the anchor in
+  // the src has already put the section near enough.
+  function aim(frame, id) {
+    try {
+      var d = frame.contentDocument;
+      if (!d) return;
+      var bar = d.querySelector('header.bar');
+      if (bar) bar.style.display = 'none';
+      var sec = d.getElementById(id);
+      if (sec) d.documentElement.scrollTop = d.body.scrollTop = sec.offsetTop;
+    } catch (err) { /* cross-origin: the anchor did the job */ }
+  }
+
+  function paint() {
+    list.textContent = '';
+    order.forEach(function (id, i) { list.appendChild(card(id, i)); });
+    Array.prototype.forEach.call(list.querySelectorAll('[data-move]'), function (b, i) {
+      var row = Math.floor(i / 2);
+      if (row === 0 && b.dataset.move === '-1') b.disabled = true;
+      if (row === order.length - 1 && b.dataset.move === '1') b.disabled = true;
+    });
+    out.value = order.map(function (id, i) {
+      return (i + 1) + '. ' + byId[id].name;
+    }).join('\n');
+    fit();
+  }
+
+  function move(id, by) {
+    var i = order.indexOf(id), j = i + by;
+    if (j < 0 || j >= order.length) return;
+    order.splice(j, 0, order.splice(i, 1)[0]);
+    paint();
+  }
+
+  list.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-move]');
+    if (!b) return;
+    move(b.closest('li').dataset.id, Number(b.dataset.move));
+  });
+
+  // Drag to reorder, for anyone on a mouse.
+  var dragId = null;
+  list.addEventListener('dragstart', function (e) {
+    var li = e.target.closest('li'); if (!li) return;
+    dragId = li.dataset.id; li.classList.add('drag');
+    try { e.dataTransfer.setData('text/plain', dragId); } catch (err) {}
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  list.addEventListener('dragend', function () {
+    dragId = null;
+    Array.prototype.forEach.call(list.children, function (li) { li.classList.remove('drag', 'over'); });
+  });
+  list.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    var li = e.target.closest('li'); if (!li || li.dataset.id === dragId) return;
+    Array.prototype.forEach.call(list.children, function (n) { n.classList.remove('over'); });
+    li.classList.add('over');
+  });
+  list.addEventListener('drop', function (e) {
+    e.preventDefault();
+    var li = e.target.closest('li');
+    if (!li || !dragId || li.dataset.id === dragId) return;
+    var from = order.indexOf(dragId), to = order.indexOf(li.dataset.id);
+    order.splice(to, 0, order.splice(from, 1)[0]);
+    paint();
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    order = SECTIONS.map(function (s) { return s.id; });
+    paint();
+  });
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var note = document.getElementById('copyNote');
+    function fallback() {
+      out.removeAttribute('readonly'); out.select();
+      note.textContent = 'Selected. Copy it and send it to me.';
+      setTimeout(function () { out.setAttribute('readonly', ''); }, 50);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out.value).then(function () {
+        note.textContent = 'Copied. Paste it to me and I will rebuild the page in that order.';
+      }, fallback);
+    } else fallback();
+  });
+
+  window.addEventListener('resize', fit);
+  paint();
+})();
+</script>
+</body>
+</html>
