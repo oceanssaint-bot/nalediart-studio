@@ -464,6 +464,18 @@
   .fresult .ra { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   @media (min-width: 560px) { .fresult .ra { flex-direction: row; align-items: center; } }
 
+  .consent { display: flex; gap: 11px; align-items: flex-start; cursor: pointer;
+             padding: 12px 0 2px; }
+  .consent input { flex: none; width: 20px; height: 20px; margin: 1px 0 0;
+                   accent-color: var(--gold); }
+  .consent span { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+  .privacy-note { margin: 8px 0 14px; }
+  .privacy-note a { color: var(--gold); }
+
+  .slot i { font-style: normal; font-size: 10px; letter-spacing: .08em; color: var(--gold);
+            margin-left: 6px; }
+  .slot[aria-pressed="true"] i, .slot:disabled i { color: inherit; opacity: .7; }
+
   /* ---------- inspiration gallery ----------
      One row of tags, one grid. The tag decides what the grid holds. */
   .tagrow { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -673,6 +685,7 @@
     <a href="#services"><span class="t">Services</span><span class="n">03</span></a>
     <a href="#more"><span class="t">Inspiration</span><span class="n">04</span></a>
     <a href="#visit"><span class="t">Visit</span><span class="n">05</span></a>
+    <a href="privacy.html"><span class="t">Privacy</span><span class="n">06</span></a>
   </nav>
   <div class="menu-foot">
     <a href="https://www.instagram.com/nalediart_studio/" target="_blank" rel="noopener">@nalediart_studio</a>
@@ -740,9 +753,18 @@
           <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
           <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="you@example.com"></div>
           <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
+          <!-- POPIA asks that the purpose is given where the information is
+               collected, and that consent to be marketed to is a separate,
+               deliberate act. So the notice sits with the fields, and the
+               box is never ticked for you. -->
+          <label class="consent" for="fUpdates">
+            <input type="checkbox" id="fUpdates">
+            <span>Tell me about studio news, new services and offers. You can stop this at any time, and it makes no difference to this booking.</span>
+          </label>
+          <p class="note privacy-note">Your name and contact details are used to confirm this booking and to reach you if the date changes. Nothing else, unless you tick the box. <a href="privacy.html">How we handle your information</a>.</p>
           <button class="btn gold block" id="confirm" disabled>Confirm booking</button>
           <p class="err" id="err" hidden></p>
-          <p class="note" style="margin-top:10px">Studio hire is charged at a flat R800 an hour. Venue bookings are held for 48 hours pending deposit.</p>
+          <p class="note" style="margin-top:10px">Studio hire is R800 an hour, R950 from 6pm. Half and full day bookings are held for 48 hours pending deposit.</p>
         </div>
       </div>
     </div>
@@ -762,8 +784,8 @@
     </div>
     <div class="hero-meta">
       <div><b>39 Station Drive</b>Greyville, Durban</div>
-      <div><b>Tue to Thu, Sat, Sun</b>Closed Mon and Fri</div>
-      <div><b>R800 an hour</b>Studio hire, flat rate</div>
+      <div><b>Tuesday to Sunday</b>Closed Mondays only</div>
+      <div><b>R800 an hour</b>R950 from 6pm</div>
     </div>
   </section>
 
@@ -798,10 +820,10 @@
     </div>
     <div class="acc">
       <details class="acc-row" open>
-        <summary class="acc-head"><span class="t">Studio hire</span><span class="amt">R800 &middot; per hour</span><span class="tog">&minus;</span></summary>
+        <summary class="acc-head"><span class="t">Studio hire</span><span class="amt">R800 &middot; per hour, R950 from 6pm</span><span class="tog">&minus;</span></summary>
         <div class="acc-body">
           <p class="lead">A room that is already dressed, by the hour.</p>
-          <p>Flat R800 an hour with everything in the room included. Lights, stands and softboxes or the daylight, paper backdrops, props and furniture, a steamer and rail, and an assistant on hand. Extend on the day if the slot after you is free.</p>
+          <p>R800 an hour with everything in the room included, and R950 an hour from 6pm. Lights, stands and softboxes or the daylight, paper backdrops, props and furniture, a steamer and rail, and an assistant on hand. Extend on the day if the slot after you is free.</p>
           <div class="thumbs">
             <img src="assets/img/studio-space-600.webp" alt="The raw studio floor with tall factory windows" loading="lazy" decoding="async">
             <img src="assets/img/red-velvet-600.webp" alt="A deep red velvet backdrop hung in the studio" loading="lazy" decoding="async">
@@ -824,10 +846,10 @@
         </div>
       </details>
       <details class="acc-row">
-        <summary class="acc-head"><span class="t">Venue hire</span><span class="amt">R8 500 &middot; full day</span><span class="tog">+</span></summary>
+        <summary class="acc-head"><span class="t">Venue hire</span><span class="amt">R4 500 half day &middot; R8 500 full day</span><span class="tog">+</span></summary>
         <div class="acc-body">
-          <p class="lead">The whole space, for the whole day.</p>
-          <p>Launches, celebrations and shoots that need room to move. One booking takes the day, styling and set dressing are available, and the date is held 48 hours pending your deposit.</p>
+          <p class="lead">The whole space, half a day or all of it.</p>
+          <p>Launches, celebrations and shoots that need room to move. R4 500 for half a day, R8 500 for the whole of it, styling and set dressing available, and the date is held 48 hours pending your deposit. A day that already has an hour or two on it can still be taken: the studio moves those clients by hand and calls them itself.</p>
           <div class="thumbs">
             <img src="assets/img/venue-event-600.webp" alt="A styled event in the venue with florals and a chandelier" loading="lazy" decoding="async">
             <img src="assets/img/couple-600.webp" alt="A couple photographed in the dressed arch set" loading="lazy" decoding="async">
@@ -915,10 +937,10 @@
         <h3>Opening hours</h3>
         <div class="hrs">
           <div><span>Monday</span><span class="shut">Closed</span></div>
-          <div><span>Tue – Thu</span><span>9am – 6pm</span></div>
-          <div><span>Friday</span><span class="shut">Closed</span></div>
-          <div><span>Saturday</span><span>10am – 6pm</span></div>
-          <div><span>Sunday</span><span>9am – 3pm</span></div>
+          <div><span>Tue &ndash; Fri</span><span>9am &ndash; 9pm</span></div>
+          <div><span>Saturday</span><span>10am &ndash; 9pm</span></div>
+          <div><span>Sunday</span><span>9am &ndash; 9pm</span></div>
+          <div><span>After 6pm</span><span>R950 an hour</span></div>
         </div>
       </div>
       <div>
@@ -947,12 +969,13 @@
     <span>&copy; <span id="yr">2026</span> Naledi Art Studio · Durban</span>
     <a href="https://www.instagram.com/nalediart_studio/" target="_blank" rel="noopener">Instagram</a>
     <a href="https://nalediart.company.site/" target="_blank" rel="noopener">Shop</a>
+    <a href="privacy.html">Privacy</a>
     <a href="studio.html" style="margin-left:auto">Studio login</a>
   </div>
 </footer>
 
 <div class="dock">
-  <div class="t"><b>Studio hire R800 an hour</b>Flat rate, everything included</div>
+  <div class="t"><b>Studio hire R800 an hour</b>R950 from 6pm, everything included</div>
   <a href="#book" class="btn gold sm">Book a slot</a>
 </div>
 
@@ -980,13 +1003,23 @@
   /* ---------------- studio facts ---------------- */
   // Durban is UTC+2 all year, no daylight saving, so one constant is correct.
   var SAST = 120;
-  // Opening hours in minutes from midnight, keyed by JS day number. Mon & Fri absent = closed.
-  var HOURS = { 0: [540, 900], 2: [540, 1080], 3: [540, 1080], 4: [540, 1080], 6: [600, 1080] };
+  // Opening hours in minutes from midnight, keyed by JS day number. Monday (1)
+  // is absent, and is now the only day the studio is closed. Every open day
+  // runs to 21:00, because evening bookings are taken.
+  var HOURS = { 0: [540, 1260], 2: [540, 1260], 3: [540, 1260], 4: [540, 1260],
+                5: [540, 1260], 6: [600, 1260] };
+  var AFTER = 1080;              // 18:00, the hour the hourly rate changes
+  var RATE = 800, RATE_AFTER = 950;
+  // A day booking may take a date that already has a few hours on it: the
+  // studio moves those clients by hand. Past this many it is too much to
+  // unpick, so the day is refused rather than promised.
+  var OVERRIDE_MAX = 3;
 
   var SERVICES = [
     { id: 'studio', name: 'Photography studio hire', sub: 'Shoots, video, podcast sets', amt: 'R800', per: 'per hour',    dur: 60  },
     { id: 'set',    name: 'Set design consult',      sub: 'Custom sets and props',      amt: 'Free',  per: '30 minutes',  dur: 30 },
-    { id: 'venue',  name: 'Venue hire',              sub: 'The whole space, all day',   amt: 'R8 500', per: 'full day',   dur: 'day' },
+    { id: 'half',   name: 'Half day',                 sub: 'The whole space, half a day', amt: 'R4 500', per: 'half day', dur: 'day' },
+    { id: 'venue',  name: 'Full day',                 sub: 'The whole space, all day',   amt: 'R8 500', per: 'full day',   dur: 'day' },
     { id: 'art',    name: 'Custom art consult',      sub: 'Commissions and prints',     amt: 'Free',  per: '45 minutes',  dur: 45 }
   ];
   var ADDRESS = '39 Station Drive, Greyville, Durban';
@@ -1111,16 +1144,22 @@
     ['family',   'Family shoot'],
     ['grad',     'Graduation']
   ];
+  // Naledi has no photographs from a birthday, a family shoot or a
+  // graduation yet, and asked for the rooms we do have in the meantime. So
+  // a picture can carry more than one tag, and every caption still says
+  // what the picture actually is rather than what the tag is called.
   var INSPO = [
-    ['set-arch',      'The arch set',           'Built in studio',    1024,  684, ['set']],
-    ['set-arch-wide', 'The niche wall',         'Set design',          800,  534, ['set']],
-    ['arch-desk',     'The arch as a desk',     'Podcast set',        1100, 1466, ['set']],
-    ['red-velvet',    'Red velvet',             'Backdrop',           1100, 1466, ['set']],
-    ['pampas',        'Pampas and sacks',       'Styled shoot',       1100, 1466, ['set']],
-    ['arch-proposal', 'Dressed for a proposal', 'Set and event',      1024, 1366, ['set', 'event']],
-    ['venue-event',   'Styled for an event',    'Venue hire',          533,  800, ['event']],
-    ['venue-class',   'Paint and sip',          'Art experience',      800,  534, ['event']],
-    ['couple',        'In the dressed set',     'Engagement shoot',   1024, 1366, ['event']]
+    ['set-arch',      'The arch set',           'Built in studio',   1024,  684, ['set', 'family', 'grad']],
+    ['set-arch-wide', 'The niche wall',         'Set design',         800,  534, ['set', 'grad']],
+    ['arch-desk',     'The arch as a desk',     'Podcast set',       1100, 1466, ['set']],
+    ['red-velvet',    'Red velvet',             'Backdrop',          1100, 1466, ['set', 'birthday', 'grad']],
+    ['pampas',        'Pampas and sacks',       'Styled shoot',      1100, 1466, ['set', 'birthday']],
+    ['arch-proposal', 'Dressed for a proposal', 'Set and event',     1024, 1366, ['set', 'event', 'family', 'birthday']],
+    ['venue-event',   'Styled for an event',    'Venue hire',         533,  800, ['event', 'birthday']],
+    ['venue-class',   'Paint and sip',          'Art experience',     800,  534, ['event', 'birthday', 'family']],
+    ['couple',        'In the dressed set',     'Engagement shoot',  1024, 1366, ['event', 'family']],
+    ['yellow-gown',   'On the hay bales',       'Portrait shoot',    1100, 1466, ['birthday', 'grad', 'family']],
+    ['studio-space',  'The studio floor',       'The room, unstyled', 640,  800, ['grad', 'family']]
   ];
 
   var inspoTag = INSPO_TAGS[0][0];
@@ -1185,10 +1224,10 @@
     if (a.set === 'yes')
       return { svc: 'set', why: 'A build gets scoped first, concept and quote, and the shoot or event goes in the diary once that is agreed.' };
     if (a.making === 'event')
-      return { svc: 'venue', why: 'An event takes the whole space, so the day is booked to you rather than the hour.' };
+      return { svc: 'venue', why: 'An event takes the whole space, so the day is booked to you rather than the hour. A half day is R4 500 if you do not need all of it.' };
     if (a.people === 'big')
       return { svc: 'venue', why: 'Ten or more people need room to move. The studio is sized for small shoots; the venue is not.' };
-    return { svc: 'studio', why: 'A small shoot fits the studio exactly, at a flat R800 an hour with everything in the room included.' };
+    return { svc: 'studio', why: 'A small shoot fits the studio exactly, at R800 an hour with everything in the room included, or R950 an hour after 6pm.' };
   }
 
   var fAns = {}, fStep = 0;
@@ -1278,6 +1317,17 @@
                      'Content-Type': 'application/json', Prefer: 'return=minimal' },
           body: JSON.stringify(row)
         });
+      },
+      // Taking a whole day has to count the day's load and move what is on
+      // it in one transaction, so it is a database function rather than an
+      // insert. Two people cannot both be told they have the day.
+      rpc: function (name, args) {
+        return fetch(base + '/rpc/' + name, {
+          method: 'POST',
+          headers: { apikey: h.apikey, Authorization: h.Authorization,
+                     'Content-Type': 'application/json' },
+          body: JSON.stringify(args)
+        });
       }
     };
   }
@@ -1341,6 +1391,30 @@
 
   /* ---------------- availability ---------------- */
   function isBlocked(d) { for (var i = 0; i < state.blocks.length; i++) if (state.blocks[i].date === d) return true; return false; }
+  // After 18:00 an hour costs more. The start of the slot decides it, so a
+  // 17:00 booking that runs to 18:00 is still the day rate.
+  function rateFor(min) { return min >= AFTER ? RATE_AFTER : RATE; }
+  function amountFor(svc, start) {
+    if (svc.dur === 'day' || svc.amt === 'Free') return svc.amt;
+    return 'R' + rateFor(start);
+  }
+
+  function dayBookings(dateStr) {
+    var out = [];
+    for (var i = 0; i < state.bookings.length; i++)
+      if (state.bookings[i].date === dateStr) out.push(state.bookings[i]);
+    return out;
+  }
+  // 'free'     nothing on that date
+  // 'override' a few hours on it; taking the day asks the studio to move them
+  // 'blocked'  closed by hand, or too full to unpick
+  function dayState(dateStr) {
+    if (isBlocked(dateStr)) return 'blocked';
+    var c = dayBookings(dateStr).length;
+    if (!c) return 'free';
+    return c <= OVERRIDE_MAX ? 'override' : 'blocked';
+  }
+
   function slotsFor(dateStr, svc) {
     var h = HOURS[dayFromStr(dateStr).getDay()];
     if (!h) return [];
@@ -1349,9 +1423,12 @@
     for (var s = h[0]; s + svc.dur <= h[1]; s += 60) out.push({ start: s, end: s + svc.dur });
     return out;
   }
-  function slotFree(dateStr, sl) {
+  function slotFree(dateStr, sl, svc) {
     if (isBlocked(dateStr)) return false;
     if (dateStr === ymd(today) && sl.start <= today.getHours() * 60 + today.getMinutes()) return false;
+    // A day booking does not fall to a single clash: it is the day's whole
+    // load that decides, so that the override can happen at all.
+    if (svc && svc.dur === 'day') return dayState(dateStr) !== 'blocked';
     for (var i = 0; i < state.bookings.length; i++) {
       var b = state.bookings[i];
       if (b.date === dateStr && overlaps(sl.start, sl.end, b.start, b.end)) return false;
@@ -1360,7 +1437,7 @@
   }
   function dayHasRoom(dateStr, svc) {
     var sl = slotsFor(dateStr, svc);
-    for (var i = 0; i < sl.length; i++) if (slotFree(dateStr, sl[i])) return true;
+    for (var i = 0; i < sl.length; i++) if (slotFree(dateStr, sl[i], svc)) return true;
     return false;
   }
 
@@ -1419,10 +1496,11 @@
     var sl = slotsFor(state.date, svc);
     if (!sl.length) { host.innerHTML = ''; note.textContent = 'The studio is closed that day.'; return; }
     host.innerHTML = sl.map(function (s) {
-      var free = slotFree(state.date, s);
+      var free = slotFree(state.date, s, svc);
       return '<button class="slot" data-s="' + s.start + '"' + (free ? '' : ' disabled') +
         ' aria-pressed="' + (state.start === s.start ? 'true' : 'false') + '">' +
-        (svc.dur === 'day' ? 'Full day' : nice(s.start)) + '</button>';
+        (svc.dur === 'day' ? (svc.id === 'half' ? 'Half day' : 'Full day')
+                           : nice(s.start) + (s.start >= AFTER ? ' <i>R' + RATE_AFTER + '</i>' : '')) + '</button>';
     }).join('');
     if (!host._wired) {
       host._wired = true;
@@ -1431,9 +1509,18 @@
         state.start = +b.getAttribute('data-s'); render();
       });
     }
-    var open = sl.filter(function (s) { return slotFree(state.date, s); }).length;
-    note.textContent = open ? open + ' of ' + sl.length + ' open · ' +
-      (svc.dur === 'day' ? 'takes the whole day' : svc.dur + ' minutes') : 'Fully booked that day.';
+    if (svc.dur === 'day') {
+      var st = dayState(state.date), busy = dayBookings(state.date).length;
+      note.textContent = st === 'blocked'
+        ? 'That day has too much on it to clear. Pick another day, or book it by the hour.'
+        : st === 'override'
+          ? busy + (busy === 1 ? ' booking is' : ' bookings are') + ' already on that day. Take it and the studio will move them: Naledi calls those clients herself.'
+          : 'Takes the whole day.';
+      return;
+    }
+    var open = sl.filter(function (s) { return slotFree(state.date, s, svc); }).length;
+    note.textContent = open ? open + ' of ' + sl.length + ' open · ' + svc.dur + ' minutes, R' +
+      RATE + ' an hour, R' + RATE_AFTER + ' from ' + nice(AFTER) : 'Fully booked that day.';
   }
 
   function renderSummary() {
@@ -1444,7 +1531,7 @@
       $('sumSvc').textContent = svc.name;
       $('sumWhen').textContent = dayFromStr(state.date).toLocaleDateString(undefined,
         { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + nice(state.start) + '–' + nice(end);
-      $('sumAmt').textContent = svc.amt;
+      $('sumAmt').textContent = amountFor(svc, state.start);
     }
     var step = ready ? 4 : (state.date ? 3 : 2);
     ['s1','s2','s3','s4'].forEach(function (id, i) { $(id).classList.toggle('on', i < step); });
@@ -1522,14 +1609,58 @@
     if (!phone && !email) return fail('Please leave a mobile number or an email so the studio can reach you.');
     var end = svc.dur === 'day' ? slotsFor(state.date, svc)[0].end : state.start + svc.dur;
     var bk = {
-      service: svc.id, serviceName: svc.name, amount: svc.amt,
+      service: svc.id, serviceName: svc.name, amount: amountFor(svc, state.start),
       date: state.date, start: state.start, end: end,
       name: name, phone: phone, email: email, notes: $('fNotes').value.trim(),
+      updates: !!($('fUpdates') && $('fUpdates').checked),
       ref: makeRef(), createdAt: new Date().toISOString(), status: 'confirmed'
     };
     var slotId = bk.date + '_' + pad(Math.floor(bk.start / 60)) + pad(bk.start % 60) + (svc.dur === 'day' ? '_day' : '');
 
     state.busy = true; renderSummary();
+
+    // A day booking is not an ordinary insert: it may displace what is
+    // already on the date, and the database decides whether it may.
+    if (!DB && SB && svc.dur === 'day') {
+      return SB.rpc('book_day', {
+        p_service: bk.service, p_service_name: bk.serviceName, p_amount: bk.amount,
+        p_starts_at: toUTC(bk.date, bk.start).toISOString(),
+        p_ends_at: toUTC(bk.date, bk.end).toISOString(),
+        p_name: bk.name, p_phone: bk.phone || null, p_email: bk.email || null,
+        p_notes: bk.notes || null, p_ref: bk.ref, p_max_displaced: OVERRIDE_MAX,
+        p_marketing: bk.updates
+      }).then(function (r) {
+        state.busy = false;
+        if (r.ok) {
+          return r.json().then(function (out) {
+            var moved = (out && out.displaced) || 0;
+            sbRefresh();
+            bk.displaced = moved;
+            return done(bk);
+          }, function () { sbRefresh(); return done(bk); });
+        }
+        return r.text().then(function (t) {
+          if (t.indexOf('DAY_TOO_FULL') >= 0) {
+            fail('That day has too much on it to clear. Pick another day, or book the hours you need instead.');
+            sbRefresh();
+            return;
+          }
+          if (t.indexOf('DAY_BLOCKED') >= 0) {
+            fail('The studio is closed that day. Please pick another.');
+            sbRefresh();
+            return;
+          }
+          if (t.indexOf('PGRST202') >= 0 || r.status === 404) {
+            // The function is not installed yet: fall back to the request
+            // flow rather than pretending the day is held.
+            state.shared = false; return done(bk);
+          }
+          state.shared = false; done(bk);
+        });
+      }).catch(function () {
+        state.busy = false; state.shared = false; done(bk);
+      });
+    }
 
     if (!DB && SB) {
       // The overlap is rejected by the database, not by this check, so two
@@ -1539,7 +1670,7 @@
         starts_at: toUTC(bk.date, bk.start).toISOString(),
         ends_at: toUTC(bk.date, bk.end).toISOString(),
         name: bk.name, phone: bk.phone || null, email: bk.email || null,
-        notes: bk.notes || null, ref: bk.ref, status: 'pending'
+        notes: bk.notes || null, ref: bk.ref, status: 'pending', marketing_opt_in: bk.updates
       }).then(function (r) {
         state.busy = false;
         if (r.ok) { sbRefresh(); return done(bk); }

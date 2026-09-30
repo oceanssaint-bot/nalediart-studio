@@ -1,0 +1,139 @@
+-- Naledi Art Studio, day bookings that may take a date off other people.
+--
+-- Run this in the Supabase SQL editor, after schema.sql, admin.sql,
+-- confirm-flow.sql and auto-expiry.sql.
+--
+-- The rule: a half day or a full day may be booked on a date that already
+-- has a few hours on it. Up to three of them are moved aside and Naledi
+-- calls those clients herself. More than three is too much to unpick, so
+-- the day is refused and the customer is asked to pick another day or book
+-- by the hour. The whole thing happens in one transaction, so two people
+-- cannot both be told they have the same day.
+
+-- 'displaced' is a fourth state: the booking still exists and still has to
+-- be dealt with, but it no longer holds its slot.
+alter table public.bookings drop constraint if exists bookings_status_check;
+alter table public.bookings
+  add constraint bookings_status_check
+  check (status in ('pending', 'confirmed', 'cancelled', 'displaced'));
+
+-- A displaced booking must not keep blocking the calendar.
+alter table public.bookings drop constraint if exists bookings_no_overlap;
+alter table public.bookings
+  add constraint bookings_no_overlap
+  exclude using gist (tstzrange(starts_at, ends_at) with &&)
+  where (status not in ('cancelled', 'displaced'));
+
+-- What a day booking did, so the dashboard can shout about it.
+alter table public.bookings add column if not exists took_over    boolean not null default false;
+alter table public.bookings add column if not exists displaced_of uuid references public.bookings (id);
+alter table public.bookings add column if not exists displaced_at timestamptz;
+
+create index if not exists bookings_took_over_idx
+  on public.bookings (took_over) where took_over;
+
+-- ----------------------------------------------------------------- book_day
+-- Returns { ref, displaced } or raises. The client matches on the message.
+create or replace function public.book_day(
+  p_service       text,
+  p_service_name  text,
+  p_amount        text,
+  p_starts_at     timestamptz,
+  p_ends_at       timestamptz,
+  p_name          text,
+  p_phone         text,
+  p_email         text,
+  p_notes         text,
+  p_ref           text,
+  p_max_displaced int default 3,
+  p_marketing     boolean default false
+) returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_day    date;
+  v_count  int;
+  v_id     uuid;
+begin
+  -- Durban is UTC+2 all year, so the calendar day is unambiguous.
+  v_day := (p_starts_at at time zone 'Africa/Johannesburg')::date;
+
+  if exists (select 1 from public.blocks where day = v_day) then
+    raise exception 'DAY_BLOCKED';
+  end if;
+
+  -- Lock the date's rows so two day bookings cannot both count three.
+  select count(*) into v_count
+  from public.bookings
+  where status not in ('cancelled', 'displaced')
+    and (starts_at at time zone 'Africa/Johannesburg')::date = v_day
+  for update;
+
+  if v_count > p_max_displaced then
+    raise exception 'DAY_TOO_FULL';
+  end if;
+
+  insert into public.bookings
+    (service, service_name, amount, starts_at, ends_at,
+     name, phone, email, notes, ref, status, took_over, marketing_opt_in)
+  values
+    (p_service, p_service_name, p_amount, p_starts_at, p_ends_at,
+     p_name, p_phone, p_email, p_notes, p_ref, 'pending', v_count > 0, p_marketing)
+  returning id into v_id;
+
+  -- Move what was on the date aside, pointing at the booking that took it.
+  if v_count > 0 then
+    update public.bookings
+       set status = 'displaced', displaced_of = v_id, displaced_at = now()
+     where id <> v_id
+       and status not in ('cancelled', 'displaced')
+       and (starts_at at time zone 'Africa/Johannesburg')::date = v_day;
+  end if;
+
+  return json_build_object('ref', p_ref, 'displaced', v_count);
+end;
+$$;
+
+revoke all on function public.book_day(text, text, text, timestamptz, timestamptz,
+                                       text, text, text, text, text, int, boolean) from public;
+grant execute on function public.book_day(text, text, text, timestamptz, timestamptz,
+                                          text, text, text, text, text, int, boolean) to anon, authenticated;
+
+-- The public availability view must not show a displaced booking as busy.
+create or replace view public.availability as
+  select starts_at, ends_at
+  from public.bookings
+  where status not in ('cancelled', 'displaced');
+
+-- Auto-expiry releases unconfirmed holds. A displaced booking is not a hold
+-- and must survive until Naledi has dealt with it, so it is left alone: the
+-- expiry job already filters on status = 'pending'.
+
+-- ------------------------------------------------- marketing consent (POPIA)
+-- Direct marketing by electronic means needs consent that was actually given,
+-- so it is stored per booking with the moment it was given. A row with false
+-- here must never be contacted with studio news.
+alter table public.bookings
+  add column if not exists marketing_opt_in boolean not null default false;
+alter table public.bookings
+  add column if not exists marketing_opt_in_at timestamptz;
+
+create or replace function public.stamp_marketing_consent()
+returns trigger language plpgsql as $$
+begin
+  if new.marketing_opt_in and new.marketing_opt_in_at is null then
+    new.marketing_opt_in_at := now();
+  end if;
+  if not new.marketing_opt_in then
+    new.marketing_opt_in_at := null;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists bookings_marketing_consent on public.bookings;
+create trigger bookings_marketing_consent
+  before insert or update of marketing_opt_in on public.bookings
+  for each row execute function public.stamp_marketing_consent();

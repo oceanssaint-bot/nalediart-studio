@@ -78,6 +78,15 @@
   .note { font-size:13px; color:var(--ink-faint); }
 
   .tabs { display:flex; gap:6px; margin:20px 0 4px; flex-wrap:wrap; }
+  /* A day booking has pushed someone off their slot: the loudest thing here. */
+  .ob { border:1px solid #B4453F; background:#FBEDEC; border-radius:14px;
+        padding:16px 18px; margin-bottom:14px; }
+  .ob .ob-t { margin:0 0 10px; font-size:15px; font-weight:500; color:#8C2F2A; }
+  .ob .ob-d { margin:0 0 6px; font-size:14px; color:#241C2C; }
+  .ob .ob-d b { font-variant-numeric:tabular-nums; margin-right:8px; }
+  .ob .ob-n { margin:10px 0 0; font-size:13px; color:#6A5F74; }
+  .ob a { color:#8C2F2A; }
+
   .tab { font:inherit; font-size:14px; min-height:40px; padding:8px 15px; border-radius:999px;
          border:1px solid var(--line); background:transparent; color:var(--ink-soft); cursor:pointer; }
   .tab[aria-pressed="true"] { background:var(--ink); color:var(--paper); border-color:var(--ink); }
@@ -156,6 +165,7 @@
   </section>
 
   <section id="app" hidden>
+    <div class="ob" id="override" hidden></div>
     <div class="sum" id="summary"></div>
 
     <div class="tabs">
@@ -209,6 +219,8 @@
   var HOLD_HOURS = 48;
 
   function isDead(b) { return b.status === 'cancelled' || b.status === 'expired'; }
+  // Pushed off its date by a half or full day booking. Still owed a call.
+  function isDisplaced(b) { return b.status === 'displaced'; }
 
   // How much of the hold window a pending request has left.
   function holdLeft(b) {
@@ -317,10 +329,11 @@
       var k = dayKey(b.starts_at);
       if (view === 'cancelled') return isDead(b);
       if (isDead(b)) return false;
+      if (isDisplaced(b) && view !== 'pending') return false;
       // "Needs you" is the action queue: requests not yet confirmed, and
       // only ones still ahead, a pending slot that has already passed is
       // history, not a to-do.
-      if (view === 'pending') return b.status === 'pending' && k >= t;
+      if (view === 'pending') return (b.status === 'pending' || isDisplaced(b)) && k >= t;
       if (view === 'today') return k === t;
       if (view === 'upcoming') return k >= t;
       return k < t;
@@ -337,6 +350,24 @@
     var upcoming = live.filter(function (b) { return dayKey(b.starts_at) >= t; });
     var todays = live.filter(function (b) { return dayKey(b.starts_at) === t; });
     var waiting = live.filter(function (b) { return b.status === 'pending' && dayKey(b.starts_at) >= t; });
+    var moved = rows.filter(function (b) { return isDisplaced(b) && dayKey(b.starts_at) >= t; });
+    var alertBox = $('override');
+    if (alertBox) {
+      alertBox.hidden = !moved.length;
+      if (moved.length) {
+        var byDay = {};
+        moved.forEach(function (b) { (byDay[dayKey(b.starts_at)] = byDay[dayKey(b.starts_at)] || []).push(b); });
+        alertBox.innerHTML =
+          '<p class="ob-t">' + moved.length + (moved.length === 1 ? ' client has' : ' clients have') +
+          ' been moved off a date and ' + (moved.length === 1 ? 'is' : 'are') + ' waiting on you</p>' +
+          Object.keys(byDay).sort().map(function (d) {
+            return '<p class="ob-d"><b>' + d + '</b> ' + byDay[d].map(function (b) {
+              return esc(b.name) + (b.phone ? ' &middot; <a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a>' : '');
+            }).join(' &nbsp;|&nbsp; ') + '</p>';
+          }).join('') +
+          '<p class="ob-n">A day booking took these dates. Call them, move them, then cancel or re-book each one below.</p>';
+      }
+    }
     $('summary').innerHTML =
       '<div><b>' + waiting.length + '</b>need confirming</div>' +
       '<div><b>' + todays.length + '</b>today</div>' +
