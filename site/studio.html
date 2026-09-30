@@ -86,6 +86,7 @@
   .ob .ob-d b { font-variant-numeric:tabular-nums; margin-right:8px; }
   .ob .ob-n { margin:10px 0 0; font-size:13px; color:#6A5F74; }
   .ob a { color:#8C2F2A; }
+  .pill.nopub { background:#2F2A3A; color:#F3EDE5; border-color:#2F2A3A; }
 
   .more { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
           padding:16px 0 4px; }
@@ -440,6 +441,7 @@
         line('Booking reference', b.ref) +
         line('Payment terms', BILLING.terms) +
         line('Banking', BILLING.bank) +
+        (b.no_publish ? '<div class="ivnote"><h4>Publishing</h4><p>This client has asked that nothing from this booking be published. No photographs or video from it may be used in studio marketing.</p></div>' : '') +
         (BILLING.notes ? '<div class="ivnote"><h4>Kindly note</h4><p>' + nl(BILLING.notes) + '</p></div>' : '') +
         (BILLING.thanks ? '<p class="ivthanks">' + esc(BILLING.thanks) + '</p>' : '') +
         (BILLING.vat_no ? '' : '<p class="ivsub">Not registered for VAT. No VAT is charged on this invoice.</p>') +
@@ -634,6 +636,7 @@
         (pending ? '<span class="pill wait">Awaiting you</span>' : '') +
         (left ? '<span class="pill">' + esc(left) + '</span>' : '') +
         (!pending && !cancelled ? '<span class="pill ok">Confirmed</span>' : '') +
+        (b.no_publish ? '<span class="pill nopub">Do not publish</span>' : '') +
         '<span class="amt">' + esc(b.amount || ', ') + '</span>' +
       '</div>' +
       '<div class="svc">' + esc(b.service_name) + '</div>' +

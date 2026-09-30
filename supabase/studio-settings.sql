@@ -65,4 +65,78 @@ on conflict (id) do nothing;
 --   updated_at   = now()
 -- where id = 1;
 
-select 'studio_settings ready' as status;
+-- --------------------------------------------------- do not publish (POPIA)
+-- The studio's default is that work made here may be used in its own
+-- marketing. A client may say no, and that has to be recorded against the
+-- booking rather than remembered from a conversation on the day.
+alter table public.bookings
+  add column if not exists no_publish boolean not null default false;
+
+drop function if exists public.book_day(text, text, text, timestamptz, timestamptz,
+                                       text, text, text, text, text, int, boolean);
+
+create or replace function public.book_day(
+  p_service       text,
+  p_service_name  text,
+  p_amount        text,
+  p_starts_at     timestamptz,
+  p_ends_at       timestamptz,
+  p_name          text,
+  p_phone         text,
+  p_email         text,
+  p_notes         text,
+  p_ref           text,
+  p_max_displaced int     default 3,
+  p_marketing     boolean default false,
+  p_no_publish    boolean default false
+) returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_day   date;
+  v_count int;
+  v_id    uuid;
+begin
+  v_day := (p_starts_at at time zone 'Africa/Johannesburg')::date;
+
+  if exists (select 1 from public.blocks where day = v_day) then
+    raise exception 'DAY_BLOCKED';
+  end if;
+
+  select count(*) into v_count
+  from public.bookings
+  where status in ('pending', 'confirmed')
+    and (starts_at at time zone 'Africa/Johannesburg')::date = v_day
+  for update;
+
+  if v_count > p_max_displaced then
+    raise exception 'DAY_TOO_FULL';
+  end if;
+
+  insert into public.bookings
+    (service, service_name, amount, starts_at, ends_at,
+     name, phone, email, notes, ref, status, took_over, marketing_opt_in, no_publish)
+  values
+    (p_service, p_service_name, p_amount, p_starts_at, p_ends_at,
+     p_name, p_phone, p_email, p_notes, p_ref, 'pending', v_count > 0, p_marketing, p_no_publish)
+  returning id into v_id;
+
+  if v_count > 0 then
+    update public.bookings
+       set status = 'displaced', displaced_of = v_id, displaced_at = now()
+     where id <> v_id
+       and status in ('pending', 'confirmed')
+       and (starts_at at time zone 'Africa/Johannesburg')::date = v_day;
+  end if;
+
+  return json_build_object('ref', p_ref, 'displaced', v_count);
+end;
+$$;
+
+grant execute on function public.book_day(text, text, text, timestamptz, timestamptz,
+                                          text, text, text, text, text, int, boolean, boolean)
+  to anon, authenticated;
+
+select 'studio_settings and no_publish ready' as status;

@@ -464,6 +464,14 @@
   .fresult .ra { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   @media (min-width: 560px) { .fresult .ra { flex-direction: row; align-items: center; } }
 
+  .terms { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+           margin: 18px 0 4px; background: var(--surface); }
+  .terms-h { font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+             color: var(--gold); font-weight: 500; margin-bottom: 10px; }
+  .terms ul { margin: 0; padding-left: 18px; }
+  .terms li { font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); margin-bottom: 6px; }
+  .terms li:last-child { margin-bottom: 0; }
+
   .consent { display: flex; gap: 11px; align-items: flex-start; cursor: pointer;
              padding: 12px 0 2px; }
   .consent input { flex: none; width: 20px; height: 20px; margin: 1px 0 0;
@@ -753,6 +761,22 @@
           <div class="field"><label for="fPhone">Mobile</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="082 000 0000"></div>
           <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="you@example.com"></div>
           <div class="field"><label for="fNotes">What are you shooting or celebrating? <span style="color:var(--ink-faint)">(optional)</span></label><textarea id="fNotes" placeholder="Graduation shoot for six, would love the arch wall."></textarea></div>
+          <!-- The studio's terms used to appear only on the invoice, which
+               arrives after the booking is made. They belong here, where
+               someone can still decide not to book. -->
+          <div class="terms">
+            <p class="terms-h">Before you confirm</p>
+            <ul>
+              <li>Bookings are not refundable.</li>
+              <li>One free date and time change, up to 24 hours before your slot.</li>
+              <li>Photographs and video made in the studio may be used in the studio's own marketing, on the website, on social media and in print.</li>
+            </ul>
+          </div>
+          <label class="consent" for="fNoPublish">
+            <input type="checkbox" id="fNoPublish">
+            <span>Do not publish anything from my booking. Tick this and nothing from your session is used in the studio's marketing.</span>
+          </label>
+
           <!-- POPIA asks that the purpose is given where the information is
                collected, and that consent to be marketed to is a separate,
                deliberate act. So the notice sits with the fields, and the
@@ -1613,6 +1637,7 @@
       date: state.date, start: state.start, end: end,
       name: name, phone: phone, email: email, notes: $('fNotes').value.trim(),
       updates: !!($('fUpdates') && $('fUpdates').checked),
+      noPublish: !!($('fNoPublish') && $('fNoPublish').checked),
       ref: makeRef(), createdAt: new Date().toISOString(), status: 'confirmed'
     };
     var slotId = bk.date + '_' + pad(Math.floor(bk.start / 60)) + pad(bk.start % 60) + (svc.dur === 'day' ? '_day' : '');
@@ -1628,7 +1653,7 @@
         p_ends_at: toUTC(bk.date, bk.end).toISOString(),
         p_name: bk.name, p_phone: bk.phone || null, p_email: bk.email || null,
         p_notes: bk.notes || null, p_ref: bk.ref, p_max_displaced: OVERRIDE_MAX,
-        p_marketing: bk.updates
+        p_marketing: bk.updates, p_no_publish: bk.noPublish
       }).then(function (r) {
         state.busy = false;
         if (r.ok) {
@@ -1670,7 +1695,8 @@
         starts_at: toUTC(bk.date, bk.start).toISOString(),
         ends_at: toUTC(bk.date, bk.end).toISOString(),
         name: bk.name, phone: bk.phone || null, email: bk.email || null,
-        notes: bk.notes || null, ref: bk.ref, status: 'pending', marketing_opt_in: bk.updates
+        notes: bk.notes || null, ref: bk.ref, status: 'pending',
+        marketing_opt_in: bk.updates, no_publish: bk.noPublish
       }).then(function (r) {
         state.busy = false;
         if (r.ok) { sbRefresh(); return done(bk); }
