@@ -120,6 +120,11 @@
   .ivl span:first-child { color:var(--faint); }
   .ivl span:last-child { color:var(--ink); text-align:right; }
   .ivfoot .ivsub { padding-top:12px; display:block; }
+  .ivnote { padding-top:18px; }
+  .ivnote h4 { margin:0 0 6px; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+               color:var(--faint); font-weight:500; }
+  .ivnote p { margin:0; font-size:13px; line-height:1.6; color:var(--soft); }
+  .ivthanks { margin:18px 0 0; font-size:14px; color:var(--ink); }
 
   @media print {
     body > *:not(.invoice) { display:none !important; }
@@ -350,29 +355,42 @@
   }
 
   /* ---------------- invoicing ----------------
-     THE ONLY PART OF THIS FILE NALEDI EDITS. Fill these in once and every
-     invoice carries them. Anything left blank is simply left off the
-     invoice rather than printed as a placeholder, so a half-filled block
-     cannot put "your bank here" in front of a client.
+     The studio's own details live in public.studio_settings, behind the same
+     admin login as the bookings, NOT in this file: studio.html is served
+     from GitHub Pages and anyone can read its source. A bank account on an
+     invoice is not a secret, but publishing one on the open web is a
+     different thing from sending it to a client.
 
-     VAT: leave vatNumber empty unless the studio is registered. An invoice
-     may not show VAT that is not being charged. */
+     These are only the fallbacks used before the row loads, and they carry
+     nothing that should not be public. */
   var BILLING = {
-    name:      'Naledi Art Studio',
-    address:   '39 Station Drive, Greyville, Durban, 4001',
-    phone:     '065 838 1532',
-    email:     'naledi@nalediart.com',
-    reg:       '',                 // company registration number, if any
-    vatNumber: '',                 // leave empty if not VAT registered
-    bank:      '',                 // e.g. 'FNB · Cheque · 1234567890 · Branch 250655'
-    terms:     'Payable on booking. The date is held 48 hours pending deposit.'
+    trading_name: 'Naledi Art',
+    address: '39 Station Drive, Greyville\nDurban 4001\nSouth Africa',
+    phone: '', email: '', reg_no: '', vat_no: '', bank: '',
+    terms: 'Due on receipt', notes: '', thanks: ''
   };
 
+  function loadSettings() {
+    return fetch(REST + '/studio_settings?select=*&id=eq.1', { headers: headers() })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rows) {
+        if (rows && rows[0]) {
+          Object.keys(rows[0]).forEach(function (k) {
+            if (rows[0][k] != null && rows[0][k] !== '') BILLING[k] = rows[0][k];
+          });
+        }
+      })
+      .catch(function () { /* the invoice still prints, minus the extras */ });
+  }
+
+  var nl = function (v) { return esc(v).replace(/\n/g, '<br>'); };
+
   function invoiceNo(b) {
-    // The booking reference is already unique and already known to the
-    // client, so the invoice is numbered from it rather than from a second
-    // counter that could drift out of step.
-    return 'INV-' + String(b.ref || '').toUpperCase();
+    // Zoho is already issuing INV-0000nn and counting. Numbering from here
+    // as well would eventually give two different documents the same
+    // number, so this one is identified by the booking reference, which is
+    // unique and which the client already has.
+    return 'NAS-' + String(b.ref || '').toUpperCase();
   }
   function moneyOf(b) {
     var m = String(b.amount || '').replace(/[^0-9.]/g, '');
@@ -392,7 +410,7 @@
   function openInvoice(b) {
     var amt = moneyOf(b);
     var line = function (label, value) {
-      return value ? '<div class="ivl"><span>' + esc(label) + '</span><span>' + esc(value) + '</span></div>' : '';
+      return value ? '<div class="ivl"><span>' + esc(label) + '</span><span>' + nl(value) + '</span></div>' : '';
     };
     $('invBody').innerHTML =
       '<div class="ivhead">' +
@@ -402,11 +420,12 @@
         '</span></div>' +
       '</div>' +
       '<div class="ivcols">' +
-        '<div><h4>From</h4><p>' + esc(BILLING.name) + '<br>' + esc(BILLING.address).replace(/, /g, ',<br>') +
-          '<br>' + esc(BILLING.phone) + '<br>' + esc(BILLING.email) +
-          (BILLING.reg ? '<br>Reg ' + esc(BILLING.reg) : '') +
-          (BILLING.vatNumber ? '<br>VAT ' + esc(BILLING.vatNumber) : '') + '</p></div>' +
-        '<div><h4>To</h4><p>' + esc(b.name) +
+        '<div><h4>From</h4><p><b>' + esc(BILLING.trading_name) + '</b><br>' + nl(BILLING.address) +
+          (BILLING.phone ? '<br>' + esc(BILLING.phone) : '') +
+          (BILLING.email ? '<br>' + esc(BILLING.email) : '') +
+          (BILLING.reg_no ? '<br>Reg ' + esc(BILLING.reg_no) : '') +
+          (BILLING.vat_no ? '<br>VAT ' + esc(BILLING.vat_no) : '') + '</p></div>' +
+        '<div><h4>Billed to</h4><p><b>' + esc(b.name) + '</b>' +
           (b.phone ? '<br>' + esc(b.phone) : '') +
           (b.email ? '<br>' + esc(b.email) : '') + '</p></div>' +
       '</div>' +
@@ -421,7 +440,9 @@
         line('Booking reference', b.ref) +
         line('Payment terms', BILLING.terms) +
         line('Banking', BILLING.bank) +
-        (BILLING.vatNumber ? '' : '<p class="ivsub">Not registered for VAT. No VAT is charged on this invoice.</p>') +
+        (BILLING.notes ? '<div class="ivnote"><h4>Kindly note</h4><p>' + nl(BILLING.notes) + '</p></div>' : '') +
+        (BILLING.thanks ? '<p class="ivthanks">' + esc(BILLING.thanks) + '</p>' : '') +
+        (BILLING.vat_no ? '' : '<p class="ivsub">Not registered for VAT. No VAT is charged on this invoice.</p>') +
       '</div>';
     $('invoice').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -431,12 +452,12 @@
   // Zoho Books imports invoices from CSV. These are its field names, so the
   // file drops straight into Sales > Invoices > Import.
   function zohoCsv(list) {
-    var head = ['Invoice Number', 'Invoice Date', 'Customer Name', 'Item Name',
+    var head = ['Invoice Date', 'Customer Name', 'Item Name',
                 'Item Description', 'Quantity', 'Item Price', 'Reference Number',
                 'Email', 'Phone', 'Notes'];
     var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var rows = list.map(function (b) {
-      return [invoiceNo(b), new Date(b.starts_at).toISOString().slice(0, 10), b.name,
+      return [new Date(b.starts_at).toISOString().slice(0, 10), b.name,
               b.service_name, whenOf(b), 1, moneyOf(b) === null ? '' : moneyOf(b),
               b.ref, b.email || '', b.phone || '', b.notes || ''].map(q).join(',');
     });
@@ -489,6 +510,7 @@
   }
 
   function load() {
+    loadSettings();
     return Promise.all([
       // Everything from a month back forward. At the studio's busiest that
       // is under a hundred rows, and it can never push the live tabs out of
