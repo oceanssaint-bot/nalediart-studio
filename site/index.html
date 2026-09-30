@@ -464,34 +464,42 @@
   .fresult .ra { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   @media (min-width: 560px) { .fresult .ra { flex-direction: row; align-items: center; } }
 
-  /* ---------- mosaic with bitten corners ----------
-     The round button sits in a paper-coloured disc over the card corner, so
-     the corner reads as bitten out. Same effect as the reference, without
-     needing a mask. */
-  .mosaic { display: grid; gap: 14px; grid-template-columns: 1fr; }
-  @media (min-width: 700px) { .mosaic { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .mosaic { grid-template-columns: repeat(3, 1fr); } }
-  .mcard { position: relative; display: flex; min-height: 300px; }
-  @media (min-width: 1100px) { .mcard { min-height: 340px; } }
-  .mcard .art { flex: 1; border-radius: 18px; overflow: hidden; display: flex; }
-  .mcard.dark .art { background: var(--ink); color: var(--paper); padding: 40px;
-                     flex-direction: column; align-items: center; justify-content: center;
-                     text-align: center; gap: 10px; }
-  .mcard.dark .art h3 { font-size: 26px; font-weight: 300; text-transform: uppercase; letter-spacing: .06em; }
-  .mcard.dark .art p { font-size: 14px; color: #BCB0C6; }
-  .mcard.photo .art img { width: 100%; height: 100%; object-fit: cover; }
-  .mcard.note .art { background: transparent; border: 1px solid var(--line); padding: 34px;
-                     flex-direction: column; align-items: center; justify-content: center;
-                     text-align: center; gap: 12px; }
-  .mcard.note p { font-size: 14px; color: var(--ink-soft); line-height: 1.45; }
-  .mcard.note .star { color: var(--gold); font-size: 12px; }
-  .mcard .bite { position: absolute; right: -4px; bottom: -4px; width: 68px; height: 68px;
-                 border-radius: 50%; background: var(--paper); display: grid; place-items: center; }
-  .mcard .go { width: var(--tap); height: var(--tap); border-radius: 50%; cursor: pointer;
-               border: 1px solid var(--line-firm); background: transparent; color: var(--ink);
-               font-size: 16px; touch-action: manipulation; }
-  .mcard .go:hover { background: var(--gold); border-color: var(--gold); color: #FFF8E9; }
-  @media (min-width: 700px) { .mcard.wide { grid-column: span 2; } }
+  /* ---------- inspiration gallery ----------
+     One row of tags, one grid. The tag decides what the grid holds. */
+  .tagrow { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tag { font: inherit; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+         min-height: var(--tap); padding: 0 18px; border-radius: 999px; cursor: pointer;
+         border: 1px solid var(--line-firm); background: transparent; color: var(--ink);
+         display: inline-flex; align-items: center; gap: 8px; touch-action: manipulation; }
+  .tag i { font-style: normal; font-size: 11px; color: var(--ink-faint);
+           font-variant-numeric: tabular-nums; }
+  .tag:hover { border-color: var(--ink); }
+  .tag.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .tag.on i { color: #BCB0C6; }
+  .inspo { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 700px)  { .inspo { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
+  @media (min-width: 1300px) { .inspo { grid-template-columns: repeat(4, 1fr); } }
+  .inspo .tile { padding: 0; border: 0; background: none; cursor: pointer; position: relative;
+                 border-radius: 14px; overflow: hidden; display: block; width: 100%; }
+  .inspo .tile img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
+  .inspo-none { grid-column: 1 / -1; border: 1px dashed var(--line-firm); border-radius: 16px;
+                padding: 44px 24px; display: flex; flex-direction: column; align-items: center;
+                gap: 16px; text-align: center; }
+  .inspo-none p { font-size: 15px; color: var(--ink-soft); }
+
+  /* ---------- the finder, folded into the booking card ---------- */
+  .finder-fold { border: 1px solid var(--line); border-radius: 14px; margin-bottom: 14px;
+                 background: var(--surface); }
+  .finder-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center;
+                           justify-content: space-between; gap: 14px; padding: 0 18px;
+                           min-height: 56px; touch-action: manipulation; }
+  .finder-fold > summary::-webkit-details-marker { display: none; }
+  .fq-lead { font-size: 15px; color: var(--ink); }
+  .fq-go { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold);
+           white-space: nowrap; }
+  .finder-fold[open] > summary { border-bottom: 1px solid var(--line); }
+  .finder-fold[open] .fq-go { color: var(--ink-faint); }
+  .finder-fold .finder { border: 0; border-radius: 0; background: transparent; }
 
   /* ---------- booking ---------- */
   #book { scroll-margin-top: 72px; }
@@ -660,10 +668,10 @@
     <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
   </div>
   <nav class="menu-nav">
-    <a href="#gallery"><span class="t">Work</span><span class="n">01</span></a>
-    <a href="#services"><span class="t">Services</span><span class="n">02</span></a>
-    <a href="#finder"><span class="t">Start here</span><span class="n">03</span></a>
-    <a href="#book"><span class="t">Book</span><span class="n">04</span></a>
+    <a href="#book"><span class="t">Book</span><span class="n">01</span></a>
+    <a href="#gallery"><span class="t">Work</span><span class="n">02</span></a>
+    <a href="#services"><span class="t">Services</span><span class="n">03</span></a>
+    <a href="#more"><span class="t">Inspiration</span><span class="n">04</span></a>
     <a href="#visit"><span class="t">Visit</span><span class="n">05</span></a>
   </nav>
   <div class="menu-foot">
@@ -682,6 +690,18 @@
       <div><p class="eyebrow">Booking</p><h2>Book a slot</h2></div>
       <p class="lede">Pick a slot and it closes the moment you take it. Nobody else can request that time.</p>
     </div>
+
+    <!-- The finder used to be its own section three screens down, which
+         asked people to choose a service and then offered to choose it for
+         them. It is a fold at the top of the booking card instead: open it,
+         answer three questions, and it picks the service below. -->
+    <details class="finder-fold" id="finderFold">
+      <summary>
+        <span class="fq-lead">Not sure what you need?</span>
+        <span class="fq-go">Three questions <span aria-hidden="true">&#8594;</span></span>
+      </summary>
+      <div class="finder" id="finderCard"></div>
+    </details>
 
     <div class="booker">
       <div class="booker-head">
@@ -845,31 +865,15 @@
     </div>
   </section>
 
-  <section id="finder" class="wrap">
-    <div class="sec-head split">
-      <div><p class="eyebrow">Not sure what you need?</p><h2>Start here</h2></div>
-      <p class="lede">Three questions and we will tell you which one to book.</p>
-    </div>
-    <div class="finder" id="finderCard"></div>
-  </section>
 
 
   <section id="more" class="wrap">
     <div class="sec-head split">
-      <div><p class="eyebrow">Also at the studio</p><h2>More</h2></div>
-      <p class="lede">Prints, commissions and group sessions in the space.</p>
+      <div><p class="eyebrow">Inspiration</p><h2>Ideas</h2></div>
+      <p class="lede">Pick the kind of shoot you are planning and see what it has looked like in this room.</p>
     </div>
-    <div class="mosaic">
-      <div class="mcard dark"><div class="art"><h3>Studio hire</h3><p>R800 an hour, flat</p></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard photo"><div class="art"><img src="assets/img/red-velvet-600.webp" alt="Deep red velvet backdrop in the studio" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard dark"><div class="art"><h3>Venue hire</h3><p>R8 500, full day</p></div><span class="bite"><button class="go" data-jump="venue" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard photo"><div class="art"><img src="assets/img/couple-600.webp" alt="A couple photographed in the dressed arch set" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="venue" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard note wide"><div class="art"><p>Lights, stands and softboxes, or the daylight</p><span class="star">&#10022;</span><p>Paper backdrops, props and furniture props</p><span class="star">&#10022;</span><p>Steamer and rail, Bluetooth speaker, an assistant</p><span class="star">&#10022;</span><p>Refreshments, subject to availability</p></div></div>
-      <div class="mcard photo"><div class="art"><img src="assets/img/yellow-gown-600.webp" alt="A portrait shoot on hay bales with florals" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard dark"><div class="art"><h3>Custom art</h3><p>Commission, prints from R1 500</p></div><span class="bite"><button class="go" data-jump="art" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard photo"><div class="art"><img src="assets/img/pampas-600.webp" alt="A styled shoot with pampas grass and sacks" loading="lazy" decoding="async"></div><span class="bite"><button class="go" data-jump="studio" aria-label="Book">&#8599;</button></span></div>
-      <div class="mcard dark"><div class="art"><h3>Art experiences</h3><p>Quoted, per group</p></div><span class="bite"><button class="go" data-jump="set" aria-label="Book">&#8599;</button></span></div>
-    </div>
+    <div class="tagrow" id="inspoTags"></div>
+    <div class="inspo" id="inspoGrid"></div>
   </section>
 
   <hr class="rule">
@@ -1030,7 +1034,7 @@
         '<span class="cap"><b>' + esc(t[1]) + '</b><span>' + esc(t[2]) + '</span></span></button>';
     }).join('');
     host.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-i]'); if (b) openLb(+b.getAttribute('data-i'));
+      var b = e.target.closest('[data-i]'); if (b) openLb(+b.getAttribute('data-i'), WALL);
     });
   })();
 
@@ -1061,18 +1065,22 @@
     host.innerHTML = '<div class="river-track">' + run(false) + run(true) + '</div>';
   })();
 
-  var lbIdx = -1, lbEl = null;
-  function openLb(i) {
+  // The wall and the inspiration gallery are different lists, so the
+  // lightbox carries the one it was opened from.
+  var lbIdx = -1, lbEl = null, lbList = [];
+  function openLb(i, list) {
+    if (list) lbList = list;
     lbIdx = i;
-    var t = WALL[i];
+    var t = lbList[i];
+    if (!t) return;
     if (!lbEl) {
       lbEl = document.createElement('div');
       lbEl.className = 'lb';
       document.body.appendChild(lbEl);
       lbEl.addEventListener('click', function (e) {
         if (e.target.dataset.act === 'x' || e.target === lbEl) return closeLb();
-        if (e.target.dataset.act === 'p') return openLb((lbIdx - 1 + WALL.length) % WALL.length);
-        if (e.target.dataset.act === 'n') return openLb((lbIdx + 1) % WALL.length);
+        if (e.target.dataset.act === 'p') return openLb((lbIdx - 1 + lbList.length) % lbList.length);
+        if (e.target.dataset.act === 'n') return openLb((lbIdx + 1) % lbList.length);
       });
     }
     lbEl.innerHTML =
@@ -1087,9 +1095,72 @@
   document.addEventListener('keydown', function (e) {
     if (!lbEl) return;
     if (e.key === 'Escape') closeLb();
-    else if (e.key === 'ArrowLeft') openLb((lbIdx - 1 + WALL.length) % WALL.length);
-    else if (e.key === 'ArrowRight') openLb((lbIdx + 1) % WALL.length);
+    else if (e.key === 'ArrowLeft') openLb((lbIdx - 1 + lbList.length) % lbList.length);
+    else if (e.key === 'ArrowRight') openLb((lbIdx + 1) % lbList.length);
   });
+
+  /* ---------------- inspiration gallery ----------------
+     Pick the kind of shoot and the grid fills with it. Every photograph is
+     filed under what it actually is: three of the five tags have nothing
+     under them until Naledi sends photographs from those shoots, and they
+     say so rather than borrowing a picture of something else. */
+  var INSPO_TAGS = [
+    ['set',      'Set design'],
+    ['event',    'Event'],
+    ['birthday', 'Birthday shoot'],
+    ['family',   'Family shoot'],
+    ['grad',     'Graduation']
+  ];
+  var INSPO = [
+    ['set-arch',      'The arch set',           'Built in studio',    1024,  684, ['set']],
+    ['set-arch-wide', 'The niche wall',         'Set design',          800,  534, ['set']],
+    ['arch-desk',     'The arch as a desk',     'Podcast set',        1100, 1466, ['set']],
+    ['red-velvet',    'Red velvet',             'Backdrop',           1100, 1466, ['set']],
+    ['pampas',        'Pampas and sacks',       'Styled shoot',       1100, 1466, ['set']],
+    ['arch-proposal', 'Dressed for a proposal', 'Set and event',      1024, 1366, ['set', 'event']],
+    ['venue-event',   'Styled for an event',    'Venue hire',          533,  800, ['event']],
+    ['venue-class',   'Paint and sip',          'Art experience',      800,  534, ['event']],
+    ['couple',        'In the dressed set',     'Engagement shoot',   1024, 1366, ['event']]
+  ];
+
+  var inspoTag = INSPO_TAGS[0][0];
+  function inspoShots() {
+    return INSPO.filter(function (t) { return t[5].indexOf(inspoTag) >= 0; });
+  }
+  function renderInspo() {
+    var tags = $('inspoTags'), grid = $('inspoGrid');
+    if (!tags || !grid) return;
+    tags.innerHTML = INSPO_TAGS.map(function (t) {
+      var n = INSPO.filter(function (x) { return x[5].indexOf(t[0]) >= 0; }).length;
+      return '<button class="tag' + (t[0] === inspoTag ? ' on' : '') + '" data-tag="' + esc(t[0]) +
+        '" aria-pressed="' + (t[0] === inspoTag ? 'true' : 'false') + '">' + esc(t[1]) +
+        (n ? '<i>' + n + '</i>' : '') + '</button>';
+    }).join('');
+
+    var shots = inspoShots();
+    if (!shots.length) {
+      var name = (INSPO_TAGS.filter(function (t) { return t[0] === inspoTag; })[0] || ['', ''])[1];
+      grid.innerHTML = '<div class="inspo-none">' +
+        '<p>No photographs filed under ' + esc(name.toLowerCase()) + ' yet.</p>' +
+        '<button class="btn gold" data-jump="studio">Book one anyway</button></div>';
+      return;
+    }
+    grid.innerHTML = shots.map(function (t, i) {
+      return '<button class="tile" data-ii="' + i + '" aria-label="Open ' + esc(t[1]) + '">' +
+        '<img src="assets/img/' + t[0] + '-600.webp" ' +
+        'srcset="assets/img/' + t[0] + '-600.webp 600w, assets/img/' + t[0] + '-1100.webp ' + t[3] + 'w" ' +
+        'sizes="(min-width:1000px) 33vw, 50vw" width="' + t[3] + '" height="' + t[4] + '" ' +
+        'loading="lazy" decoding="async" alt="' + esc(t[1]) + '">' +
+        '<span class="cap"><b>' + esc(t[1]) + '</b><span>' + esc(t[2]) + '</span></span></button>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tag]');
+    if (t) { inspoTag = t.getAttribute('data-tag'); renderInspo(); return; }
+    var g = e.target.closest('#inspoGrid [data-ii]');
+    if (g) openLb(+g.getAttribute('data-ii'), inspoShots());
+  });
+  renderInspo();
 
   /* ---------------- guided finder ----------------
      Most people do not know whether they want studio hire, the venue or a
@@ -1594,6 +1665,8 @@
     state.month = new Date(state.month.getFullYear(), state.month.getMonth() + 1, 1); render();
   });
   document.addEventListener('click', function (e) {
+    var fold = $('finderFold');
+    if (fold && fold.open && e.target.closest('[data-jump]')) fold.open = false;
     var j = e.target.closest('[data-jump]');
     if (j) {
       state.svc = j.getAttribute('data-jump'); state.start = null; render();
