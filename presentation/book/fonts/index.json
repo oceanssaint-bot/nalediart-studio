@@ -1,0 +1,51 @@
+[
+ {
+  "fam": "Jost",
+  "wt": "200",
+  "sty": "normal",
+  "file": "Jost-200.woff2",
+  "kb": 26
+ },
+ {
+  "fam": "Jost",
+  "wt": "300",
+  "sty": "normal",
+  "file": "Jost-300.woff2",
+  "kb": 26
+ },
+ {
+  "fam": "Jost",
+  "wt": "400",
+  "sty": "normal",
+  "file": "Jost-400.woff2",
+  "kb": 26
+ },
+ {
+  "fam": "Jost",
+  "wt": "500",
+  "sty": "normal",
+  "file": "Jost-500.woff2",
+  "kb": 26
+ },
+ {
+  "fam": "Newsreader",
+  "wt": "300",
+  "sty": "italic",
+  "file": "Newsreader-300i.woff2",
+  "kb": 24
+ },
+ {
+  "fam": "Newsreader",
+  "wt": "300",
+  "sty": "normal",
+  "file": "Newsreader-300.woff2",
+  "kb": 57
+ },
+ {
+  "fam": "Newsreader",
+  "wt": "400",
+  "sty": "normal",
+  "file": "Newsreader-400.woff2",
+  "kb": 57
+ }
+]

@@ -16,7 +16,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const OUT = path.join(__dirname, 'pages');
+// pages/ is the book, and some of it was edited by hand in the guidelines
+// editor. The generator writes a fresh draft beside it instead, so a
+// re-run can never silently undo an edit. Compare the two by hand if the
+// generator is ever changed.
+const OUT = path.join(__dirname, 'draft');
 fs.mkdirSync(OUT, { recursive: true });
 
 /* ------------------------------------------------------------- tokens --- */
